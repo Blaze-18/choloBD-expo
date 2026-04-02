@@ -1,0 +1,165 @@
+import React, { createContext, useContext, useState } from 'react';
+import { useFetchLocations } from '../../../hooks/useFetchLocations';
+import { useFetchHotels } from '../../../hooks/useFetchHotels';
+import { useFetchHotelDetail } from '../../../hooks/useFetchHotelDetail';
+import { useBookingLogic } from '../../../hooks/useBookingLogic';
+import { useRouter } from 'expo-router';
+
+interface ExploreContextValue {
+  locations: any[];
+  locationsLoading: boolean;
+  hotels: any[];
+  hotelsLoading: boolean;
+  hotelDetail: any | null;
+  detailLoading: boolean;
+  selectedRoomsMap: Record<string, number>;
+  checkInDate: string;
+  checkOutDate: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhoneNumber: string;
+  paymentMethod: string;
+  specialRequests: string;
+  submitting: boolean;
+  fetchHotelsByLocation: (locationId: string) => void;
+  selectHotel: (hotelId: string) => Promise<void>;
+  changeRoomQty: (roomTypeId: string, delta: number) => void;
+  setCheckInDate: (s: string) => void;
+  setCheckOutDate: (s: string) => void;
+  setGuestName: (s: string) => void;
+  setGuestEmail: (s: string) => void;
+  setGuestPhoneNumber: (s: string) => void;
+  setPaymentMethod: (s: string) => void;
+  setSpecialRequests: (s: string) => void;
+  submitBooking: () => Promise<any>;
+  clearAllAndGoToSearch: () => void;
+}
+
+const ExploreContext = createContext<ExploreContextValue | null>(null);
+
+export function ExploreProvider({ children }: { children: React.ReactNode }) {
+  const { locations, loading: locationsLoading } = useFetchLocations();
+  const { hotels, loading: hotelsLoading, fetchHotels, clearHotels } = useFetchHotels();
+  const { hotel: hotelDetail, loading: detailLoading, fetchHotelDetail, clearHotel } = useFetchHotelDetail();
+  const { submitting, handleBooking } = useBookingLogic();
+  const router = useRouter();
+
+  const [selectedRoomsMap, setSelectedRoomsMap] = useState<Record<string, number>>({});
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestPhoneNumber, setGuestPhoneNumber] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [specialRequests, setSpecialRequests] = useState('');
+
+  const fetchHotelsByLocation = (locationId: string) => {
+    fetchHotels({ locationId, isActive: true });
+    router.push('/(tabs)/explore/list');
+  };
+
+  const selectHotel = async (hotelId: string) => {
+    await fetchHotelDetail(hotelId);
+    router.push('/(tabs)/explore/detail');
+  };
+
+  const changeRoomQty = (roomTypeId: string, delta: number) => {
+    setSelectedRoomsMap((prev) => {
+      const current = prev[roomTypeId] || 0;
+      let newQty = Math.max(0, current + delta);
+
+      // enforce availableCount if present on hotelDetail
+      try {
+        const rt = (hotelDetail?.roomTypes || []).find((r: any) => r.id === roomTypeId);
+        const avail = rt?.availableCount ?? rt?.totalCount ?? undefined;
+        if (avail !== undefined) {
+          newQty = Math.min(newQty, avail);
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      return { ...prev, [roomTypeId]: newQty };
+    });
+  };
+
+  const submitBooking = async () => {
+    if (!hotelDetail) return null;
+    const result = await handleBooking(
+      {
+        hotelId: hotelDetail.id,
+        checkInDate,
+        checkOutDate,
+        selectedRoomsMap,
+        guestName,
+        guestEmail,
+        guestPhoneNumber,
+        paymentMethod,
+        specialRequests,
+      },
+      (data) => {
+        // reset and go to search
+        clearAllAndGoToSearch();
+      }
+    );
+    return result;
+  };
+
+  const clearAllAndGoToSearch = () => {
+    try {
+      clearHotels();
+      clearHotel();
+    } catch (e) {}
+    setSelectedRoomsMap({});
+    setCheckInDate('');
+    setCheckOutDate('');
+    setGuestName('');
+    setGuestEmail('');
+    setGuestPhoneNumber('');
+    setPaymentMethod('');
+    setSpecialRequests('');
+    router.push('/(tabs)/explore');
+  };
+
+  return (
+    <ExploreContext.Provider
+      value={{
+        locations,
+        locationsLoading,
+        hotels,
+        hotelsLoading,
+        hotelDetail,
+        detailLoading,
+        selectedRoomsMap,
+        checkInDate,
+        checkOutDate,
+        guestName,
+        guestEmail,
+        guestPhoneNumber,
+        paymentMethod,
+        specialRequests,
+        submitting,
+        fetchHotelsByLocation,
+        selectHotel,
+        changeRoomQty,
+        setCheckInDate,
+        setCheckOutDate,
+        setGuestName,
+        setGuestEmail,
+        setGuestPhoneNumber,
+        setPaymentMethod,
+        setSpecialRequests,
+        submitBooking,
+        clearAllAndGoToSearch,
+      }}
+    >
+      {children}
+    </ExploreContext.Provider>
+  );
+}
+
+export function useExplore() {
+  const ctx = useContext(ExploreContext);
+  if (!ctx) throw new Error('useExplore must be used within ExploreProvider');
+  return ctx;
+}

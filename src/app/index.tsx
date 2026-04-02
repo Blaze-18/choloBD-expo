@@ -11,7 +11,7 @@ export default function RootRedirect() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-surface dark:bg-surface-dark">
+    <SafeAreaView className="items-center justify-center flex-1 bg-surface dark:bg-surface-dark">
       <ActivityIndicator size="large" />
     </SafeAreaView>
   );

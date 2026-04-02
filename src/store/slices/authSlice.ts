@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState, AuthUser, AuthTokens, ApiResponse } from '../../types/auth';
+import axios from 'axios';
 import { createApi, getApiInstance, setLogoutCallback } from '../../services/api/axiosClient';
 import { saveTokens, clearTokens, saveUserIdAndRole, clearUserIdAndRole, getUserIdAndRole } from '../../lib/secureStore';
+import { API_BASE_URL } from '../../constants/api';
 
 // We'll export a function to initialize the API base URL from the app bootstrap
 export const configureApi = (baseURL: string) => {
@@ -52,12 +54,12 @@ export const loginUser = createAsyncThunk('auth/login', async (payload: { email:
   }
 });
 
-export const registerUser = createAsyncThunk('auth/register', async (payload: { email: string; password: string; userName: string }, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk('auth/register', async (payload: { email: string; password: string; userName: string; role: string }, { rejectWithValue }) => {
   try {
     console.log('[registerUser] Starting register...', payload);
-    const api = getApiInstance();
-    console.log('[registerUser] API instance obtained');
-    const res = await api.post('/api/auth/register-jwt', payload);
+    // Use direct axios + API_BASE_URL to avoid triggering auth interceptors/refresh logic
+    // The anonymous mobile registration endpoint is `/api/auth/register-jwt` (server expects this)
+    const res = await axios.post(`${API_BASE_URL}/api/auth/register-jwt`, payload, { timeout: 10000 });
     console.log('[registerUser] Register response:', res.data);
     const data = res.data as ApiResponse<{ accessToken: string; refreshToken: string; user: AuthUser }>;
     await saveTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
@@ -66,7 +68,9 @@ export const registerUser = createAsyncThunk('auth/register', async (payload: { 
     return { tokens: { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }, user: data.data.user };
   } catch (e: any) {
     console.error('[registerUser] Error:', e?.response?.data || e.message);
-    return rejectWithValue(e?.response?.data || e.message);
+    // Prefer server-provided message if present
+    const serverMsg = e?.response?.data?.message ?? e?.response?.data ?? e?.message;
+    return rejectWithValue(serverMsg);
   }
 });
 

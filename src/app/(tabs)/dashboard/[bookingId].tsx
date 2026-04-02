@@ -1,0 +1,103 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useBookingLogic } from '../../../hooks/useBookingLogic';
+
+export default function BookingTrackingPage() {
+  const params = useLocalSearchParams();
+  const bookingId = params.bookingId as string | undefined;
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [booking, setBooking] = useState<any | null>(null);
+
+  const { fetchBookingDetails } = useBookingLogic();
+
+  useEffect(() => {
+    if (!bookingId) return;
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchBookingDetails(bookingId);
+        setBooking(res ?? null);
+      } catch (e) {
+        console.error('[BookingTrackingPage] error', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [bookingId, fetchBookingDetails]);
+
+  return (
+    <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
+      <View className="p-6 border-b border-border dark:border-border-dark flex-row items-center justify-between">
+        <Pressable
+          onPress={() => {
+            // Replace with root dashboard index to clear nested route
+            router.replace('/(tabs)/dashboard');
+          }}
+          style={{ padding: 6 }}
+        >
+          <Ionicons name="chevron-back" size={24} color="#111827" />
+        </Pressable>
+        {booking && (
+          <Pressable
+            onPress={() => router.push(`/(tabs)/dashboard/${bookingId}/qr-generate`)}
+            className="px-3 py-2 rounded-lg bg-primary"
+          >
+            <Text className="text-white text-sm font-semibold">Generate QR</Text>
+          </Pressable>
+        )}
+      </View>
+      <ScrollView className="flex-1 p-6">
+        {loading ? (
+          <View className="items-center justify-center flex-1 py-20">
+            <ActivityIndicator size="large" />
+          </View>
+        ) : booking ? (
+          <View>
+            <Text className="text-2xl font-bold text-text dark:text-text-dark">Booking {booking.confirmationCode}</Text>
+            <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Status: {booking.status}</Text>
+
+            <View className="p-4 mt-6 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
+              <Text className="font-semibold text-text dark:text-text-dark">Hotel</Text>
+              <Text className="mt-1 text-base text-text dark:text-text-dark">{booking?.hotel?.name}</Text>
+              <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{booking?.hotel?.location?.city ?? ''}</Text>
+            </View>
+
+            <View className="p-4 mt-4 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
+              <Text className="font-semibold text-text dark:text-text-dark">Guest</Text>
+              <Text className="mt-1 text-base text-text dark:text-text-dark">{booking?.user?.userName ?? booking?.user?.email}</Text>
+            </View>
+
+            <View className="p-4 mt-4 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
+              <Text className="font-semibold text-text dark:text-text-dark">Room Details</Text>
+              {booking.roomDetails?.map((r: any) => (
+                <View key={r.hotelRoomId} className="mt-3">
+                  <Text className="font-semibold">{r.hotelRoom?.hotelRoomType?.name ?? r.hotelRoom?.roomNumber ?? 'Room'}</Text>
+                  <Text className="text-sm text-muted">Price per night: {r.pricePerNight}</Text>
+                  <Text className="text-sm text-muted">Subtotal: {r.subtotal}</Text>
+                </View>
+              ))}
+            </View>
+
+            <View className="p-4 mt-4 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
+              <Text className="font-semibold text-text dark:text-text-dark">Summary</Text>
+              <Text className="mt-2 text-base">Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</Text>
+              <Text className="mt-1 text-base">Check-out: {new Date(booking.checkOutDate).toLocaleDateString()}</Text>
+              <Text className="mt-2 text-lg font-bold">Total: {booking.totalPrice}</Text>
+            </View>
+          </View>
+        ) : (
+          <View className="items-center justify-center py-20">
+            <Text className="text-muted dark:text-muted-dark">Booking not found</Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

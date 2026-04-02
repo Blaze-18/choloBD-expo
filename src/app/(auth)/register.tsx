@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Link } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
@@ -17,25 +18,29 @@ export default function Register() {
   const { isDark } = useTheme();
   const placeholderColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
 
-  const { register, setValue, handleSubmit, formState: { errors } } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
+  const { register, setValue, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
 
   useEffect(() => {
     register('userName');
     register('email');
     register('password');
     register('confirm');
+    register('role');
   }, [register]);
+
+  const [showRolePicker, setShowRolePicker] = useState(false);
+  const ROLE_OPTIONS = ['MASTER_ADMIN', 'SERVICE_ADMIN', 'EMPLOYEE', 'USER'] as const;
 
   const onSubmit = (values: RegisterForm) => {
     console.log('[Register] Form submitted with values:', values);
-    void dispatch(registerUser({ email: values.email, password: values.password, userName: values.userName }));
+    void dispatch(registerUser({ email: values.email, password: values.password, userName: values.userName, role: values.role }));
   };
 
   useEffect(() => {
     console.log('[Register] Auth state changed:', { isAuthenticated: auth.isAuthenticated, isLoading: auth.isLoading, error: auth.error });
     if (auth.isAuthenticated) {
-      console.log('[Register] Authenticated! Redirecting to /home...');
-      router.replace('/home');
+      console.log('[Register] Authenticated! Redirecting to /(tabs)...');
+      router.replace('/(tabs)/dashboard');
     }
   }, [auth.isAuthenticated, auth.isLoading, auth.error]);
 
@@ -63,7 +68,7 @@ export default function Register() {
                   placeholder="Your name"
                   placeholderTextColor={placeholderColor}
                 />
-                {errors.userName ? <Text className="text-xs text-danger mt-1">{String(errors.userName.message)}</Text> : null}
+                {errors.userName ? <Text className="mt-1 text-xs text-danger">{String(errors.userName.message)}</Text> : null}
               </View>
 
               <View>
@@ -76,7 +81,7 @@ export default function Register() {
                   placeholder="you@example.com"
                   placeholderTextColor={placeholderColor}
                 />
-                {errors.email ? <Text className="text-xs text-danger mt-1">{String(errors.email.message)}</Text> : null}
+                {errors.email ? <Text className="mt-1 text-xs text-danger">{String(errors.email.message)}</Text> : null}
               </View>
 
               <View>
@@ -88,7 +93,7 @@ export default function Register() {
                   placeholder="••••••••"
                   placeholderTextColor={placeholderColor}
                 />
-                {errors.password ? <Text className="text-xs text-danger mt-1">{String(errors.password.message)}</Text> : null}
+                {errors.password ? <Text className="mt-1 text-xs text-danger">{String(errors.password.message)}</Text> : null}
               </View>
 
               <View>
@@ -100,13 +105,46 @@ export default function Register() {
                   placeholder="••••••••"
                   placeholderTextColor={placeholderColor}
                 />
-                {errors.confirm ? <Text className="text-xs text-danger mt-1">{String(errors.confirm.message)}</Text> : null}
+                {errors.confirm ? <Text className="mt-1 text-xs text-danger">{String(errors.confirm.message)}</Text> : null}
+              </View>
+
+              <View>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Role</Text>
+                <TouchableOpacity
+                  onPress={() => setShowRolePicker(!showRolePicker)}
+                  className="p-3 rounded-lg border border-border dark:border-border-dark flex-row items-center justify-between bg-background dark:bg-background-dark"
+                >
+                  <Text className={"flex-1"}>
+                    {watch('role') || 'Select role'}
+                  </Text>
+                  <Ionicons name={showRolePicker ? 'chevron-up' : 'chevron-down'} size={20} color="#3b82f6" />
+                </TouchableOpacity>
+
+                {showRolePicker && (
+                  <View className="mt-2 border border-border dark:border-border-dark rounded-lg bg-white dark:bg-surface-dark overflow-hidden">
+                    {ROLE_OPTIONS.map((r) => (
+                      <TouchableOpacity
+                        key={r}
+                        onPress={() => {
+                          setValue('role', r as any);
+                          setShowRolePicker(false);
+                        }}
+                        className={`p-4 border-b border-border dark:border-border-dark`}
+                      >
+                        <Text className="text-text dark:text-text-dark font-medium">{r}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+
+                <Text className="mt-2 text-xs text-muted dark:text-muted-dark">Select your role. MASTER_ADMIN is reserved — if unavailable the server will reject it.</Text>
+                {errors.role ? <Text className="mt-1 text-xs text-danger">{String((errors.role as any).message)}</Text> : null}
               </View>
 
               <TouchableOpacity onPress={handleSubmit(onSubmit)} className="p-3 rounded-lg bg-primary dark:bg-primary-dark">
                 <Text className="font-medium text-center text-white">{auth.isLoading ? 'Creating...' : 'Create account'}</Text>
               </TouchableOpacity>
-              {auth.error ? <Text className="text-sm text-danger text-center mt-2">{String(auth.error)}</Text> : null}
+              {auth.error ? <Text className="mt-2 text-sm text-center text-danger">{String(auth.error)}</Text> : null}
             </View>
 
             <View className="flex-row items-center my-4">

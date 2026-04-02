@@ -5,13 +5,16 @@ import { Provider } from 'react-redux';
 import { store } from '../store/store';
 import { useAuthInitializer } from '../hooks/state/useAuthInitializer';
 import { API_BASE_URL } from '../constants/api';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function AppContent() {
   useAuthInitializer(API_BASE_URL);
   return (
-    <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
 

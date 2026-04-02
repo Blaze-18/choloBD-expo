@@ -28,6 +28,19 @@ export function createApi(baseURL: string) {
   api.interceptors.response.use(
     (res) => res,
     async (error: AxiosError) => {
+      // Diagnostic logging for network errors
+      try {
+        console.error('[axios] response error:', {
+          message: error.message,
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: (error.config as any)?.baseURL || api?.defaults.baseURL,
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+      } catch (logErr) {
+        // ignore
+      }
       const original = error.config as AxiosRequestConfig & { _retry?: boolean };
       if (error.response?.status === 401 && !original._retry) {
         original._retry = true;
