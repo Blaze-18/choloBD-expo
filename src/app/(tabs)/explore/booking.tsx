@@ -88,9 +88,9 @@ export default function ExploreBooking() {
 
           <HotelBookingForm
             checkInDate={checkInDate}
-            setCheckInDate={() => {}}
+            setCheckInDate={setCheckInDate}
             checkOutDate={checkOutDate}
-            setCheckOutDate={() => {}}
+            setCheckOutDate={setCheckOutDate}
             guestName={guestName}
             setGuestName={setGuestName}
             guestEmail={guestEmail}

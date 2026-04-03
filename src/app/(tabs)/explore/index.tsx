@@ -33,7 +33,7 @@ export default function ExploreIndex() {
 
           {/* Check-in and Check-out Dates */}
           <View className="mt-4">
-            <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">Check-in Date</Text>
+            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">Check-in Date</Text>
             <View className="flex-row items-center border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
               <Ionicons name="calendar" size={18} color="#666" style={{ marginLeft: 10 }} />
               <TextInput
@@ -47,7 +47,7 @@ export default function ExploreIndex() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">Check-out Date</Text>
+            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">Check-out Date</Text>
             <View className="flex-row items-center border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
               <Ionicons name="calendar" size={18} color="#666" style={{ marginLeft: 10 }} />
               <TextInput

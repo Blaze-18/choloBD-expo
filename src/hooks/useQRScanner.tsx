@@ -19,6 +19,8 @@ export function useQRScanner() {
       const data = res.data as QRScanResponse;
 
       // eslint-disable-next-line no-console
+      console.log('[useQRScanner] API Response:', JSON.stringify(data, null, 2));
+      // eslint-disable-next-line no-console
       console.log('[useQRScanner] QR code validated successfully', {
         bookingId: data.data?.booking?.id,
         guestName: data.data?.booking?.user?.userName,

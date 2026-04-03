@@ -65,7 +65,7 @@ export function ExploreSearchForm({
                 <Text className="text-muted dark:text-muted-dark">No locations available</Text>
               </View>
             ) : (
-              <ScrollView>
+              <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 256 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
                 {locations.map((location) => (
                   <TouchableOpacity
                     key={location.id}

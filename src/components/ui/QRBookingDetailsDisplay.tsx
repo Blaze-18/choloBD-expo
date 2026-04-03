@@ -1,104 +1,158 @@
 import React from 'react';
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import type { QRBookingDetail } from '../../types/qr';
 
 interface QRBookingDetailsDisplayProps {
   booking: QRBookingDetail;
 }
 
+const DetailRow: React.FC<{ label: string; value: string; last?: boolean }> = ({ label, value, last }) => (
+  <View>
+    <View className="flex-row justify-between py-3">
+      <Text className="flex-1 text-sm text-muted dark:text-muted-dark">{label}</Text>
+      <Text className="flex-1 text-sm font-medium text-right text-text dark:text-text-dark">{value}</Text>
+    </View>
+    {!last && <View className="h-px bg-border dark:bg-border-dark" />}
+  </View>
+);
+
 export const QRBookingDetailsDisplay: React.FC<QRBookingDetailsDisplayProps> = ({ booking }) => {
   const checkInDate = new Date(booking.checkInDate);
   const checkOutDate = new Date(booking.checkOutDate);
+  const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
     <ScrollView className="flex-1 bg-background dark:bg-background-dark">
-      <View className="p-6">
-        {/* Header */}
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-text dark:text-text-dark">Booking Details</Text>
-          <Text className="text-sm text-muted dark:text-muted-dark mt-1">{booking.confirmationCode}</Text>
-        </View>
-
-        {/* Guest Info */}
-        <View className="mb-4 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
-          <Text className="font-semibold text-text dark:text-text-dark mb-3">Guest Information</Text>
-          <Text className="text-sm text-text dark:text-text-dark">
-            {booking.user.firstName || booking.user.userName} {booking.user.lastName || ''}
-          </Text>
-          <Text className="text-sm text-muted dark:text-muted-dark">{booking.user.email}</Text>
-          {booking.user.phoneNumber && (
-            <Text className="text-sm text-muted dark:text-muted-dark">{booking.user.phoneNumber}</Text>
-          )}
-        </View>
-
-        {/* Room Details */}
-        <View className="mb-4 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
-          <Text className="font-semibold text-text dark:text-text-dark mb-3">Room Details</Text>
-          <FlatList
-            data={booking.roomDetails}
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <View className="mb-3 pb-3 border-b border-border dark:border-border-dark last:border-b-0">
-                <Text className="font-semibold text-text dark:text-text-dark">
-                  Room {item.hotelRoom.roomNumber}
-                </Text>
-                <Text className="text-sm text-muted dark:text-muted-dark">
-                  Type: {item.hotelRoomType.roomType}
-                </Text>
-                <Text className="text-sm text-muted dark:text-muted-dark">
-                  ${item.pricePerNight} / night
-                </Text>
-              </View>
-            )}
-            scrollEnabled={false}
-          />
-        </View>
-
-        {/* Check-in/Out Dates */}
-        <View className="mb-4 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
-          <Text className="font-semibold text-text dark:text-text-dark mb-3">Stay Dates</Text>
-          <Text className="text-sm text-text dark:text-text-dark">
-            Check-in: {checkInDate.toLocaleDateString()} {checkInDate.toLocaleTimeString()}
-          </Text>
-          <Text className="text-sm text-text dark:text-text-dark">
-            Check-out: {checkOutDate.toLocaleDateString()} {checkOutDate.toLocaleTimeString()}
+      <View className="flex-1">
+        {/* Header Section */}
+        <View className="px-6 pt-6 pb-2">
+          <Text className="text-3xl font-bold text-text dark:text-text-dark">{booking.confirmationCode}</Text>
+          <Text className="mt-2 text-sm text-muted dark:text-muted-dark">
+            {booking.status === 'checked-in' ? '✓ Checked In' : booking.status === 'active' ? 'Active Booking' : booking.status}
           </Text>
         </View>
 
-        {/* Payment & Special Requests */}
-        <View className="mb-4 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
-          <Text className="font-semibold text-text dark:text-text-dark mb-3">Additional Info</Text>
-          <Text className="text-sm text-text dark:text-text-dark">
-            Payment: {booking.paymentMethod}
-          </Text>
-          <Text className="text-sm text-text dark:text-text-dark">
-            Total: ${booking.totalPrice}
-          </Text>
-          <Text className="text-sm text-muted dark:text-muted-dark">
-            Status: {booking.status}
-          </Text>
-        </View>
-
-        {/* Special Requests */}
-        {booking.specialRequests && (
-          <View className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900 rounded-xl border border-yellow-200 dark:border-yellow-700">
-            <Text className="font-semibold text-yellow-900 dark:text-yellow-50 mb-2">Special Requests</Text>
-            <Text className="text-sm text-yellow-900 dark:text-yellow-100">{booking.specialRequests}</Text>
-          </View>
-        )}
-
-        {/* Hotel Info */}
-        <View className="p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
-          <Text className="font-semibold text-text dark:text-text-dark mb-3">Hotel Information</Text>
-          <Text className="text-sm text-text dark:text-text-dark">{booking.hotel.name}</Text>
-          {booking.hotel.location && (
-            <Text className="text-sm text-muted dark:text-muted-dark">
+        {/* Hotel Name */}
+        <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+          <Text className="text-lg font-semibold text-text dark:text-text-dark">{booking.hotel?.name || 'Hotel'}</Text>
+          {booking.hotel?.location && (
+            <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
               {booking.hotel.location.city || booking.hotel.location.name}
             </Text>
           )}
-          <Text className="text-sm text-muted dark:text-muted-dark">{booking.hotel.phoneNumber}</Text>
-          <Text className="text-sm text-muted dark:text-muted-dark">{booking.hotel.email}</Text>
         </View>
+
+        {/* Guest Section */}
+        <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+          <Text className="mb-3 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+            Guest
+          </Text>
+          <Text className="text-base font-medium text-text dark:text-text-dark">
+            {booking.user.firstName || booking.user.userName} {booking.user.lastName || ''}
+          </Text>
+          <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{booking.user.email}</Text>
+          {booking.user.phoneNumber && (
+            <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{booking.user.phoneNumber}</Text>
+          )}
+        </View>
+
+        {/* Stay Dates Section */}
+        <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+          <Text className="mb-3 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+            Stay Details
+          </Text>
+          <DetailRow
+            label="Check-in"
+            value={checkInDate.toLocaleDateString()}
+          />
+          <DetailRow
+            label="Check-out"
+            value={checkOutDate.toLocaleDateString()}
+          />
+          <DetailRow
+            label="Number of Nights"
+            value={nights.toString()}
+            last
+          />
+        </View>
+
+        {/* Room Details Section */}
+        {booking.roomDetails && booking.roomDetails.length > 0 && (
+          <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+            <Text className="mb-3 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+              Rooms & Rates
+            </Text>
+            {booking.roomDetails.map((item, idx) => (
+              <View key={idx}>
+                <View className="flex-row items-center justify-between py-2">
+                  <View className="flex-1">
+                    <Text className="text-sm font-medium text-text dark:text-text-dark">
+                      Room {item.hotelRoom?.roomNumber || 'N/A'}
+                    </Text>
+                    {item.hotelRoomType?.roomType && (
+                      <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
+                        {item.hotelRoomType.roomType}
+                      </Text>
+                    )}
+                  </View>
+                  <Text className="text-sm font-medium text-text dark:text-text-dark">
+                    ${item.pricePerNight || 0}/night
+                  </Text>
+                </View>
+                {idx < booking.roomDetails.length - 1 && (
+                  <View className="h-px my-2 bg-border dark:bg-border-dark" />
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Payment Section */}
+        <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+          <Text className="mb-3 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+            Payment
+          </Text>
+          <DetailRow
+            label="Payment Method"
+            value={booking.paymentMethod || 'N/A'}
+          />
+          <DetailRow
+            label="Total Amount"
+            value={`$${booking.totalPrice}`}
+            last
+          />
+        </View>
+
+        {/* Special Requests Section */}
+        {booking.specialRequests && (
+          <View className="px-6 py-4 border-b border-border dark:border-border-dark">
+            <Text className="mb-2 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+              Special Requests
+            </Text>
+            <Text className="text-sm leading-5 text-text dark:text-text-dark">
+              {booking.specialRequests}
+            </Text>
+          </View>
+        )}
+
+        {/* Hotel Contact Section */}
+        <View className="px-6 py-4">
+          <Text className="mb-3 text-xs font-bold tracking-wide uppercase text-muted dark:text-muted-dark">
+            Hotel Contact
+          </Text>
+          <DetailRow
+            label="Phone"
+            value={booking.hotel?.phoneNumber || 'N/A'}
+          />
+          <DetailRow
+            label="Email"
+            value={booking.hotel?.email || 'N/A'}
+            last
+          />
+        </View>
+
+        {/* Footer Padding */}
+        <View className="h-6" />
       </View>
     </ScrollView>
   );
