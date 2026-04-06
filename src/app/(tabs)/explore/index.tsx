@@ -2,12 +2,14 @@ import React from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../../hooks/useTheme';
 import { ExploreSearchForm } from '../../../components/forms/exploreSearchForm';
 import { useExplore } from './_provider';
 
 export default function ExploreIndex() {
   const { locations, locationsLoading, fetchHotelsByLocation, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate } = useExplore();
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
 
   const onSearch = (filters: { locationId: string }) => {
     fetchHotelsByLocation(filters.locationId);

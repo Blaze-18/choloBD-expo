@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { useCameraPermission } from '../../hooks/useCameraPermission';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface CameraQRScannerProps {
   onScan: (qrToken: string) => void;
@@ -15,6 +17,7 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
   onSwitchToManual,
   isLoading = false,
 }) => {
+  const { isDark } = useTheme();
   const { permission, isLoading: permissionLoading } = useCameraPermission();
   const cameraRef = useRef<CameraView>(null);
   const [scanned, setScanned] = useState(false);
@@ -39,7 +42,7 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
 
   if (permissionLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-xl">
+      <View className="items-center justify-center flex-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
         <Text className="text-sm text-muted dark:text-muted-dark">Loading camera...</Text>
       </View>
     );
@@ -47,29 +50,29 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
 
   if (permission === false) {
     return (
-      <View className="mb-6 items-center">
+      <View className="items-center mb-6">
         <View className="w-64 h-64 rounded-xl bg-red-100 dark:bg-red-900 items-center justify-center border-2 border-red-300 dark:border-red-700 p-4">
-          <Ionicons name="close-circle" size={64} color="#dc2626" />
-          <Text className="mt-4 text-sm font-semibold text-red-900 dark:text-red-100 text-center">
+          <Ionicons name="close-circle" size={64} color={isDark ? theme.colors['error-dark'] : theme.colors.error} />
+          <Text className="mt-4 text-sm font-semibold text-center text-red-900 dark:text-red-100">
             Camera Access Denied
           </Text>
-          <Text className="mt-2 text-xs text-red-800 dark:text-red-200 text-center">
+          <Text className="mt-2 text-xs text-center text-red-800 dark:text-red-200">
             Please enable camera permissions in settings to use QR scanning.
           </Text>
         </View>
         <TouchableOpacity
           onPress={onSwitchToManual}
-          className="mt-4 px-4 py-2 rounded-lg border border-primary"
+          className="px-4 py-2 mt-4 border rounded-lg border-primary"
         >
-          <Text className="text-primary font-semibold">Use Manual Input Instead</Text>
+          <Text className="font-semibold text-primary">Use Manual Input Instead</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View className="mb-6 items-center">
-      <View className="w-64 h-64 rounded-xl overflow-hidden border-2 border-primary">
+    <View className="items-center mb-6">
+      <View className="w-64 h-64 overflow-hidden border-2 rounded-xl border-primary">
         <CameraView
           ref={cameraRef}
           style={{ flex: 1 }}
@@ -80,11 +83,11 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
           }}
         >
           {/* Camera overlay guide */}
-          <View className="flex-1 items-center justify-center">
+          <View className="items-center justify-center flex-1">
             <View
-              className="h-48 w-48 border-2 border-white rounded-lg"
+              className="w-48 h-48 border-2 border-white rounded-lg"
               style={{
-                shadowColor: '#000',
+                shadowColor: isDark ? theme.colors['text-dark'] : theme.colors.text,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.3,
                 shadowRadius: 4,
@@ -92,25 +95,25 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
               }}
             />
             {scanned && (
-              <View className="absolute inset-0 bg-green-500/20 items-center justify-center rounded-lg">
-                <Ionicons name="checkmark-circle" size={48} color="#16a34a" />
+              <View className="absolute inset-0 items-center justify-center rounded-lg" style={{ backgroundColor: isDark ? theme.colors['success-dark'] + '33' : theme.colors.success + '33' }}>
+                <Ionicons name="checkmark-circle" size={48} color={isDark ? theme.colors['success-dark'] : theme.colors.success} />
               </View>
             )}
           </View>
         </CameraView>
       </View>
 
-      <View className="mt-4 w-64 bg-blue-50 dark:bg-blue-900 p-3 rounded-lg">
-        <Text className="text-xs text-blue-900 dark:text-blue-50 text-center">
+      <View className="w-64 p-3 mt-4 rounded-lg bg-blue-50 dark:bg-blue-900">
+        <Text className="text-xs text-center text-blue-900 dark:text-blue-50">
           Position QR code within the frame to scan automatically
         </Text>
       </View>
 
       <TouchableOpacity
         onPress={onSwitchToManual}
-        className="mt-4 px-4 py-2 rounded-lg border border-muted"
+        className="px-4 py-2 mt-4 border rounded-lg border-muted"
       >
-        <Text className="text-muted font-semibold">Use Manual Input Instead</Text>
+        <Text className="font-semibold text-muted">Use Manual Input Instead</Text>
       </TouchableOpacity>
     </View>
   );

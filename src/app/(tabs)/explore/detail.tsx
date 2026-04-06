@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../../../hooks/useTheme';
 import { ExploreHotelDetailUI } from '../../../components/ui/exploreHotelDetailUI';
 import { useExplore } from './_provider';
 import { useRouter } from 'expo-router';
@@ -8,6 +9,7 @@ export default function ExploreDetail() {
   const { hotelDetail, detailLoading } = useExplore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
 
   if (!hotelDetail) return null;
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface HotelBookingFormProps {
   checkInDate: string;
@@ -39,6 +41,7 @@ export function HotelBookingForm({
   onSubmit,
   submitting,
 }: HotelBookingFormProps) {
+  const { isDark } = useTheme();
   return (
     <View className="mt-6 space-y-4">
       <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">Booking Details</Text>
@@ -47,12 +50,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Check-in Date</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="calendar" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={checkInDate}
             onChangeText={setCheckInDate}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
         </View>
@@ -62,12 +65,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Check-out Date</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="calendar" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={checkOutDate}
             onChangeText={setCheckOutDate}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
         </View>
@@ -77,12 +80,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Guest Name</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="person" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="person" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={guestName}
             onChangeText={setGuestName}
             placeholder="Jane Doe"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
         </View>
@@ -92,12 +95,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Email</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="mail" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="mail" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={guestEmail}
             onChangeText={setGuestEmail}
             placeholder="jane@example.com"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             keyboardType="email-address"
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
@@ -108,12 +111,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Phone Number</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="call" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="call" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={guestPhoneNumber}
             onChangeText={setGuestPhoneNumber}
             placeholder="+8801..."
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             keyboardType="phone-pad"
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
@@ -124,12 +127,12 @@ export function HotelBookingForm({
       <View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">Payment Method (optional)</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="card" size={18} color="#666" style={{ marginLeft: 10 }} />
+          <Ionicons name="card" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
             value={paymentMethod}
             onChangeText={setPaymentMethod}
             placeholder="wallet | sslcommerz | cash"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
         </View>
@@ -143,7 +146,7 @@ export function HotelBookingForm({
             value={specialRequests}
             onChangeText={setSpecialRequests}
             placeholder="Any special requests"
-            placeholderTextColor="#999"
+            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             multiline
             numberOfLines={3}
             className="p-3 text-text dark:text-text-dark"
@@ -155,9 +158,14 @@ export function HotelBookingForm({
       <TouchableOpacity
         onPress={onSubmit}
         disabled={submitting}
-        className={`p-4 mt-6 rounded-lg ${submitting ? 'bg-gray-400' : 'bg-primary dark:bg-primary-dark'}`}
+        style={{
+          backgroundColor: submitting ? (isDark ? theme.colors['surface-2-dark'] : '#e5e7eb') : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
+          borderRadius: 8,
+          marginTop: 24,
+          paddingVertical: 16,
+        }}
       >
-        <Text className="font-semibold text-center text-white">
+        <Text style={{ color: submitting ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : '#ffffff', fontWeight: '600', textAlign: 'center' }}>
           {submitting ? 'Creating Booking...' : 'Create Booking'}
         </Text>
       </TouchableOpacity>

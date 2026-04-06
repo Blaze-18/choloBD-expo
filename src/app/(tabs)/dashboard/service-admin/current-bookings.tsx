@@ -5,16 +5,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCurrentBookingsFetch } from '../../../../hooks/useCurrentBookingsFetch';
 import { BookingCard } from '../../../../components/ui/bookingCard';
+import { useTheme } from '../../../../hooks/useTheme';
+import theme from '../../../../constants/theme';
 
 export default function CurrentBookingsPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
   const { bookings, pagination, loading, error, currentPage, setCurrentPage } = useCurrentBookingsFetch(20);
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <View className="flex-1 p-6">
         <Pressable onPress={() => router.replace('/(tabs)/dashboard')} style={{ padding: 6 }}>
-          <Ionicons name="chevron-back" size={24} color="#111827" />
+          <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
         </Pressable>
 
         <Text className="text-2xl font-bold mt-2 text-text dark:text-text-dark">Current Bookings</Text>
@@ -22,19 +25,19 @@ export default function CurrentBookingsPage() {
 
         {loading ? (
           <View className="mt-6 items-center flex-1 justify-center">
-            <ActivityIndicator size="large" color="#3b82f6" />
+            <ActivityIndicator size="large" color={theme.colors.primary} />
             <Text className="text-sm text-muted dark:text-muted-dark mt-4">Loading bookings...</Text>
           </View>
         ) : error ? (
           <View className="mt-6 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark">
             <View className="flex-row items-center">
-              <Ionicons name="alert-circle" size={20} color="#ef4444" style={{ marginRight: 8 }} />
+              <Ionicons name="alert-circle" size={20} color={isDark ? theme.colors['error-dark'] : theme.colors.error} style={{ marginRight: 8 }} />
               <Text className="text-sm text-text dark:text-text-dark flex-1">{error}</Text>
             </View>
           </View>
         ) : bookings.length === 0 ? (
           <View className="mt-6 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark items-center py-8">
-            <Ionicons name="calendar-clear" size={32} color="#9ca3af" />
+            <Ionicons name="calendar-clear" size={32} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
             <Text className="text-sm text-muted dark:text-muted-dark mt-3">No bookings found</Text>
           </View>
         ) : (
@@ -55,7 +58,7 @@ export default function CurrentBookingsPage() {
                 disabled={currentPage <= 1}
                 className={`px-3 py-2 rounded-lg ${currentPage <= 1 ? 'bg-gray-200' : 'bg-primary'}`}
               >
-                <Ionicons name="chevron-back" size={18} color={currentPage <= 1 ? '#9ca3af' : '#fff'} />
+                <Ionicons name="chevron-back" size={18} color={currentPage <= 1 ? theme.colors.muted : theme.colors['onPrimary']} />
               </Pressable>
 
               <Text className="text-sm text-text dark:text-text-dark">
@@ -68,7 +71,7 @@ export default function CurrentBookingsPage() {
                 disabled={!pagination || pagination.page >= pagination.pages}
                 className={`px-3 py-2 rounded-lg ${!pagination || pagination.page >= pagination.pages ? 'bg-gray-200' : 'bg-primary'}`}
               >
-                <Ionicons name="chevron-forward" size={18} color={!pagination || pagination.page >= pagination.pages ? '#9ca3af' : '#fff'} />
+                <Ionicons name="chevron-forward" size={18} color={!pagination || pagination.page >= pagination.pages ? theme.colors.muted : theme.colors['onPrimary']} />
               </Pressable>
             </View>
           </View>

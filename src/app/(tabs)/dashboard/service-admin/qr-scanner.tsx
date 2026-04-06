@@ -3,14 +3,17 @@ import { View, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import theme from '../../../../constants/theme';
 import { useRouter } from 'expo-router';
 import { QRCodeScanner } from '../../../../components/ui/QRCodeScanner';
 import { QRBookingDetailsDisplay } from '../../../../components/ui/QRBookingDetailsDisplay';
 import { useQRScanner } from '../../../../hooks/useQRScanner';
+import { useTheme } from '../../../../hooks/useTheme';
 import type { QRBookingDetail } from '../../../../types/qr';
 
 export default function QRScannerPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
   const { scanQRCode, loading, error, clearError } = useQRScanner();
   const [scannedBooking, setScannedBooking] = useState<QRBookingDetail | null>(null);
 
@@ -37,7 +40,7 @@ export default function QRScannerPage() {
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-bold text-text dark:text-text-dark">QR Scanner</Text>
           <Pressable onPress={() => router.replace('/(tabs)/dashboard')} style={{ padding: 6 }}>
-            <Ionicons name="close" size={24} color="#111827" />
+            <Ionicons name="close" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
           </Pressable>
         </View>
       </View>

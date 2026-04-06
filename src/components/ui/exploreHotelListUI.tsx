@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Hotel } from '../../hooks/useFetchHotels';
+import { Hotel } from '../../types/hotels';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface ExploreHotelListUIProps {
   hotels: Hotel[];
@@ -10,10 +12,12 @@ interface ExploreHotelListUIProps {
 }
 
 export function ExploreHotelListUI({ hotels, loading, onSelectHotel }: ExploreHotelListUIProps) {
+  const { isDark } = useTheme();
+
   if (loading) {
     return (
-      <View className="items-center justify-center py-8">
-        <ActivityIndicator size="large" color="#3b82f6" />
+      <View className="items-center justify-center py-12">
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text className="mt-2 text-muted dark:text-muted-dark">Loading hotels...</Text>
       </View>
     );
@@ -22,7 +26,7 @@ export function ExploreHotelListUI({ hotels, loading, onSelectHotel }: ExploreHo
   if (hotels.length === 0) {
     return (
       <View className="items-center justify-center py-12">
-        <Ionicons name="search" size={48} color="#9ca3af" />
+        <Ionicons name="search" size={48} color={isDark ? '#9ca3af' : '#d1d5db'} />
         <Text className="mt-3 text-lg font-semibold text-text dark:text-text-dark">No hotels found</Text>
         <Text className="mt-1 text-sm text-muted dark:text-muted-dark">Try adjusting your search filters</Text>
       </View>
@@ -65,13 +69,13 @@ export function ExploreHotelListUI({ hotels, loading, onSelectHotel }: ExploreHo
                 <View>
                   <Text className="text-base font-bold font-heading text-text dark:text-text-dark">{item.name}</Text>
                   <View className="flex-row items-center mt-1">
-                    <Ionicons name="location" size={14} color="#9ca3af" />
+                    <Ionicons name="location" size={14} color={isDark ? '#9ca3af' : '#d1d5db'} />
                     <Text className="ml-1 text-xs text-muted dark:text-muted-dark">{item.location?.name}</Text>
                   </View>
                 </View>
                 <View className="flex-row items-center justify-between mt-2">
                   <View className="flex-row items-center bg-yellow-50 dark:bg-yellow-950 px-2 py-1 rounded">
-                    <Ionicons name="star" size={12} color="#fbbf24" />
+                    <Ionicons name="star" size={12} color={isDark ? '#fcd34d' : '#fbbf24'} />
                     <Text className="ml-1 text-xs font-bold text-text dark:text-text-dark">{item.rating}</Text>
                   </View>
                   <Text className="text-sm font-bold text-primary dark:text-primary-dark">

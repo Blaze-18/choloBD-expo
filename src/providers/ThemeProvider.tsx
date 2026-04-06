@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { View, useColorScheme } from 'react-native';
+import { View, Appearance } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -8,33 +8,51 @@ type ThemeContextType = {
   mode: ThemeMode;
   setMode: (m: ThemeMode) => Promise<void>;
   isDark: boolean;
+  system: string | null;
 };
 
 const STORAGE_KEY = 'app_theme_mode';
+// Set to true to force the app into dark mode regardless of system/user setting.
+// Temporary: remove or set to false when no longer needed.
+const FORCE_DARK = false;
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const system = useColorScheme();
+  const [system, setSystem] = useState<string | null>(Appearance.getColorScheme());
   const [mode, setModeState] = useState<ThemeMode>('system');
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const stored = await AsyncStorage.getItem(STORAGE_KEY);
-        if (stored === 'light' || stored === 'dark' || stored === 'system') {
-          setModeState(stored as ThemeMode);
+        if (FORCE_DARK) {
+          setModeState('dark');
+        } else {
+          const stored = await AsyncStorage.getItem(STORAGE_KEY);
+          if (stored === 'light' || stored === 'dark' || stored === 'system') {
+            setModeState(stored as ThemeMode);
+          }
         }
       } catch (e) {
         // ignore
+      } finally {
+        setIsReady(true);
       }
     })();
   }, []);
 
   useEffect(() => {
-    // keep in sync if user chooses system and OS changes
-    // no-op here because useColorScheme will update isDark via memo
-  }, [system]);
+    // keep in sync with system appearance changes
+    const sub = Appearance.addChangeListener(({ colorScheme }) => {
+      setSystem(colorScheme);
+    });
+    return () => {
+      // subscription may provide remove()
+      // @ts-ignore
+      if (typeof sub.remove === 'function') sub.remove();
+    };
+  }, []);
 
   const setMode = async (m: ThemeMode) => {
     try {
@@ -54,8 +72,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return mode === 'dark';
   }, [mode, system]);
 
+  // For NativeWind, apply the `dark` class at the root View
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1 }} />
+    );
+  }
+
   return (
-    <ThemeContext.Provider value={{ mode, setMode, isDark }}>
+    <ThemeContext.Provider value={{ mode, setMode, isDark, system }}>
       <View style={{ flex: 1 }} className={isDark ? 'dark' : ''}>
         {children}
       </View>

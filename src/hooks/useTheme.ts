@@ -9,7 +9,11 @@ export const useTheme = () => {
     else await setMode('dark');
   }, [mode, setMode]);
 
-  return { mode, setMode, isDark, toggle } as const;
+  // include system so consumers can reflect provider's view
+  // @ts-ignore
+  const { system } = useThemeContext();
+
+  return { mode, setMode, isDark, system, toggle } as const;
 };
 
 export default useTheme;

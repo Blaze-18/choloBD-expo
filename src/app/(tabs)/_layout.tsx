@@ -3,20 +3,29 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom ?? 0;
 
+  const { isDark } = useTheme();
+
+  const tabBarActiveTintColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const tabBarInactiveTintColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+  const tabBarBackground = isDark ? theme.colors['surface-dark'] : theme.colors.surface;
+  const tabBarBorderTop = isDark ? theme.colors['border-dark'] : theme.colors.border;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3b82f6',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: tabBarActiveTintColor,
+        tabBarInactiveTintColor: tabBarInactiveTintColor,
         tabBarStyle: {
-          borderTopColor: '#e5e7eb',
-          backgroundColor: '#ffffff',
+          borderTopColor: tabBarBorderTop,
+          backgroundColor: tabBarBackground,
           height: 60 + bottomInset,
           paddingBottom: Platform.OS === 'ios' ? bottomInset : bottomInset + 8,
         },

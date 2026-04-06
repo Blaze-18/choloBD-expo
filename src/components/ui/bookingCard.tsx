@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface BookingCardProps {
   booking: any;
@@ -8,6 +10,9 @@ interface BookingCardProps {
 }
 
 export function BookingCard({ booking, onPress }: BookingCardProps) {
+  const { isDark } = useTheme();
+  const muteIconColor = isDark ? '#9ca3af' : '#666';
+
   const getStatusColor = (status?: string) => {
     switch (status?.toLowerCase()) {
       case 'confirmed':
@@ -44,13 +49,13 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
               {booking.guestName || booking.guest || 'Guest'}
             </Text>
             <View className="flex-row items-center mt-1">
-              <Ionicons name="mail" size={12} color="#666" style={{ marginRight: 4 }} />
+              <Ionicons name="mail" size={12} color={muteIconColor} style={{ marginRight: 4 }} />
               <Text className="text-xs text-muted dark:text-muted-dark flex-1">
                 {booking.guestEmail || 'N/A'}
               </Text>
             </View>
             <View className="flex-row items-center mt-1">
-              <Ionicons name="call" size={12} color="#666" style={{ marginRight: 4 }} />
+              <Ionicons name="call" size={12} color={muteIconColor} style={{ marginRight: 4 }} />
               <Text className="text-xs text-muted dark:text-muted-dark">
                 {booking.guestPhoneNumber || 'N/A'}
               </Text>
@@ -85,7 +90,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         <View>
           {/* Confirmation code */}
           <View className="flex-row items-center mb-2">
-            <Ionicons name="receipt" size={14} color="#3b82f6" style={{ marginRight: 8 }} />
+            <Ionicons name="receipt" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
             <Text className="text-sm text-text dark:text-text-dark">
               <Text className="font-semibold">Confirmation: </Text>
               {booking.confirmationCode || booking.id?.substring(0, 8) || 'N/A'}
@@ -94,7 +99,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
           {/* Check-in and check-out */}
           <View className="flex-row items-center mb-2">
-            <Ionicons name="calendar" size={14} color="#3b82f6" style={{ marginRight: 8 }} />
+            <Ionicons name="calendar" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
             <Text className="text-sm text-text dark:text-text-dark">
               {booking.checkInDate || 'N/A'} → {booking.checkOutDate || 'N/A'}
             </Text>
@@ -102,7 +107,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
           {/* Total price */}
           <View className="flex-row items-center">
-            <Ionicons name="cash" size={14} color="#3b82f6" style={{ marginRight: 8 }} />
+            <Ionicons name="cash" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
             <Text className="text-sm font-semibold text-text dark:text-text-dark">
               ₹{booking.totalPrice ?? 'N/A'}
             </Text>

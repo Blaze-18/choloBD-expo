@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { HotelDetail } from '../../hooks/useFetchHotelDetail';
+import { HotelDetail } from '../../types/hotels';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface ExploreHotelDetailUIProps {
   hotel: HotelDetail | null;
@@ -12,6 +14,8 @@ interface ExploreHotelDetailUIProps {
 }
 
 export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking, loading = false }: ExploreHotelDetailUIProps) {
+  const { isDark } = useTheme();
+
   if (!hotel) return null;
 
   const minPrice =
@@ -21,18 +25,12 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
 
   return (
     <View className="flex-1">
-      {/* Back Buttons */}
-      <View className="flex-row items-center justify-between px-6 pt-4 pb-2 bg-white border-b dark:bg-surface-dark border-border dark:border-border-dark">
-        <TouchableOpacity onPress={onBack} className="flex-row items-center">
-          <Ionicons name="chevron-back" size={24} color="#3b82f6" />
-          <Text className="ml-2 font-semibold text-primary dark:text-primary-dark">Back to Hotels</Text>
+      {/* Back Button Header */}
+      <View className="px-6 pt-4 pb-2 bg-white border-b dark:bg-surface-dark border-border dark:border-border-dark">
+        <TouchableOpacity onPress={onBack} className="flex-row items-center mb-3">
+          <Ionicons name="chevron-back" size={24} color={theme.colors.primary} />
+          <Text className="ml-2 font-semibold text-primary dark:text-primary-dark">Back</Text>
         </TouchableOpacity>
-        {onBackToSearch && (
-          <TouchableOpacity onPress={onBackToSearch} className="flex-row items-center">
-            <Ionicons name="search" size={20} color="#3b82f6" />
-            <Text className="ml-2 text-primary dark:text-primary-dark">Search again</Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       <ScrollView className="flex-1 bg-background dark:bg-background-dark">
@@ -51,13 +49,13 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
             <View className="flex-1">
               <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">{hotel.name}</Text>
               <View className="flex-row items-center mt-2">
-                <Ionicons name="location" size={16} color="#9ca3af" />
+                <Ionicons name="location" size={16} color={isDark ? '#9ca3af' : '#d1d5db'} />
                 <Text className="ml-1 text-sm text-muted dark:text-muted-dark">{hotel.location?.name}</Text>
               </View>
             </View>
             <View className="items-center">
               <View className="flex-row items-center px-3 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-950">
-                <Ionicons name="star" size={18} color="#fbbf24" />
+                <Ionicons name="star" size={18} color={isDark ? '#fcd34d' : '#fbbf24'} />
                 <Text className="ml-1 font-bold text-text dark:text-text-dark">{hotel.rating}</Text>
               </View>
             </View>
@@ -135,13 +133,13 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
             <View className="p-4 mt-6 rounded-lg bg-gray-50 dark:bg-gray-900">
               {hotel.phoneNumber && (
                 <View className="flex-row items-center mb-2">
-                  <Ionicons name="call" size={16} color="#3b82f6" />
+                  <Ionicons name="call" size={16} color={theme.colors.primary} />
                   <Text className="ml-2 text-text dark:text-text-dark">{hotel.phoneNumber}</Text>
                 </View>
               )}
               {hotel.email && (
                 <View className="flex-row items-center">
-                  <Ionicons name="mail" size={16} color="#3b82f6" />
+                  <Ionicons name="mail" size={16} color={theme.colors.primary} />
                   <Text className="ml-2 text-text dark:text-text-dark">{hotel.email}</Text>
                 </View>
               )}
@@ -155,12 +153,18 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
         <TouchableOpacity
           onPress={onBooking}
           disabled={loading}
-          className={`p-4 rounded-lg flex-row items-center justify-center ${
-            loading ? 'bg-primary/50 dark:bg-primary-dark/50' : 'bg-primary dark:bg-primary-dark'
-          }`}
+          style={{
+            backgroundColor: loading ? (isDark ? '#4b5563' : '#d1d5db') : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
+            borderRadius: 8,
+            paddingVertical: 16,
+            paddingHorizontal: 24,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <Ionicons name="bed" size={20} color="#fff" style={{ marginRight: 8 }} />
-          <Text className="text-lg font-bold text-white">Book Hotel (from ₹{minPrice})</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>Book Hotel (from ₹{minPrice})</Text>
         </TouchableOpacity>
       </View>
     </View>

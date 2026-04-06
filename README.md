@@ -84,24 +84,56 @@ src/
 │   └── index.tsx
 │
 ├── components/               # Reusable UI components
-│   ├── ui/
-│   ├── forms/
-│   ├── layout/
-│   ├── modals/
-│   ├── navigation/
-│   └── modules/
+│   ├── ui/                   # UI components (buttons, cards, etc.)
+│   ├── forms/                # Form components
+│   ├── homepage/             # Homepage-specific components
+│   ├── layout/               # Layout wrappers
+│   ├── modals/               # Modal components (SideScroller, etc.)
+│   │   └── SideScroller.tsx  # Navigation side drawer
+│   ├── navigation/           # Navigation components
+│   └── modules/              # Feature-specific modules
+│
+├── services/                 # API & business logic layer
+│   └── api/                  # API endpoints & hooks
+│       ├── axiosClient.ts    # Axios instance configuration
+│       ├── hotels.ts         # Hotel API calls (useFetchHotels)
+│       ├── locations.ts      # Location API calls (useFetchLocations)
+│       └── hotelDetail.ts    # Hotel detail API calls (useFetchHotelDetail)
+│
+├── hooks/                    # Custom React hooks
+│   ├── useBookingLogic.tsx
+│   ├── useCameraPermission.ts
+│   ├── useTheme.ts
+│   ├── state/                # State-specific hooks
+│   └── utils/                # Hook utilities
 │
 ├── store/                    # Redux store & slices
-├── services/                 # API and business logic
-├── hooks/                    # Custom hooks
-├── lib/                      # Configurations (axios, etc.)
-├── utils/                    # Utility functions
-├── validators/               # Zod schemas (reused)
-├── types/                    # TypeScript types (reused)
-├── constants/
-├── providers/                # App-level providers
+│   ├── store.ts
+│   └── slices/               # Redux slice definitions
+│       └── authSlice.ts
 │
-assets/                       # Static assets
+├── types/                    # TypeScript interfaces & types
+│   ├── auth.ts               # Authentication types
+│   ├── hotels.ts             # Hotel, RoomType, HotelDetail interfaces
+│   ├── locations.ts          # Location interface
+│   └── qr.ts                 # QR code types
+│
+├── lib/                      # Configurations & utilities
+│   └── secureStore.ts        # Secure storage utilities
+│
+├── utils/                    # Utility functions
+├── validators/               # Zod validation schemas
+│   └── auth.ts
+├── constants/                # App constants
+│   ├── api.ts
+│   └── theme.ts
+├── providers/                # Context providers
+│   └── ThemeProvider.tsx
+│
+└── assets/                   # Static assets
+    ├── fonts/
+    ├── icons/
+    └── images/
 ```
 
 ## ⚙️ Scripts

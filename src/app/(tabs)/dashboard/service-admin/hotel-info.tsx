@@ -4,11 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import theme from '../../../../constants/theme';
 import { useServiceAdminLogic } from '../../../../hooks/useServiceAdminLogic';
+import { useTheme } from '../../../../hooks/useTheme';
 
 export default function HotelInfoPage() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const { isDark } = useTheme();
   const hotelId = params.hotelId as string | undefined;
 
   const { fetchMyHotel, fetchHotelRooms } = useServiceAdminLogic();
@@ -47,7 +50,7 @@ export default function HotelInfoPage() {
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <View className="p-6">
         <Pressable onPress={() => router.replace('/(tabs)/dashboard')} style={{ padding: 6 }}>
-          <Ionicons name="chevron-back" size={24} color="#111827" />
+          <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
         </Pressable>
 
         <Text className="mt-2 text-2xl font-bold text-text dark:text-text-dark">Hotel Information</Text>

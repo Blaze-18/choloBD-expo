@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { View, ScrollView, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
+import { useTheme } from '../../../hooks/useTheme';
+import theme from '../../../constants/theme';
 import { RootState } from '../../../store/store';
 import { useDashboardLogic } from '../../../hooks/useDashboardLogic';
 import { TrackingCard } from '../../../components/ui/TrackingCard';
@@ -10,13 +12,14 @@ export default function TrackingPage() {
   const router = useRouter();
   const auth = useSelector((s: RootState) => s.auth);
   const { bookings, loading, onRefresh } = useDashboardLogic();
+  const { isDark } = useTheme();
 
   // Refresh bookings when page is focused
   useEffect(() => {
     onRefresh();
   }, []);
 
-  const isServiceAdmin = auth.user?.role === 'SERVICE_ADMIN';
+  const isServiceAdmin = (auth.user as any)?.role === 'SERVICE_ADMIN';
 
   const handleDetailsPress = (bookingId: string) => {
     router.push(`/(tabs)/dashboard/${bookingId}`);
@@ -57,7 +60,7 @@ export default function TrackingPage() {
   };
 
   return (
-    <ScrollView className="flex-1 showsVerticalScrollIndicator={false}">
+    <ScrollView className="flex-1 bg-background dark:bg-background-dark" showsVerticalScrollIndicator={false}>
       <View className="px-6 pt-8 pb-4">
         <Text className="text-sm text-muted dark:text-muted-dark">Manage your stays</Text>
         <Text className="mt-1 text-3xl font-bold font-heading text-text dark:text-text-dark">Track your booking</Text>
@@ -65,7 +68,7 @@ export default function TrackingPage() {
 
       {loading ? (
         <View className="items-center justify-center py-12">
-          <ActivityIndicator size="large" color="#3b82f6" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : bookings && bookings.length > 0 ? (
         <View className="px-6 pb-8">

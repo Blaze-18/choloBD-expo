@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
 import { BookingHistoryUI } from '../ui/bookingHistoryUI';
 
@@ -27,6 +28,8 @@ export function UserDashboard({
   onRefresh,
   onPressBooking,
 }: UserDashboardProps) {
+  const { isDark } = useTheme();
+
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} refreshControl={undefined}>

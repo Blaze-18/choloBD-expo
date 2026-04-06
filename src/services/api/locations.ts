@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { getApiInstance } from '../services/api/axiosClient';
-
-export interface Location {
-  id: string;
-  name: string;
-}
+import { getApiInstance } from './axiosClient';
+import { Location } from '../../types/locations';
 
 export function useFetchLocations() {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -37,3 +33,5 @@ export function useFetchLocations() {
     refetch: fetchLocations,
   };
 }
+
+export { Location } from '../../types/locations';

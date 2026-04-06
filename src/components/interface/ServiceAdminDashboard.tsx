@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
 import { AdminCard } from '../ui/adminCard';
 
@@ -23,6 +24,7 @@ export function ServiceAdminDashboard({
   onLogout,
 }: ServiceAdminDashboardProps) {
   const router = useRouter();
+  const { isDark } = useTheme();
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">

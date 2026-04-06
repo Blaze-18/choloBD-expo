@@ -3,7 +3,9 @@ import { View, Text, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import theme from '../../../../constants/theme';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const DUMMY_STAFF = [
   { id: 's1', name: 'Emma Brown', role: 'Manager' },
@@ -12,12 +14,13 @@ const DUMMY_STAFF = [
 
 export default function StaffPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <View className="p-6">
         <Pressable onPress={() => router.replace('/(tabs)/dashboard')} style={{ padding: 6 }}>
-          <Ionicons name="chevron-back" size={24} color="#111827" />
+          <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
         </Pressable>
 
         <Text className="text-2xl font-bold mt-2 text-text dark:text-text-dark">Employees</Text>

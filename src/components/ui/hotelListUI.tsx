@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface Hotel {
   id: string;
@@ -16,6 +18,8 @@ interface HotelListUIProps {
 }
 
 export function HotelListUI({ hotels, loading, onSelectHotel }: HotelListUIProps) {
+  const { isDark } = useTheme();
+
   if (loading) {
     return (
       <View className="items-center justify-center py-8">
@@ -47,9 +51,9 @@ export function HotelListUI({ hotels, loading, onSelectHotel }: HotelListUIProps
                 </View>
                 <View className="items-center">
                   {item.rating ? (
-                    <>
+                    <>{isDark ? '#fcd34d' : '#fbbf24'}
                       <View className="flex-row items-center">
-                        <Ionicons name="star" size={16} color="#fbbf24" />
+                        <Ionicons name="star" size={16} color={isDark ? '#fcd34d' : '#fbbf24'} />
                         <Text className="ml-1 font-semibold text-text dark:text-text-dark">{item.rating}</Text>
                       </View>
                     </>

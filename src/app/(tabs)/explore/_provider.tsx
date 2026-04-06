@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useFetchLocations } from '../../../hooks/useFetchLocations';
-import { useFetchHotels } from '../../../hooks/useFetchHotels';
-import { useFetchHotelDetail } from '../../../hooks/useFetchHotelDetail';
+import { useFetchLocations } from '../../../services/api/locations';
+import { useFetchHotels } from '../../../services/api/hotels';
+import { useFetchHotelDetail } from '../../../services/api/hotelDetail';
 import { useBookingLogic } from '../../../hooks/useBookingLogic';
 import { useRouter } from 'expo-router';
 

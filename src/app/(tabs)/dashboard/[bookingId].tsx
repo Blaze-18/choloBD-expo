@@ -4,12 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useBookingLogic } from '../../../hooks/useBookingLogic';
+import { useTheme } from '../../../hooks/useTheme';
+import theme from '../../../constants/theme';
 
 export default function BookingTrackingPage() {
   const params = useLocalSearchParams();
   const bookingId = params.bookingId as string | undefined;
-
   const router = useRouter();
+  const { isDark } = useTheme();
 
   const [loading, setLoading] = useState(false);
   const [booking, setBooking] = useState<any | null>(null);
@@ -42,7 +44,7 @@ export default function BookingTrackingPage() {
           }}
           style={{ padding: 6 }}
         >
-          <Ionicons name="chevron-back" size={24} color="#111827" />
+          <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
         </Pressable>
         {booking && (
           <Pressable
@@ -78,18 +80,18 @@ export default function BookingTrackingPage() {
               <Text className="font-semibold text-text dark:text-text-dark">Room Details</Text>
               {booking.roomDetails?.map((r: any) => (
                 <View key={r.hotelRoomId} className="mt-3">
-                  <Text className="font-semibold">{r.hotelRoom?.hotelRoomType?.name ?? r.hotelRoom?.roomNumber ?? 'Room'}</Text>
-                  <Text className="text-sm text-muted">Price per night: {r.pricePerNight}</Text>
-                  <Text className="text-sm text-muted">Subtotal: {r.subtotal}</Text>
+                  <Text className="font-semibold text-text dark:text-text-dark">{r.hotelRoom?.hotelRoomType?.name ?? r.hotelRoom?.roomNumber ?? 'Room'}</Text>
+                  <Text className="text-sm text-muted dark:text-muted-dark">Price per night: {r.pricePerNight}</Text>
+                  <Text className="text-sm text-muted dark:text-muted-dark">Subtotal: {r.subtotal}</Text>
                 </View>
               ))}
             </View>
 
             <View className="p-4 mt-4 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
               <Text className="font-semibold text-text dark:text-text-dark">Summary</Text>
-              <Text className="mt-2 text-base">Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</Text>
-              <Text className="mt-1 text-base">Check-out: {new Date(booking.checkOutDate).toLocaleDateString()}</Text>
-              <Text className="mt-2 text-lg font-bold">Total: {booking.totalPrice}</Text>
+              <Text className="mt-2 text-base text-text dark:text-text-dark">Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</Text>
+              <Text className="mt-1 text-base text-text dark:text-text-dark">Check-out: {new Date(booking.checkOutDate).toLocaleDateString()}</Text>
+              <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">Total: {booking.totalPrice}</Text>
             </View>
           </View>
         ) : (

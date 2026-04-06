@@ -1,24 +1,7 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { getApiInstance } from '../services/api/axiosClient';
-
-export interface Hotel {
-  id: string;
-  name: string;
-  rating: number;
-  location: {
-    id: string;
-    name: string;
-  };
-  images: Array<{ url: string }>;
-  _count?: {
-    reviews: number;
-  };
-  roomTypes?: Array<{
-    id: string;
-    pricePerNight: number;
-  }>;
-}
+import { getApiInstance } from './axiosClient';
+import { Hotel } from '../../types/hotels';
 
 export function useFetchHotels() {
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -60,3 +43,5 @@ export function useFetchHotels() {
     clearHotels: () => setHotels([]),
   };
 }
+
+export { Hotel } from '../../types/hotels';

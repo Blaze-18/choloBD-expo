@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface UserInfoUIProps {
   userName?: string;
@@ -12,6 +14,7 @@ interface UserInfoUIProps {
 }
 
 export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogout }: UserInfoUIProps) {
+  const { isDark } = useTheme();
   const avatarUrl = imageUrl || 'https://api.dicebear.com/6.x/initials/svg?seed=' + (userName || email || 'user');
 
   return (
@@ -54,8 +57,8 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
             <View>
               <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Role</Text>
               <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{role || 'USER'}</Text>
-            </View>
-            <Ionicons name="person" size={24} color="#3b82f6" />
+              </View>
+            <Ionicons name="person" size={24} color={theme.colors.primary} />
           </View>
         </View>
         
@@ -65,7 +68,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
               <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Status</Text>
               <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{userStatus || 'ACTIVE'}</Text>
             </View>
-            <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+            <Ionicons name="checkmark-circle" size={24} color={isDark ? '#4ade80' : '#10b981'} />
           </View>
         </View>
       </View>

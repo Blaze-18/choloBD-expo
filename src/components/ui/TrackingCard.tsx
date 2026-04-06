@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface TrackingCardProps {
   title: string; // Hotel name
@@ -23,6 +25,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
   onCameraPress,
   isServiceAdmin = false,
 }) => {
+  const { isDark } = useTheme();
   const checkIn = checkInDate ? new Date(checkInDate).toLocaleDateString() : '';
   const checkOut = checkOutDate ? new Date(checkOutDate).toLocaleDateString() : '';
 
@@ -50,7 +53,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
           onPress={onDetailsPress}
           className="flex-row items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900"
         >
-          <Ionicons name="information-circle-outline" size={16} color="#3b82f6" style={{ marginRight: 6 }} />
+          <Ionicons name="information-circle-outline" size={16} color={theme.colors.primary} style={{ marginRight: 6 }} />
           <Text className="text-sm font-semibold text-primary">Details</Text>
         </Pressable>
 
@@ -62,7 +65,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
             className="p-2 rounded-lg bg-green-50 dark:bg-green-900 items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <Ionicons name="qr-code" size={18} color="#10b981" />
+            <Ionicons name="qr-code" size={18} color={isDark ? '#4ade80' : '#10b981'} />
           </Pressable>
 
           {/* Camera Button - Only for service admins */}
@@ -72,7 +75,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
               className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900 items-center justify-center"
               style={{ width: 36, height: 36 }}
             >
-              <Ionicons name="camera-outline" size={18} color="#a855f7" />
+              <Ionicons name="camera-outline" size={18} color={isDark ? '#d8b4fe' : '#a855f7'} />
             </Pressable>
           )}
         </View>

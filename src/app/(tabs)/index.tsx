@@ -1,30 +1,79 @@
 import React from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'expo-router';
+import { useTheme } from '../../hooks/useTheme';
 import { AppDispatch, RootState } from '../../store/store';
 import { logoutUser } from '../../store/slices/authSlice';
+import { HomeHeader, ImageCarousel, HeroSection, FeaturesGrid, SuggestedToursSection, NearbyLocationsSection } from '../../components/homepage';
 
 export default function HomePage() {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const auth = useSelector((s: RootState) => s.auth);
+  const { isDark } = useTheme();
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
     router.replace('/(auth)/login');
   };
 
+  const handleNavigate = (section: string, item: string) => {
+    console.log(`Navigating to ${section}/${item}`);
+    // Navigation logic based on the item selected
+    switch (item) {
+      case 'explore':
+        router.push('/explore');
+        break;
+      case 'bookings':
+        router.push('/(tabs)/dashboard');
+        break;
+      case 'scan-qr':
+        router.push('/(tabs)/dashboard/service-admin/qr-scanner');
+        break;
+      case 'wallet':
+        router.push('/(shop)/wallet');
+        break;
+      case 'payment':
+        router.push('/(shop)/payment');
+        break;
+      case 'track':
+        router.push('/(tabs)/tracking');
+        break;
+      case 'profile':
+        router.push('/(info)/activity-spots');
+        break;
+      default:
+        console.log('Navigation not implemented for:', item);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
-      <View className="p-6">
-        <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">Home</Text>
-        <Text className="mt-2 text-muted dark:text-muted-dark">Welcome — {auth.user?.email ?? 'user'}</Text>
+      {/* Header */}
+      <HomeHeader onNavigate={handleNavigate} onLogout={handleLogout} />
 
-        <TouchableOpacity onPress={handleLogout} className="items-center w-40 p-3 mt-6 rounded-lg bg-red-600">
-          <Text className="text-white font-bold text-base">Logout</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Main Content */}
+      <ScrollView className="flex-1 bg-background dark:bg-background-dark" showsVerticalScrollIndicator={false}>
+        {/* Image Carousel */}
+        <ImageCarousel />
+
+        {/* Hero Section */}
+        <HeroSection />
+
+        {/* Features Grid */}
+        <FeaturesGrid />
+
+        {/* Suggested Tours */}
+        <SuggestedToursSection />
+
+        {/* Nearby Locations */}
+        <NearbyLocationsSection />
+
+        {/* Bottom Spacing */}
+        <View className="h-10" />
+      </ScrollView>
     </SafeAreaView>
   );
 }

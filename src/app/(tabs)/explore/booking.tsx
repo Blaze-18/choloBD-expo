@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../../../hooks/useTheme';
 import { RoomTypeSelectorUI } from '../../../components/ui/roomTypeSelectorUI';
 import { HotelBookingForm } from '../../../components/forms/hotelBookingForm';
 import { useExplore } from './_provider';
@@ -33,6 +34,7 @@ export default function ExploreBooking() {
   if (!hotelDetail) return null;
 
   const insets = useSafeAreaInsets();
+  const { isDark } = useTheme();
 
   return (
     <SafeAreaView

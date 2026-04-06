@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraQRScanner } from './CameraQRScanner';
+import { useTheme } from '../../hooks/useTheme';
 
 interface QRCodeScannerProps {
   onScan: (qrToken: string) => void;
@@ -9,6 +10,7 @@ interface QRCodeScannerProps {
 }
 
 export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScan, isLoading = false }) => {
+  const { isDark } = useTheme();
   const [manualInput, setManualInput] = useState('');
   const [scanMethod, setScanMethod] = useState<'camera' | 'manual'>('camera');
 
@@ -50,7 +52,7 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScan, isLoading 
               <TextInput
                 className="p-3 border border-border dark:border-border-dark rounded-lg bg-white dark:bg-surface-dark text-text dark:text-text-dark text-xs"
                 placeholder="Paste QR token here..."
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={isDark ? '#9ca3af' : '#d1d5db'}
                 multiline
                 numberOfLines={4}
                 value={manualInput}

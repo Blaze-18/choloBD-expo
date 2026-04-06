@@ -117,7 +117,7 @@ export default function Register() {
                   <Text className={"flex-1"}>
                     {watch('role') || 'Select role'}
                   </Text>
-                  <Ionicons name={showRolePicker ? 'chevron-up' : 'chevron-down'} size={20} color="#3b82f6" />
+                  <Ionicons name={showRolePicker ? 'chevron-up' : 'chevron-down'} size={20} color={theme.colors.primary} />
                 </TouchableOpacity>
 
                 {showRolePicker && (

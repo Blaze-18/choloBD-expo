@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
 
 interface RoomType {
   id: string;
@@ -9,6 +10,7 @@ interface RoomType {
   roomType?: string;
   pricePerNight?: number;
   availableCount?: number;
+  totalCount?: number;
 }
 
 interface RoomTypeSelectorUIProps {
@@ -18,6 +20,8 @@ interface RoomTypeSelectorUIProps {
 }
 
 export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: RoomTypeSelectorUIProps) {
+  const { isDark } = useTheme();
+
   return (
     <View className="mt-5">
       <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">Available Rooms</Text>

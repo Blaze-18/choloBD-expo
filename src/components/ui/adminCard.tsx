@@ -1,6 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface AdminCardProps {
   title: string;
@@ -9,6 +11,8 @@ interface AdminCardProps {
 }
 
 export const AdminCard: React.FC<AdminCardProps> = ({ title, subtitle, onPress }) => {
+  const { isDark } = useTheme();
+
   const handlePress = () => {
     // eslint-disable-next-line no-console
     console.log('[AdminCard] pressed', { title, subtitle });
@@ -21,9 +25,16 @@ export const AdminCard: React.FC<AdminCardProps> = ({ title, subtitle, onPress }
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-lg font-semibold text-text dark:text-text-dark">{title}</Text>
-            {subtitle ? <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{subtitle}</Text> : null}
+            {subtitle ? (
+              <Text
+                style={{ color: isDark ? theme.colors['muted-dark'] : theme.colors.muted }}
+                className="mt-1 text-sm"
+              >
+                {subtitle}
+              </Text>
+            ) : null}
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+          <Ionicons name="chevron-forward" size={20} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
         </View>
       </View>
     </TouchableOpacity>
