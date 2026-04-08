@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
 
@@ -9,9 +11,27 @@ interface BookingCardProps {
   onPress?: (id: string) => void;
 }
 
+// Helper function to format dates in a readable way
+const formatDate = (dateString: string): string => {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+};
+
 export function BookingCard({ booking, onPress }: BookingCardProps) {
   const { isDark } = useTheme();
+  const auth = useSelector((s: RootState) => s.auth);
   const muteIconColor = isDark ? '#9ca3af' : '#666';
+  
+  // Determine what name to display based on user role
+  const isServiceAdmin = auth.user?.role === 'SERVICE_ADMIN';
+  const displayName = isServiceAdmin 
+    ? (booking.guestName || booking.guest || 'Guest')
+    : (booking.hotel?.name || booking.hotelDetails?.name || booking.hotelName || 'Hotel');
 
   const getStatusColor = (status?: string) => {
     switch (status?.toLowerCase()) {
@@ -45,38 +65,43 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         {/* Header: Guest name and status badges */}
         <View className="flex-row justify-between items-start">
           <View style={{ flex: 1 }}>
-            <Text className="font-semibold text-base text-text dark:text-text-dark">
-              {booking.guestName || booking.guest || 'Guest'}
+            <Text className="font-bold text-lg text-text dark:text-text-dark">
+              {displayName}
             </Text>
-            <View className="flex-row items-center mt-1">
-              <Ionicons name="mail" size={12} color={muteIconColor} style={{ marginRight: 4 }} />
-              <Text className="text-xs text-muted dark:text-muted-dark flex-1">
-                {booking.guestEmail || 'N/A'}
-              </Text>
-            </View>
-            <View className="flex-row items-center mt-1">
-              <Ionicons name="call" size={12} color={muteIconColor} style={{ marginRight: 4 }} />
-              <Text className="text-xs text-muted dark:text-muted-dark">
-                {booking.guestPhoneNumber || 'N/A'}
-              </Text>
-            </View>
+            {/* Show guest contact info only for SERVICE_ADMIN, hide for regular users */}
+            {isServiceAdmin && (
+              <>
+                <View className="flex-row items-center mt-2">
+                  <Ionicons name="mail" size={14} color={muteIconColor} style={{ marginRight: 6 }} />
+                  <Text className="text-sm text-muted dark:text-muted-dark flex-1">
+                    {booking.guestEmail || 'N/A'}
+                  </Text>
+                </View>
+                <View className="flex-row items-center mt-1.5">
+                  <Ionicons name="call" size={14} color={muteIconColor} style={{ marginRight: 6 }} />
+                  <Text className="text-sm text-muted dark:text-muted-dark">
+                    {booking.guestPhoneNumber || 'N/A'}
+                  </Text>
+                </View>
+              </>
+            )}
           </View>
 
           {/* Status badges */}
           <View className="ml-3 items-end">
             <View
               style={{ backgroundColor: `${getStatusColor(booking.status)}20` }}
-              className="px-2 py-1 rounded-md mb-1"
+              className="px-3 py-1.5 rounded-lg mb-2"
             >
-              <Text style={{ color: getStatusColor(booking.status) }} className="text-xs font-semibold">
+              <Text style={{ color: getStatusColor(booking.status) }} className="text-sm font-bold">
                 {booking.status || 'Unknown'}
               </Text>
             </View>
             <View
               style={{ backgroundColor: `${getPaymentStatusColor(booking.paymentStatus)}20` }}
-              className="px-2 py-1 rounded-md"
+              className="px-3 py-1.5 rounded-lg"
             >
-              <Text style={{ color: getPaymentStatusColor(booking.paymentStatus) }} className="text-xs font-semibold">
+              <Text style={{ color: getPaymentStatusColor(booking.paymentStatus) }} className="text-sm font-bold">
                 {booking.paymentStatus || 'Unpaid'}
               </Text>
             </View>
@@ -89,44 +114,84 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         {/* Booking details */}
         <View>
           {/* Confirmation code */}
-          <View className="flex-row items-center mb-2">
-            <Ionicons name="receipt" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
-            <Text className="text-sm text-text dark:text-text-dark">
-              <Text className="font-semibold">Confirmation: </Text>
-              {booking.confirmationCode || booking.id?.substring(0, 8) || 'N/A'}
-            </Text>
-          </View>
-
-          {/* Check-in and check-out */}
-          <View className="flex-row items-center mb-2">
-            <Ionicons name="calendar" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
-            <Text className="text-sm text-text dark:text-text-dark">
-              {booking.checkInDate || 'N/A'} → {booking.checkOutDate || 'N/A'}
-            </Text>
-          </View>
-
-          {/* Total price */}
-          <View className="flex-row items-center">
-            <Ionicons name="cash" size={14} color={theme.colors.primary} style={{ marginRight: 8 }} />
-            <Text className="text-sm font-semibold text-text dark:text-text-dark">
-              ₹{booking.totalPrice ?? 'N/A'}
-            </Text>
-            {booking.bookedAt && (
-              <Text className="text-xs text-muted dark:text-muted-dark ml-auto">
-                {new Date(booking.bookedAt).toLocaleDateString()}
+          <View className="flex-row items-center mb-3">
+            <Ionicons name="receipt" size={16} color={theme.colors.primary} style={{ marginRight: 10 }} />
+            <View style={{ flex: 1 }}>
+              <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
+                Confirmation Code
               </Text>
+              <Text className="text-sm font-semibold text-text dark:text-text-dark">
+                {booking.confirmationCode || booking.id?.substring(0, 16) || 'N/A'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Check-in and check-out dates */}
+          <View className="flex-row justify-between gap-3 mb-3">
+            <View className="flex-1 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+              <Text className="text-xs font-semibold text-blue-600 dark:text-blue-300 mb-1">
+                CHECK-IN
+              </Text>
+              <Text className="text-base font-bold text-text dark:text-text-dark">
+                {formatDate(booking.checkInDate)}
+              </Text>
+            </View>
+            <View className="flex-1 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
+              <Text className="text-xs font-semibold text-purple-600 dark:text-purple-300 mb-1">
+                CHECK-OUT
+              </Text>
+              <Text className="text-base font-bold text-text dark:text-text-dark">
+                {formatDate(booking.checkOutDate)}
+              </Text>
+            </View>
+          </View>
+
+          {/* Total price and booking date */}
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center">
+              <Ionicons name="cash" size={16} color={theme.colors.primary} style={{ marginRight: 10 }} />
+              <View>
+                <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
+                  Total Price
+                </Text>
+                <Text className="text-base font-bold text-text dark:text-text-dark">
+                  ₹{booking.totalPrice ?? 'N/A'}
+                </Text>
+              </View>
+            </View>
+            {booking.bookedAt && (
+              <View className="items-end">
+                <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
+                  Booked On
+                </Text>
+                <Text className="text-sm font-semibold text-text dark:text-text-dark">
+                  {formatDate(booking.bookedAt)}
+                </Text>
+              </View>
             )}
           </View>
         </View>
 
         {/* Room details if available */}
         {booking.roomDetails && booking.roomDetails.length > 0 && (
-          <View className="mt-3 pt-3 border-t border-border dark:border-border-dark">
-            <Text className="text-xs font-semibold text-muted dark:text-muted-dark mb-2">Rooms:</Text>
-            {booking.roomDetails.map((room: any, idx: number) => (
-              <Text key={idx} className="text-xs text-muted dark:text-muted-dark">
-                • Room {room.hotelRoom?.roomNumber || '?'} ({room.pricePerNight}/night)
+          <View className="mt-4 pt-4 border-t border-border dark:border-border-dark">
+            <View className="flex-row items-center mb-3">
+              <Ionicons name="bed" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
+              <Text className="text-sm font-bold text-text dark:text-text-dark">
+                Room{booking.roomDetails.length > 1 ? 's' : ''} ({booking.roomDetails.length})
               </Text>
+            </View>
+            {booking.roomDetails.map((room: any, idx: number) => (
+              <View key={idx} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg mb-2">
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-base font-semibold text-text dark:text-text-dark">
+                    Room {room.hotelRoom?.roomNumber || '?'}
+                  </Text>
+                  <Text className="text-base font-bold text-green-600 dark:text-green-400">
+                    ₹{room.pricePerNight}/night
+                  </Text>
+                </View>
+              </View>
             ))}
           </View>
         )}
