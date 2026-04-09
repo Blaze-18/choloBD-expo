@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { HotelDetail } from '../../types/hotels';
 import { useTheme } from '../../hooks/useTheme';
-import theme from '../../constants/theme';
+import { theme } from '../../constants/theme';
 
 interface ExploreHotelDetailUIProps {
   hotel: HotelDetail | null;
@@ -23,12 +23,17 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
       ? Math.min(...hotel.roomTypes.map((r) => r.pricePerNight))
       : 0;
 
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
+  const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
+  const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+
   return (
     <View className="flex-1">
       {/* Back Button Header */}
       <View className="px-6 pt-4 pb-2 bg-white border-b dark:bg-surface-dark border-border dark:border-border-dark">
         <TouchableOpacity onPress={onBack} className="flex-row items-center mb-3">
-          <Ionicons name="chevron-back" size={24} color={theme.colors.primary} />
+          <Ionicons name="chevron-back" size={24} color={primaryColor} />
           <Text className="ml-2 font-semibold text-primary dark:text-primary-dark">Back</Text>
         </TouchableOpacity>
       </View>
@@ -49,7 +54,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
             <View className="flex-1">
               <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">{hotel.name}</Text>
               <View className="flex-row items-center mt-2">
-                <Ionicons name="location" size={16} color={isDark ? '#9ca3af' : '#d1d5db'} />
+                <Ionicons name="location" size={16} color={mutedColor} />
                 <Text className="ml-1 text-sm text-muted dark:text-muted-dark">{hotel.location?.name}</Text>
               </View>
             </View>
@@ -133,13 +138,13 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
             <View className="p-4 mt-6 rounded-lg bg-gray-50 dark:bg-gray-900">
               {hotel.phoneNumber && (
                 <View className="flex-row items-center mb-2">
-                  <Ionicons name="call" size={16} color={theme.colors.primary} />
+                  <Ionicons name="call" size={16} color={primaryColor} />
                   <Text className="ml-2 text-text dark:text-text-dark">{hotel.phoneNumber}</Text>
                 </View>
               )}
               {hotel.email && (
                 <View className="flex-row items-center">
-                  <Ionicons name="mail" size={16} color={theme.colors.primary} />
+                  <Ionicons name="mail" size={16} color={primaryColor} />
                   <Text className="ml-2 text-text dark:text-text-dark">{hotel.email}</Text>
                 </View>
               )}
@@ -154,7 +159,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
           onPress={onBooking}
           disabled={loading}
           style={{
-            backgroundColor: loading ? (isDark ? '#4b5563' : '#d1d5db') : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
+            backgroundColor: loading ? (isDark ? '#4b5563' : '#d1d5db') : successColor,
             borderRadius: 8,
             paddingVertical: 16,
             paddingHorizontal: 24,
@@ -163,8 +168,8 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
             justifyContent: 'center',
           }}
         >
-          <Ionicons name="bed" size={20} color="#fff" style={{ marginRight: 8 }} />
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>Book Hotel (from ₹{minPrice})</Text>
+          <Ionicons name="bed" size={20} color={onPrimaryColor} style={{ marginRight: 8 }} />
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: onPrimaryColor }}>Book Hotel (from ₹{minPrice})</Text>
         </TouchableOpacity>
       </View>
     </View>

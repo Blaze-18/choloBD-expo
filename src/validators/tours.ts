@@ -1,0 +1,179 @@
+/**
+ * Tour Builder Validation Schemas
+ * Zod schemas for client-side validation of tour data
+ */
+
+import { z } from 'zod';
+import { TourDaySegmentInput, ValidationResult, TourType, TransportServiceType, HotelOptionType } from '../types/tours';
+
+console.log('[tours.ts validators] Loading validation schemas...');
+
+/**
+ * Schema for tour type
+ */
+export const TourTypeSchema = z.enum(['ADVENTURE', 'CULTURAL', 'BEACH', 'CITY_TOUR', 'NATURE', 'RELIGIOUS', 'HISTORICAL', 'MIXED']);
+
+/**
+ * Schema for transport service type
+ */
+export const TransportServiceTypeSchema = z.enum(['BUS', 'FLIGHT', 'TRAIN', 'CAR_RENTAL', 'FERRY', 'SELF_MANAGED']);
+
+/**
+ * Schema for hotel option type
+ */
+export const HotelOptionTypeSchema = z.enum(['LUXURY', 'BUDGET', 'BOUTIQUE', 'RESORT', 'HOSTEL', 'GUESTHOUSE', 'APARTMENT']);
+
+/**
+ * Schema for a single day segment input
+ */
+export const TourDaySegmentInputSchema = z.object({
+  dayNumber: z.number().int().positive('Day number must be positive'),
+  tourSpotId: z.string().min(1, 'Tour spot is required'),
+  activitySpotId: z.string().optional(),
+  transportOption: TransportServiceTypeSchema,
+  hotelOption: HotelOptionTypeSchema,
+});
+
+/**
+ * Schema for create tour plan payload
+ */
+export const CreateTourPlanSchema = z.object({
+  packageName: z.string().min(1, 'Package name is required').max(255, 'Package name too long'),
+  shortDescription: z.string().max(500, 'Description too long').optional(),
+  tourType: TourTypeSchema,
+  duration: z.number().int().positive('Duration must be at least 1 day'),
+  maxGroupSize: z.number().int().positive('Group size must be positive').optional(),
+  locationId: z.string().min(1, 'Location is required'),
+  totalBudget: z.number().nonnegative('Budget cannot be negative'),
+  rating: z.number().min(0).max(5, 'Rating must be 0-5').optional(),
+  isActive: z.boolean().optional().default(true),
+  isPopular: z.boolean().optional().default(false),
+  daySegments: z.array(TourDaySegmentInputSchema).optional(),
+});
+
+/**
+ * Schema for update tour plan payload
+ */
+export const UpdateTourPlanSchema = z.object({
+  packageName: z.string().min(1, 'Package name is required').max(255, 'Package name too long').optional(),
+  shortDescription: z.string().max(500, 'Description too long').optional(),
+  tourType: TourTypeSchema.optional(),
+  duration: z.number().int().positive('Duration must be at least 1 day').optional(),
+  maxGroupSize: z.number().int().positive('Group size must be positive').optional(),
+  totalBudget: z.number().nonnegative('Budget cannot be negative').optional(),
+  rating: z.number().min(0).max(5, 'Rating must be 0-5').optional(),
+  isActive: z.boolean().optional(),
+  isPopular: z.boolean().optional(),
+  daySegments: z.array(TourDaySegmentInputSchema).optional(),
+});
+
+/**
+ * Validate create tour plan data
+ */
+export function validateCreateTourPlan(data: any): ValidationResult {
+  console.log('[tours.ts validators] Validating create tour plan:', data.packageName);
+  try {
+    const result = CreateTourPlanSchema.safeParse(data);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const path = err.path.join('.');
+        errors[path] = err.message;
+      });
+      console.warn('[tours.ts validators] Create validation failed:', errors);
+      return { isValid: false, errors };
+    }
+    console.log('[tours.ts validators] Create validation passed');
+    return { isValid: true, errors: {} };
+  } catch (e) {
+    console.error('[tours.ts validators] Unexpected validation error:', e);
+    return {
+      isValid: false,
+      errors: { _error: 'Unexpected validation error' },
+    };
+  }
+}
+
+/**
+ * Validate update tour plan data
+ */
+export function validateUpdateTourPlan(data: any): ValidationResult {
+  console.log('[tours.ts validators] Validating update tour plan');
+  try {
+    const result = UpdateTourPlanSchema.safeParse(data);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const path = err.path.join('.');
+        errors[path] = err.message;
+      });
+      console.warn('[tours.ts validators] Update validation failed:', errors);
+      return { isValid: false, errors };
+    }
+    console.log('[tours.ts validators] Update validation passed');
+    return { isValid: true, errors: {} };
+  } catch (e) {
+    console.error('[tours.ts validators] Unexpected validation error:', e);
+    return {
+      isValid: false,
+      errors: { _error: 'Unexpected validation error' },
+    };
+  }
+}
+
+/**
+ * Validate day segments match duration
+ * - Each dayNumber must be between 1 and duration
+ * - No duplicate dayNumbers
+ */
+export function validateSegmentsForDuration(segments: TourDaySegmentInput[], duration: number): ValidationResult {
+  console.log('[tours.ts validators] Validating segments for duration:', duration, 'segments:', segments.length);
+
+  const errors: Record<string, string> = {};
+  const dayNumbers = new Set<number>();
+
+  segments.forEach((seg, idx) => {
+    if (seg.dayNumber < 1 || seg.dayNumber > duration) {
+      errors[`daySegments.${idx}.dayNumber`] = `Day number must be between 1 and ${duration}`;
+    }
+    if (dayNumbers.has(seg.dayNumber)) {
+      errors[`daySegments.${idx}.dayNumber`] = `Duplicate day number: ${seg.dayNumber}`;
+    }
+    dayNumbers.add(seg.dayNumber);
+  });
+
+  const isValid = Object.keys(errors).length === 0;
+  if (isValid) {
+    console.log('[tours.ts validators] Segment validation passed');
+  } else {
+    console.warn('[tours.ts validators] Segment validation failed:', errors);
+  }
+
+  return { isValid, errors };
+}
+
+/**
+ * Check if reducing duration would orphan any segments
+ */
+export function checkOrphanedSegments(segments: TourDaySegmentInput[], newDuration: number): { orphaned: number[]; isValid: boolean } {
+  console.log('[tours.ts validators] Checking for orphaned segments with new duration:', newDuration);
+
+  const orphaned = segments.filter((seg) => seg.dayNumber > newDuration).map((seg) => seg.dayNumber);
+
+  if (orphaned.length > 0) {
+    console.warn('[tours.ts validators] Found orphaned segments at days:', orphaned);
+  }
+
+  return { orphaned, isValid: orphaned.length === 0 };
+}
+
+/**
+ * Helper to check if user is master admin
+ */
+export function isMasterAdmin(userRole: string | null | undefined): boolean {
+  const isAdmin = userRole === 'masterAdmin' || userRole === 'admin';
+  console.log('[tours.ts validators] Admin check:', { userRole, isAdmin });
+  return isAdmin;
+}
+
+console.log('[tours.ts validators] Validation module loaded');

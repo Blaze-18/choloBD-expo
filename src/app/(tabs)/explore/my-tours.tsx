@@ -1,0 +1,155 @@
+/**
+ * My Tours Page
+ * View all tour packages created by the service admin
+ */
+
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../store/store';
+import { fetchTourPlansByAdmin } from '../../../store/slices/tourBuilderSlice';
+import { TourListCard } from '../../../components/tourBuilder/TourListCard';
+import { useTheme } from '../../../hooks/useTheme';
+import { theme } from '../../../constants/theme';
+
+console.log('[MyToursPage] Component loaded');
+
+export default function MyToursPage() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isDark } = useTheme();
+  const { list, listLoading, listError } = useSelector((state: RootState) => state.tourBuilder);
+
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+
+  // Fetch tours when page loads
+  useEffect(() => {
+    console.log('[MyToursPage] Mounting, fetching my tours');
+    dispatch(fetchTourPlansByAdmin());
+  }, [dispatch]);
+
+  const handleBack = () => {
+    console.log('[MyToursPage] Going back');
+    router.back();
+  };
+
+  const handlePressTour = (tourId: string) => {
+    console.log('[MyToursPage] Viewing tour:', tourId);
+    router.push(`/(tabs)/explore/tour-detail?id=${tourId}`);
+  };
+
+  const handleCreateNew = () => {
+    console.log('[MyToursPage] Creating new tour');
+    router.push('/(tabs)/explore/tour-create');
+  };
+
+  return (
+    <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header with Back Button */}
+        <View className="px-6 pt-6 pb-2 flex-row items-center">
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={primaryColor}
+            onPress={handleBack}
+          />
+        </View>
+
+        <View className="px-6 pb-4">
+          <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
+            My Tours
+          </Text>
+          <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
+            {list?.length || 0} tour packages created
+          </Text>
+        </View>
+
+        {/* Loading State */}
+        {listLoading && (
+          <View className="items-center justify-center py-12">
+            <ActivityIndicator size="large" color={primaryColor} />
+            <Text className="mt-4 text-sm text-muted dark:text-muted-dark">
+              Loading your tours...
+            </Text>
+          </View>
+        )}
+
+        {/* Error State */}
+        {listError && (
+          <View className="px-6 py-6 mx-6 rounded-lg border border-red-500 bg-red-50 dark:bg-red-900">
+            <View className="flex-row items-center gap-2">
+              <Ionicons name="alert-circle" size={18} color="#ef4444" />
+              <Text className="flex-1 text-sm text-red-600 dark:text-red-200 font-semibold">
+                {listError.message}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* Empty State */}
+        {!listLoading && (!list || list.length === 0) && (
+          <View className="px-6 py-12 items-center">
+            <View
+              className="w-16 h-16 rounded-full items-center justify-center mb-4"
+              style={{ backgroundColor: primaryColor + '20' }}
+            >
+              <Ionicons name="map" size={32} color={primaryColor} />
+            </View>
+            <Text className="text-lg font-bold text-text dark:text-text-dark text-center mb-2">
+              No Tours Yet
+            </Text>
+            <Text className="text-sm text-muted dark:text-muted-dark text-center mb-6">
+              You haven't created any tour packages yet. Start by creating your first tour!
+            </Text>
+            <TouchableOpacity
+              className="py-3 px-6 rounded-lg active:opacity-80"
+              style={{ backgroundColor: primaryColor }}
+              onPress={handleCreateNew}
+            >
+              <View className="flex-row items-center gap-2">
+                <Ionicons name="add" size={18} color="#fff" />
+                <Text className="text-white font-bold text-base">Create Tour</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Tours List */}
+        {!listLoading && list && list.length > 0 && (
+          <View className="px-2 pb-6">
+            {list.map((tour) => (
+              <TourListCard
+                key={tour.id}
+                tour={tour}
+                onPress={handlePressTour}
+                showAdminActions={false}
+              />
+            ))}
+          </View>
+        )}
+
+        {/* Create Tour Button (Footer) */}
+        {!listLoading && list && list.length > 0 && (
+          <View className="px-6 pb-8">
+            <TouchableOpacity
+              className="py-3.5 rounded-lg flex-row items-center justify-center gap-2 active:opacity-80"
+              style={{ backgroundColor: primaryColor }}
+              onPress={handleCreateNew}
+            >
+              <Ionicons name="add-circle" size={20} color="#fff" />
+              <Text className="text-white font-bold text-base">Create New Tour</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

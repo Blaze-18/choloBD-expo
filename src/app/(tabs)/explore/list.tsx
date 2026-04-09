@@ -14,9 +14,8 @@ export default function ExploreList() {
     <SafeAreaView
       colorScheme={isDark ? 'dark' : 'light'}
       className="flex-1 bg-background dark:bg-background-dark"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
-      <ScrollView colorScheme={isDark ? 'dark' : 'light'} className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 6 }}>
+      <ScrollView colorScheme={isDark ? 'dark' : 'light'} className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4 pb-2">
           <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">Available Hotels</Text>
         </View>

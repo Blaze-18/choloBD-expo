@@ -39,12 +39,10 @@ export default function ExploreBooking() {
   return (
     <SafeAreaView
       className="flex-1 bg-background dark:bg-background-dark"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 6, paddingBottom: (insets.bottom || 0) + 24 }}
       >
         <View className="px-6 pt-4 pb-4">
           <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">Complete Booking</Text>

@@ -1,8 +1,10 @@
+export type UserRole = 'user' | 'admin' | 'masterAdmin';
+
 export type AuthUser = {
   id: string;
   email: string;
   userName: string;
-  role: 'user';
+  role: UserRole;
 };
 
 export type AuthTokens = {

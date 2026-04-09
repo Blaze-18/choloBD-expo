@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
+import { theme } from '../../constants/theme';
 
 interface RoomType {
   id: string;
@@ -21,6 +22,9 @@ interface RoomTypeSelectorUIProps {
 
 export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: RoomTypeSelectorUIProps) {
   const { isDark } = useTheme();
+  const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+  const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
 
   return (
     <View className="mt-5">
@@ -59,7 +63,7 @@ export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: Ro
                 disabled={selected <= 0}
                 className={`p-2 rounded-lg ${selected <= 0 ? 'bg-gray-200' : 'bg-border'} dark:bg-border-dark`}
               >
-                <Ionicons name="remove" size={18} color="#666" />
+                <Ionicons name="remove" size={18} color={mutedColor} />
               </TouchableOpacity>
 
               <View className="px-4 py-2 mx-2 rounded-lg bg-background dark:bg-background-dark border border-border dark:border-border-dark">
@@ -73,7 +77,7 @@ export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: Ro
                 disabled={available !== undefined && selected >= available}
                 className={`p-2 rounded-lg ${available !== undefined && selected >= available ? 'bg-gray-200' : 'bg-primary'} dark:bg-primary-dark`}
               >
-                <Ionicons name="add" size={18} color="#fff" />
+                <Ionicons name="add" size={18} color={onPrimaryColor} />
               </TouchableOpacity>
             </View>
           </View>

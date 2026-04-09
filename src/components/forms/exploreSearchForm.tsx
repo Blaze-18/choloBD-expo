@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
-import theme from '../../constants/theme';
+import { theme } from '../../constants/theme';
 
 interface Location {
   id: string;
@@ -25,6 +25,9 @@ export function ExploreSearchForm({
   const { isDark } = useTheme();
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+  const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
 
   const handleSearch = () => {
     if (!selectedLocationId) {
@@ -49,19 +52,19 @@ export function ExploreSearchForm({
           className="flex-row items-center justify-between p-3 border rounded-lg border-border dark:border-border-dark bg-background dark:bg-background-dark"
         >
           <View className="flex-row items-center">
-            <Ionicons name="location" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
+            <Ionicons name="location" size={16} color={primaryColor} style={{ marginRight: 8 }} />
             <Text className={selectedLocationId ? 'text-text dark:text-text-dark font-medium' : 'text-muted dark:text-muted-dark'}>
               {selectedLocation?.name || 'Choose a location'}
             </Text>
           </View>
-          <Ionicons name={showLocationPicker ? 'chevron-up' : 'chevron-down'} size={20} color={theme.colors.primary} />
+          <Ionicons name={showLocationPicker ? 'chevron-up' : 'chevron-down'} size={20} color={primaryColor} />
         </TouchableOpacity>
 
         {showLocationPicker && (
           <View className="mt-2 overflow-hidden bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark max-h-64">
             {loadingLocations ? (
               <View className="items-center p-4">
-                <ActivityIndicator size="small" color={theme.colors.primary} />
+                <ActivityIndicator size="small" color={primaryColor} />
               </View>
             ) : locations.length === 0 ? (
               <View className="items-center p-4">
@@ -81,10 +84,10 @@ export function ExploreSearchForm({
                     }`}
                   >
                     <View className="flex-row items-center">
-                      <Ionicons name="location" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
+                      <Ionicons name="location" size={16} color={primaryColor} style={{ marginRight: 8 }} />
                       <Text className="flex-1 font-medium text-text dark:text-text-dark">{location.name}</Text>
                       {selectedLocationId === location.id && (
-                        <Ionicons name="checkmark" size={18} color={theme.colors.primary} />
+                        <Ionicons name="checkmark" size={18} color={primaryColor} />
                       )}
                     </View>
                   </TouchableOpacity>
@@ -106,9 +109,9 @@ export function ExploreSearchForm({
         }`}
       >
         {searching ? (
-          <ActivityIndicator size="small" color="#fff" style={{ marginRight: 8 }} />
+          <ActivityIndicator size="small" color={onPrimaryColor} style={{ marginRight: 8 }} />
         ) : (
-          <Ionicons name="search" size={18} color="#fff" style={{ marginRight: 8 }} />
+          <Ionicons name="search" size={18} color={onPrimaryColor} style={{ marginRight: 8 }} />
         )}
         <Text className="font-bold text-white">{searching ? 'Searching...' : 'Find Hotels'}</Text>
       </TouchableOpacity>

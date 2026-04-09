@@ -16,7 +16,6 @@ export default function ExploreDetail() {
   return (
     <SafeAreaView
       className="flex-1 bg-background dark:bg-background-dark"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
       <ExploreHotelDetailUI
         hotel={hotelDetail}

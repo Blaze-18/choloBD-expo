@@ -1,0 +1,114 @@
+/**
+ * Tour Create Page
+ * Nested page under explore for service admins to create tour packages
+ */
+
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../store/store';
+import { createTourPlanAsync } from '../../../store/slices/tourBuilderSlice';
+import { TourBuilderForm } from '../../../components/tourBuilder/TourBuilderForm';
+import { ErrorAlert } from '../../../components/tourBuilder/ErrorAlert';
+import { CreateTourPlanData } from '../../../types/tours';
+import { useExplore } from './_provider';
+import { useTheme } from '../../../hooks/useTheme';
+import { theme } from '../../../constants/theme';
+
+console.log('[TourCreatePage] Component loaded');
+
+export default function TourCreatePage() {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isDark } = useTheme();
+  const { formError, formLoading } = useSelector((state: RootState) => state.tourBuilder);
+  const { locations } = useExplore();
+
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+
+  const handleBack = () => {
+    console.log('[TourCreatePage] Going back to explore');
+    router.back();
+  };
+
+  const handleCreateTour = async (data: CreateTourPlanData | any) => {
+    console.log('[TourCreatePage] ========== CREATE TOUR HANDLER CALLED ==========');
+    console.log('[TourCreatePage] Package Name:', data.packageName);
+    console.log('[TourCreatePage] Tour Type:', data.tourType);
+    console.log('[TourCreatePage] Duration:', data.duration);
+    console.log('[TourCreatePage] Full payload:', data);
+
+    try {
+      console.log('[TourCreatePage] Dispatching createTourPlanAsync...');
+      const result = await dispatch(createTourPlanAsync(data)).unwrap();
+      console.log('[TourCreatePage] ✅ Tour created successfully!');
+      console.log('[TourCreatePage] Tour ID:', result.id);
+      console.log('[TourCreatePage] Tour Object:', result);
+      
+      // Navigate back on success
+      console.log('[TourCreatePage] Navigating back to explore...');
+      router.back();
+    } catch (error) {
+      console.error('[TourCreatePage] ❌ Error creating tour:', error);
+      console.error('[TourCreatePage] Error details:', JSON.stringify(error, null, 2));
+      // Error is stored in Redux state and shown via ErrorAlert
+    }
+  };
+
+  return (
+    <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header with Back Button */}
+        <View className="px-6 pt-6 pb-2 flex-row items-center">
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={primaryColor}
+            onPress={handleBack}
+          />
+        </View>
+
+        <View className="px-6 pb-4">
+          <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
+            Create Tour
+          </Text>
+          <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
+            Design a new tour package
+          </Text>
+        </View>
+
+        {/* Main Form Error Alert */}
+        {formError && (
+          <View className="px-6 mb-4">
+            <ErrorAlert error={formError} onDismiss={() => {}} />
+          </View>
+        )}
+
+        {/* Tour Builder Form */}
+        <View className="px-4 pb-6">
+          {locations && locations.length > 0 ? (
+            <TourBuilderForm
+              locations={locations}
+              onSubmit={handleCreateTour}
+              isSubmitting={formLoading}
+            />
+          ) : (
+            <View className="items-center justify-center py-12">
+              <ActivityIndicator size="large" color={primaryColor} />
+              <Text className="mt-4 text-sm text-muted dark:text-muted-dark">
+                Loading locations...
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

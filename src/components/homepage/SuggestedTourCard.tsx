@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
-import theme from '../../constants/theme';
+import { theme } from '../../constants/theme';
 
 interface SuggestedTourCardProps {
   id: string;
@@ -27,6 +27,12 @@ export default function SuggestedTourCard({
 }: SuggestedTourCardProps) {
   const { isDark } = useTheme();
   const iconColorGray = isDark ? '#9ca3af' : '#6b7280';
+  const cardBgColor = isDark ? theme.colors['surface-dark'] : theme.colors.surface;
+  const textColorPrimary = isDark ? theme.colors['text-dark'] : theme.colors.text;
+  const textColorMuted = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const starColor = isDark ? theme.colors['warning-dark'] : theme.colors.warning;
+  const secondaryColor = isDark ? theme.colors['secondary-dark'] : theme.colors.secondary;
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -34,9 +40,9 @@ export default function SuggestedTourCard({
       className="mr-4"
       style={{ width: 280 }}
     >
-      <View className="rounded-2xl overflow-hidden bg-white dark:bg-neutral-900 shadow-lg">
+      <View style={{ borderRadius: 20, overflow: 'hidden', backgroundColor: cardBgColor, ...theme.elevation.sm }}>
         {/* Image */}
-        <View className="h-40 bg-gray-300 dark:bg-neutral-800 relative overflow-hidden">
+        <View style={{ height: 160, backgroundColor: isDark ? theme.colors['surface-dark'] : '#d1d5db', position: 'relative', overflow: 'hidden' }}>
           <Image
             source={{ uri: imageUrl }}
             style={{ width: '100%', height: '100%' }}
@@ -44,49 +50,49 @@ export default function SuggestedTourCard({
           />
           
           {/* Price Badge */}
-          <View className="absolute top-3 right-3 bg-white dark:bg-neutral-800 rounded-full px-3 py-1 shadow-md">
-            <Text className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+          <View style={{ position: 'absolute', top: 12, right: 12, backgroundColor: isDark ? theme.colors['surface-dark'] : '#fff', borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 5 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: primaryColor }}>
               ${price}
             </Text>
           </View>
 
           {/* Rating Badge */}
-          <View className="absolute bottom-3 left-3 bg-white dark:bg-neutral-800 rounded-full px-2 py-1 flex-row items-center gap-1 shadow-md">
-            <Feather name="star" size={14} color={isDark ? '#fcd34d' : '#fbbf24'} />
-            <Text className="text-xs font-semibold text-neutral-900 dark:text-white">
+          <View style={{ position: 'absolute', bottom: 12, left: 12, backgroundColor: isDark ? theme.colors['surface-dark'] : '#fff', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 4, flexDirection: 'row', alignItems: 'center', gap: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 5 }}>
+            <Feather name="star" size={14} color={starColor} />
+            <Text style={{ fontSize: 12, fontWeight: '600', color: textColorPrimary }}>
               {rating}
             </Text>
           </View>
         </View>
 
         {/* Content */}
-        <View className="px-4 py-6">
+        <View style={{ paddingHorizontal: 16, paddingVertical: 24 }}>
           {/* Title */}
           <Text
-            className="text-lg font-bold text-neutral-900 dark:text-white mb-1"
+            style={{ fontSize: 18, fontWeight: '700', color: textColorPrimary, marginBottom: 4 }}
             numberOfLines={2}
           >
             {title}
           </Text>
 
           {/* Location */}
-          <View className="flex-row items-center gap-2 mb-3">
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <Feather name="map-pin" size={14} color={iconColorGray} />
-            <Text className="text-sm text-neutral-600 dark:text-neutral-400" numberOfLines={1}>
+            <Text style={{ fontSize: 14, color: textColorMuted }} numberOfLines={1}>
               {location}
             </Text>
           </View>
 
           {/* Duration */}
-          <View className="flex-row items-center justify-between pt-3 border-t border-neutral-200 dark:border-neutral-700">
-            <View className="flex-row items-center gap-2">
-              <Feather name="clock" size={14} color={theme.colors.primary} />
-              <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTopColor: isDark ? theme.colors['border-dark'] : theme.colors.border, borderTopWidth: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Feather name="clock" size={14} color={primaryColor} />
+              <Text style={{ fontSize: 14, fontWeight: '500', color: textColorMuted }}>
                 {duration}
               </Text>
             </View>
-            <TouchableOpacity className="bg-blue-600 dark:bg-blue-500 rounded-full p-2">
-              <Feather name="arrow-right" size={14} color="#fff" />
+            <TouchableOpacity style={{ backgroundColor: secondaryColor, borderRadius: 9999, padding: 8 }}>
+              <Feather name="arrow-right" size={14} color={isDark ? theme.colors['onSecondary-dark'] : theme.colors['onSecondary']} />
             </TouchableOpacity>
           </View>
         </View>

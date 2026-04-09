@@ -1,3 +1,5 @@
+import { Location } from './locations';
+
 export interface Hotel {
   id: string;
   name: string;
@@ -31,7 +33,7 @@ export interface HotelDetail {
   name: string;
   description: string;
   rating: number;
-  location: {
+  location: Location | {
     id: string;
     name: string;
   };
