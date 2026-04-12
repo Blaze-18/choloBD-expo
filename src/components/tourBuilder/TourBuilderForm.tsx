@@ -121,6 +121,7 @@ export function TourBuilderForm({
   const duration = watch('duration');
   const isActive = watch('isActive');
   const isPopular = watch('isPopular');
+  const locationId = watch('locationId');
 
   // Validate segments when duration changes
   useEffect(() => {
@@ -705,6 +706,7 @@ export function TourBuilderForm({
               onUpdate={(updated) => handleUpdateSegment(idx, updated)}
               onDelete={() => handleDeleteSegment(idx)}
               isEnriched={false}
+              locationId={locationId}
             />
           ))}
         </View>

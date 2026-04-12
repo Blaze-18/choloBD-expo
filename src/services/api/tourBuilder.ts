@@ -191,19 +191,19 @@ export async function deleteTourPlan(tourPackageId: string): Promise<{ success: 
 }
 
 /**
- * GET /api/tour-spots
- * Fetch list of available tour spots
+ * GET /api/tour-spots (all) or /api/tour-spots/location/:locationId (by location)
+ * Fetch list of available tour spots, optionally filtered by location
  */
 export async function getTourSpots(locationId?: string): Promise<Array<{ id: string; name: string; location: string }>> {
   try {
-    console.log('[tourBuilder.ts] Fetching tour spots, locationId:', locationId);
+    const endpoint = locationId 
+      ? `/api/tour-spots/location/${locationId}` 
+      : `/api/tour-spots`;
+    
+    console.log('[tourBuilder.ts] Fetching tour spots from:', endpoint);
     const api = getApiInstance();
     
-    const params: any = {};
-    if (locationId) params.locationId = locationId;
-    
-    // Try /api/tour-spots endpoint
-    const res = await api.get<TourApiResponse<Array<any>>>(`/api/tour-spots`, { params });
+    const res = await api.get<TourApiResponse<Array<any>>>(endpoint);
     console.log('[tourBuilder.ts] getTourSpots success, count:', res.data.data?.length);
     
     // Transform response to expected format
@@ -224,19 +224,19 @@ export async function getTourSpots(locationId?: string): Promise<Array<{ id: str
 }
 
 /**
- * GET /api/activity-spots
- * Fetch list of available activity spots
+ * GET /api/activity-spots (all) or /api/activity-spots/location/:locationId (by location)
+ * Fetch list of available activity spots, optionally filtered by location
  */
 export async function getActivitySpots(locationId?: string): Promise<Array<{ id: string; name: string; location: string }>> {
   try {
-    console.log('[tourBuilder.ts] Fetching activity spots, locationId:', locationId);
+    const endpoint = locationId 
+      ? `/api/activity-spots/location/${locationId}` 
+      : `/api/activity-spots`;
+    
+    console.log('[tourBuilder.ts] Fetching activity spots from:', endpoint);
     const api = getApiInstance();
     
-    const params: any = {};
-    if (locationId) params.locationId = locationId;
-    
-    // Try /api/activity-spots endpoint
-    const res = await api.get<TourApiResponse<Array<any>>>(`/api/activity-spots`, { params });
+    const res = await api.get<TourApiResponse<Array<any>>>(endpoint);
     console.log('[tourBuilder.ts] getActivitySpots success, count:', res.data.data?.length);
     
     // Transform response to expected format

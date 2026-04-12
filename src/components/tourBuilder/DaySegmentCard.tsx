@@ -30,6 +30,7 @@ interface DaySegmentCardProps {
   onUpdate?: (segment: TourDaySegmentInput) => void;
   onDelete?: () => void;
   isEnriched?: boolean; // true if it's a TourDaySegment with names
+  locationId?: string; // Location ID to filter tour spots and activity spots
 }
 
 interface EditState {
@@ -46,6 +47,7 @@ export function DaySegmentCard({
   onUpdate,
   onDelete,
   isEnriched = false,
+  locationId,
 }: DaySegmentCardProps) {
   const { isDark } = useTheme();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -65,26 +67,31 @@ export function DaySegmentCard({
   const [tourSpotSearch, setTourSpotSearch] = useState('');
   const [activitySpotSearch, setActivitySpotSearch] = useState('');
 
-  // Fetch available spots when edit mode opens
+  // Fetch available spots when edit mode opens or locationId changes
   useEffect(() => {
-    if (isEditMode && tourSpots.length === 0 && activitySpots.length === 0) {
+    if (isEditMode) {
+      console.log('[DaySegmentCard] Edit mode opened, fetching spots for locationId:', locationId);
       fetchAvailableSpots();
     }
-  }, [isEditMode]);
+  }, [isEditMode, locationId]);
 
   // Also fetch spots on mount to show names in display mode
   useEffect(() => {
-    if (tourSpots.length === 0 && activitySpots.length === 0) {
-      fetchAvailableSpots();
-    }
-  }, []);
+    console.log('[DaySegmentCard] Component mounted, fetching spots for locationId:', locationId);
+    fetchAvailableSpots();
+  }, [locationId]);
 
   const fetchAvailableSpots = async () => {
     try {
       setSpotsLoading(true);
-      const [spots, activities] = await Promise.all([getTourSpots(), getActivitySpots()]);
+      console.log('[DaySegmentCard] Fetching spots with locationId:', locationId);
+      const [spots, activities] = await Promise.all([
+        getTourSpots(locationId),
+        getActivitySpots(locationId),
+      ]);
       setTourSpots(spots);
       setActivitySpots(activities);
+      console.log('[DaySegmentCard] Spots fetched: ', spots.length, 'activities:', activities.length);
     } catch (error) {
       console.error('[DaySegmentCard] Error fetching spots:', error);
     } finally {
@@ -195,7 +202,7 @@ export function DaySegmentCard({
   if (isEditMode && isEditable) {
     return (
       <View
-        className="mx-3 mb-3 rounded-2xl overflow-hidden"
+        className="mx-3 mb-3 overflow-hidden rounded-2xl"
         style={{
           backgroundColor: surfaceColor,
           shadowColor: '#000',
@@ -206,26 +213,26 @@ export function DaySegmentCard({
         }}
       >
         {/* Edit Mode Header */}
-        <View className="px-4 pt-4 pb-3 flex-row items-center justify-between border-b border-border dark:border-border-dark">
+        <View className="flex-row items-center justify-between px-4 pt-4 pb-3 border-b border-border dark:border-border-dark">
           <View>
             <Text className="text-sm font-bold text-primary dark:text-primary-dark">Day {dayNumber} - Edit</Text>
-            <Text className="text-xs text-muted dark:text-muted-dark mt-1">Customize this itinerary</Text>
+            <Text className="mt-1 text-xs text-muted dark:text-muted-dark">Customize this itinerary</Text>
           </View>
           <TouchableOpacity onPress={handleCancel} className="p-1">
             <Ionicons name="close" size={24} color={mutedColor} />
           </TouchableOpacity>
         </View>
 
-        <View className="px-4 py-4 gap-4">
+        <View className="gap-4 px-4 py-4">
           {/* Tour Spot Selection */}
           <View>
-            <Text className="text-xs font-semibold text-muted dark:text-muted-dark mb-2 uppercase tracking-wider">
+            <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
               Tour Spot
             </Text>
             <TouchableOpacity
               onPress={() => setTourSpotModalVisible(true)}
               style={[styles.input, dynamicStyles.input]}
-              className="px-4 py-3 rounded-lg border flex-row justify-between items-center"
+              className="flex-row items-center justify-between px-4 py-3 border rounded-lg"
             >
               <Text style={{ color: editData.tourSpotId ? textColor : mutedColor }}>
                 {editData.tourSpotId ? getTourSpotName(editData.tourSpotId) : 'Select Tour Spot...'}
@@ -236,13 +243,13 @@ export function DaySegmentCard({
 
           {/* Activity Spot Selection */}
           <View>
-            <Text className="text-xs font-semibold text-muted dark:text-muted-dark mb-2 uppercase tracking-wider">
+            <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
               Activity Spot (Optional)
             </Text>
             <TouchableOpacity
               onPress={() => setActivitySpotModalVisible(true)}
               style={[styles.input, dynamicStyles.input]}
-              className="px-4 py-3 rounded-lg border flex-row justify-between items-center"
+              className="flex-row items-center justify-between px-4 py-3 border rounded-lg"
             >
               <Text style={{ color: editData.activitySpotId ? textColor : mutedColor }}>
                 {editData.activitySpotId ? getActivitySpotName(editData.activitySpotId) : 'Select Activity Spot...'}
@@ -253,7 +260,7 @@ export function DaySegmentCard({
 
           {/* Transport Option */}
           <View>
-            <Text className="text-xs font-semibold text-muted dark:text-muted-dark mb-2 uppercase tracking-wider">
+            <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
               Transport
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
@@ -286,7 +293,7 @@ export function DaySegmentCard({
 
           {/* Hotel Option */}
           <View>
-            <Text className="text-xs font-semibold text-muted dark:text-muted-dark mb-2 uppercase tracking-wider">
+            <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
               Hotel Type
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
@@ -330,12 +337,12 @@ export function DaySegmentCard({
             onPress={() => setTourSpotModalVisible(false)}
             activeOpacity={1}
           >
-            <View className="flex-1 justify-end">
+            <View className="justify-end flex-1">
               <View
                 style={{ backgroundColor: surfaceColor }}
-                className="rounded-t-2xl p-4 max-h-80"
+                className="p-4 rounded-t-2xl max-h-80"
               >
-                <View className="flex-row justify-between items-center mb-3">
+                <View className="flex-row items-center justify-between mb-3">
                   <Text
                     style={{ color: textColor }}
                     className="text-lg font-semibold"
@@ -350,7 +357,7 @@ export function DaySegmentCard({
                 </View>
 
                 {spotsLoading ? (
-                  <View className="py-8 items-center justify-center">
+                  <View className="items-center justify-center py-8">
                     <ActivityIndicator size="large" color={primaryColor} />
                     <Text style={{ color: mutedColor }} className="mt-2 text-sm">
                       Loading tour spots...
@@ -406,7 +413,7 @@ export function DaySegmentCard({
                               {spot.location && (
                                 <Text
                                   style={{ color: mutedColor }}
-                                  className="text-xs mt-1"
+                                  className="mt-1 text-xs"
                                 >
                                   {spot.location}
                                 </Text>
@@ -441,12 +448,12 @@ export function DaySegmentCard({
             onPress={() => setActivitySpotModalVisible(false)}
             activeOpacity={1}
           >
-            <View className="flex-1 justify-end">
+            <View className="justify-end flex-1">
               <View
                 style={{ backgroundColor: surfaceColor }}
-                className="rounded-t-2xl p-4 max-h-80"
+                className="p-4 rounded-t-2xl max-h-80"
               >
-                <View className="flex-row justify-between items-center mb-3">
+                <View className="flex-row items-center justify-between mb-3">
                   <Text
                     style={{ color: textColor }}
                     className="text-lg font-semibold"
@@ -461,7 +468,7 @@ export function DaySegmentCard({
                 </View>
 
                 {spotsLoading ? (
-                  <View className="py-8 items-center justify-center">
+                  <View className="items-center justify-center py-8">
                     <ActivityIndicator size="large" color={primaryColor} />
                     <Text style={{ color: mutedColor }} className="mt-2 text-sm">
                       Loading activity spots...
@@ -482,7 +489,7 @@ export function DaySegmentCard({
                         setEditData({ ...editData, activitySpotId: undefined });
                         setActivitySpotModalVisible(false);
                       }}
-                      className="py-3 px-4 rounded-lg mb-2 border border-border dark:border-border-dark"
+                      className="px-4 py-3 mb-2 border rounded-lg border-border dark:border-border-dark"
                       style={{
                         borderColor: borderColor,
                       }}
@@ -539,7 +546,7 @@ export function DaySegmentCard({
                               {spot.location && (
                                 <Text
                                   style={{ color: mutedColor }}
-                                  className="text-xs mt-1"
+                                  className="mt-1 text-xs"
                                 >
                                   {spot.location}
                                 </Text>
@@ -563,7 +570,7 @@ export function DaySegmentCard({
         </Modal>
 
         {/* Action Buttons */}
-        <View className="px-4 py-4 flex-row gap-2 border-t border-border dark:border-border-dark">
+        <View className="flex-row gap-2 px-4 py-4 border-t border-border dark:border-border-dark">
           <TouchableOpacity style={[styles.actionButton, dynamicStyles.saveButton]} onPress={handleSave} className="active:opacity-80">
             <Text style={styles.actionButtonText}>Save</Text>
           </TouchableOpacity>
@@ -588,7 +595,7 @@ export function DaySegmentCard({
 
   return (
     <View
-      className="mx-3 mb-3 rounded-2xl overflow-hidden"
+      className="mx-3 mb-3 overflow-hidden rounded-2xl"
       style={{
         backgroundColor: surfaceColor,
         shadowColor: '#000',
@@ -599,13 +606,13 @@ export function DaySegmentCard({
       }}
     >
       {/* Day Header */}
-      <View className="px-4 pt-4 pb-3 flex-row items-center justify-between border-b border-border dark:border-border-dark">
+      <View className="flex-row items-center justify-between px-4 pt-4 pb-3 border-b border-border dark:border-border-dark">
         <View className="flex-row items-center gap-3">
           <View
-            className="w-10 h-10 rounded-lg items-center justify-center"
+            className="items-center justify-center w-10 h-10 rounded-lg"
             style={{ backgroundColor: primaryColor }}
           >
-            <Text className="text-white font-bold text-lg">{dayNumber}</Text>
+            <Text className="text-lg font-bold text-white">{dayNumber}</Text>
           </View>
           <View>
             <Text className="text-base font-bold text-text dark:text-text-dark">Day {dayNumber}</Text>
@@ -626,7 +633,7 @@ export function DaySegmentCard({
       </View>
 
       {/* Details */}
-      <View className="px-4 py-4 gap-3">
+      <View className="gap-3 px-4 py-4">
         {segment.activitySpotId && (
           <DetailRow
             icon="sparkles"
@@ -659,7 +666,7 @@ function DetailRow({ icon, label, value, color }: any) {
     <View className="flex-row items-center gap-3">
       <Ionicons name={icon} size={18} color={color} />
       <View className="flex-1">
-        <Text className="text-xs text-muted dark:text-muted-dark font-medium uppercase tracking-wide mb-1">
+        <Text className="mb-1 text-xs font-medium tracking-wide uppercase text-muted dark:text-muted-dark">
           {label}
         </Text>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">
