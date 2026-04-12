@@ -14,6 +14,44 @@ export type TourType = 'ADVENTURE' | 'CULTURAL' | 'BEACH' | 'CITY_TOUR' | 'NATUR
 export type TransportServiceType = 'BUS' | 'FLIGHT' | 'TRAIN' | 'CAR_RENTAL' | 'FERRY' | 'SELF_MANAGED';
 
 /**
+ * Transport quality type options (from backend enum)
+ * Different transport types support different quality values
+ */
+export type TransportQualityType =
+  // BUS qualities
+  | 'AC_SLEEPER'
+  | 'NON_AC_SLEEPER'
+  | 'AC_SEATER'
+  | 'NON_AC_SEATER'
+  | 'DELUXE'
+  | 'SEMI_DELUXE'
+  | 'LUXURY'
+  // FLIGHT qualities
+  | 'ECONOMY'
+  | 'BUSINESS'
+  | 'FIRST_CLASS'
+  | 'PREMIUM_ECONOMY'
+  // TRAIN qualities
+  | 'AC_1_TIER'
+  | 'AC_2_TIER'
+  | 'AC_3_TIER'
+  | 'SLEEPER'
+  | 'GENERAL'
+  | 'CHAIR_CAR';
+
+/**
+ * Mapping of transport options to their valid quality values
+ */
+export const TRANSPORT_QUALITY_MAP: Record<TransportServiceType, TransportQualityType[] | null> = {
+  BUS: ['AC_SLEEPER', 'NON_AC_SLEEPER', 'AC_SEATER', 'NON_AC_SEATER', 'DELUXE', 'SEMI_DELUXE', 'LUXURY'],
+  FLIGHT: ['ECONOMY', 'BUSINESS', 'FIRST_CLASS', 'PREMIUM_ECONOMY'],
+  TRAIN: ['AC_1_TIER', 'AC_2_TIER', 'AC_3_TIER', 'SLEEPER', 'GENERAL', 'CHAIR_CAR'],
+  CAR_RENTAL: null, // Not applicable
+  FERRY: null, // Not applicable
+  SELF_MANAGED: null, // Not applicable
+};
+
+/**
  * Hotel option type (from backend enum)
  */
 export type HotelOptionType = 'LUXURY' | 'BUDGET' | 'BOUTIQUE' | 'RESORT' | 'HOSTEL' | 'GUESTHOUSE' | 'APARTMENT';
@@ -26,6 +64,7 @@ export interface TourDaySegmentInput {
   tourSpotId: string;
   activitySpotId?: string;
   transportOption: TransportServiceType;
+  transportQuality?: TransportQualityType; // Optional quality level
   hotelOption: HotelOptionType;
 }
 
@@ -33,6 +72,7 @@ export interface TourDaySegmentInput {
  * Enriched day segment from backend with resolved spot/activity names
  */
 export interface TourDaySegment extends TourDaySegmentInput {
+  id?: string;
   tourSpotName: string;
   activitySpotName?: string;
 }

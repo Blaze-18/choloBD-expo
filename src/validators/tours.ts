@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { TourDaySegmentInput, ValidationResult, TourType, TransportServiceType, HotelOptionType } from '../types/tours';
+import { TourDaySegmentInput, ValidationResult, TourType, TransportServiceType, TransportQualityType, HotelOptionType } from '../types/tours';
 
 console.log('[tours.ts validators] Loading validation schemas...');
 
@@ -19,6 +19,32 @@ export const TourTypeSchema = z.enum(['ADVENTURE', 'CULTURAL', 'BEACH', 'CITY_TO
 export const TransportServiceTypeSchema = z.enum(['BUS', 'FLIGHT', 'TRAIN', 'CAR_RENTAL', 'FERRY', 'SELF_MANAGED']);
 
 /**
+ * Schema for transport quality type
+ */
+export const TransportQualityTypeSchema = z.enum([
+  // BUS qualities
+  'AC_SLEEPER',
+  'NON_AC_SLEEPER',
+  'AC_SEATER',
+  'NON_AC_SEATER',
+  'DELUXE',
+  'SEMI_DELUXE',
+  'LUXURY',
+  // FLIGHT qualities
+  'ECONOMY',
+  'BUSINESS',
+  'FIRST_CLASS',
+  'PREMIUM_ECONOMY',
+  // TRAIN qualities
+  'AC_1_TIER',
+  'AC_2_TIER',
+  'AC_3_TIER',
+  'SLEEPER',
+  'GENERAL',
+  'CHAIR_CAR',
+]);
+
+/**
  * Schema for hotel option type
  */
 export const HotelOptionTypeSchema = z.enum(['LUXURY', 'BUDGET', 'BOUTIQUE', 'RESORT', 'HOSTEL', 'GUESTHOUSE', 'APARTMENT']);
@@ -31,6 +57,7 @@ export const TourDaySegmentInputSchema = z.object({
   tourSpotId: z.string().min(1, 'Tour spot is required'),
   activitySpotId: z.string().optional(),
   transportOption: TransportServiceTypeSchema,
+  transportQuality: TransportQualityTypeSchema.optional(),
   hotelOption: HotelOptionTypeSchema,
 });
 

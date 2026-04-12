@@ -16,7 +16,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { TourDaySegment, TourDaySegmentInput, TransportServiceType, HotelOptionType } from '../../types/tours';
+import { TourDaySegment, TourDaySegmentInput, TransportServiceType, HotelOptionType, TransportQualityType, TRANSPORT_QUALITY_MAP } from '../../types/tours';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
 import { getTourSpots, getActivitySpots } from '../../services/api/tourBuilder';
@@ -37,6 +37,7 @@ interface EditState {
   tourSpotId: string;
   activitySpotId?: string;
   transportOption: TransportServiceType;
+  transportQuality?: TransportQualityType;
   hotelOption: HotelOptionType;
 }
 
@@ -55,6 +56,7 @@ export function DaySegmentCard({
     tourSpotId: segment.tourSpotId,
     activitySpotId: segment.activitySpotId,
     transportOption: segment.transportOption,
+    transportQuality: segment.transportQuality,
     hotelOption: segment.hotelOption,
   });
 
@@ -182,6 +184,13 @@ export function DaySegmentCard({
   const transportOptions: TransportServiceType[] = ['BUS', 'FLIGHT', 'TRAIN', 'CAR_RENTAL', 'FERRY', 'SELF_MANAGED'];
   const hotelOptions: HotelOptionType[] = ['LUXURY', 'BUDGET', 'BOUTIQUE', 'RESORT', 'HOSTEL', 'GUESTHOUSE', 'APARTMENT'];
 
+  // Get quality options for the selected transport type
+  const getQualityOptionsForTransport = (transportOption: TransportServiceType): TransportQualityType[] | null => {
+    return TRANSPORT_QUALITY_MAP[transportOption];
+  };
+
+  const currentTransportQualityOptions = getQualityOptionsForTransport(editData.transportOption);
+
   const handleSave = () => {
     console.log('[DaySegmentCard] Saving segment:', dayNumber, editData);
     onUpdate?.({ dayNumber, ...editData });
@@ -194,6 +203,7 @@ export function DaySegmentCard({
       tourSpotId: segment.tourSpotId,
       activitySpotId: segment.activitySpotId,
       transportOption: segment.transportOption,
+      transportQuality: segment.transportQuality,
       hotelOption: segment.hotelOption,
     });
     setIsEditMode(false);
@@ -273,7 +283,7 @@ export function DaySegmentCard({
                       dynamicStyles.transportButton,
                       editData.transportOption === option && dynamicStyles.transportButtonActive,
                     ]}
-                    onPress={() => setEditData({ ...editData, transportOption: option })}
+                    onPress={() => setEditData({ ...editData, transportOption: option, transportQuality: undefined })}
                   >
                     <Text
                       style={[
@@ -290,6 +300,60 @@ export function DaySegmentCard({
               </View>
             </ScrollView>
           </View>
+
+          {/* Transport Quality */}
+          {currentTransportQualityOptions !== null && (
+            <View>
+              <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
+                Transport Quality (Optional)
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
+                <View style={{ gap: 8, flexDirection: 'row' }}>
+                  <TouchableOpacity
+                    style={[
+                      styles.transportButton,
+                      dynamicStyles.transportButton,
+                      !editData.transportQuality && dynamicStyles.transportButtonActive,
+                    ]}
+                    onPress={() => setEditData({ ...editData, transportQuality: undefined })}
+                  >
+                    <Text
+                      style={[
+                        styles.transportButtonText,
+                        dynamicStyles.transportButtonText,
+                        !editData.transportQuality && styles.transportButtonTextActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      None
+                    </Text>
+                  </TouchableOpacity>
+                  {currentTransportQualityOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.transportButton,
+                        dynamicStyles.transportButton,
+                        editData.transportQuality === option && dynamicStyles.transportButtonActive,
+                      ]}
+                      onPress={() => setEditData({ ...editData, transportQuality: option })}
+                    >
+                      <Text
+                        style={[
+                          styles.transportButtonText,
+                          dynamicStyles.transportButtonText,
+                          editData.transportQuality === option && styles.transportButtonTextActive,
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {option.replace(/_/g, ' ')}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+          )}
 
           {/* Hotel Option */}
           <View>
@@ -649,6 +713,15 @@ export function DaySegmentCard({
           value={segment.transportOption.replace(/_/g, ' ')}
           color={primaryColor}
         />
+
+        {segment.transportQuality && (
+          <DetailRow
+            icon="star"
+            label="Quality"
+            value={segment.transportQuality.replace(/_/g, ' ')}
+            color={primaryColor}
+          />
+        )}
 
         <DetailRow
           icon="bed"
