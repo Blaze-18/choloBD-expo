@@ -9,6 +9,7 @@ import { loginUser, clearError } from '../../store/slices/authSlice';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginForm } from '../../validators/auth';
+import AppBrandSection from '../../components/homepage/AppBrandSection';
 
 export default function Login() {
   const router = useRouter();
@@ -48,6 +49,9 @@ export default function Login() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="justify-center flex-1">
         <View className="w-full max-w-md mx-auto">
           <View className="p-6 shadow-md bg-surface dark:bg-surface-dark rounded-2xl">
+            <View className="items-center mb-6">
+              <AppBrandSection width={240} height={90} />
+            </View>
             <Text className="mb-4 text-3xl font-bold text-center font-heading text-text dark:text-text-dark">Welcome back</Text>
             <Text className="mb-6 text-center text-muted dark:text-muted-dark">Sign in to continue to CholoBD</Text>
 

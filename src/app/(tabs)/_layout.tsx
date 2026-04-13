@@ -72,6 +72,16 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="trip-planner"
+        options={{
+          title: 'Trip Planner',
+          href: null,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'map' : 'map-outline'} size={24} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

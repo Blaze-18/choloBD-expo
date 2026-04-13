@@ -1,18 +1,17 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Image } from 'react-native';
 
-export default function AppBrandSection() {
+interface AppBrandSectionProps {
+  width?: number;
+  height?: number;
+}
+
+export default function AppBrandSection({ width = 200, height = 100 }: AppBrandSectionProps) {
   return (
-    <View className="flex-row items-center gap-2">
-      {/* App Logo Placeholder */}
-      <View className="w-9 h-9 rounded-lg bg-blue-600 items-center justify-center">
-        <Text className="text-white font-bold text-lg">C</Text>
-      </View>
-
-      {/* App Name */}
-      <Text className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
-        CholoBD
-      </Text>
-    </View>
+    <Image
+      source={require('../../assets/splash/splash.png')}
+      style={{ width, height }}
+      resizeMode="contain"
+    />
   );
 }

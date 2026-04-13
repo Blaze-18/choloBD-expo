@@ -10,6 +10,7 @@ import { registerUser, clearError } from '../../store/slices/authSlice';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, RegisterForm } from '../../validators/auth';
+import AppBrandSection from '../../components/homepage/AppBrandSection';
 
 export default function Register() {
   const router = useRouter();
@@ -55,6 +56,9 @@ export default function Register() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="justify-center flex-1">
         <View className="w-full max-w-md mx-auto">
           <View className="p-6 shadow-md bg-surface dark:bg-surface-dark rounded-2xl">
+            <View className="items-center mb-6">
+              <AppBrandSection width={240} height={90} />
+            </View>
             <Text className="mb-2 text-3xl font-bold text-center font-heading text-text dark:text-text-dark">Create account</Text>
             <Text className="mb-6 text-center text-muted dark:text-muted-dark">Start your CholoBD journey</Text>
 
@@ -112,7 +116,7 @@ export default function Register() {
                 <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Role</Text>
                 <TouchableOpacity
                   onPress={() => setShowRolePicker(!showRolePicker)}
-                  className="p-3 rounded-lg border border-border dark:border-border-dark flex-row items-center justify-between bg-background dark:bg-background-dark"
+                  className="flex-row items-center justify-between p-3 border rounded-lg border-border dark:border-border-dark bg-background dark:bg-background-dark"
                 >
                   <Text className={"flex-1"}>
                     {watch('role') || 'Select role'}
@@ -121,7 +125,7 @@ export default function Register() {
                 </TouchableOpacity>
 
                 {showRolePicker && (
-                  <View className="mt-2 border border-border dark:border-border-dark rounded-lg bg-white dark:bg-surface-dark overflow-hidden">
+                  <View className="mt-2 overflow-hidden bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark">
                     {ROLE_OPTIONS.map((r) => (
                       <TouchableOpacity
                         key={r}
@@ -131,7 +135,7 @@ export default function Register() {
                         }}
                         className={`p-4 border-b border-border dark:border-border-dark`}
                       >
-                        <Text className="text-text dark:text-text-dark font-medium">{r}</Text>
+                        <Text className="font-medium text-text dark:text-text-dark">{r}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>

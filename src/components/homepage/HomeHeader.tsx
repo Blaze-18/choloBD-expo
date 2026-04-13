@@ -32,7 +32,7 @@ export default function HomeHeader({ onNavigate, onLogout }: HomeHeaderProps) {
 
   return (
     <SafeAreaView
-      edges={['left', 'right', 'bottom']}
+      edges={['left', 'right']}
       style={{
         backgroundColor: bgColor,
       }}

@@ -26,7 +26,9 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["android.permission.CAMERA"]
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,7 +39,13 @@
       "expo-image",
       "expo-web-browser",
       "react-native-vision-camera",
-      ["expo-camera", { "cameraPermission": "Allow CholoBD app to access your camera for QR code scanning." }]
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow CholoBD app to access your camera for QR code scanning."
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ]
   }
 }

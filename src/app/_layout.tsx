@@ -3,6 +3,8 @@ import { Stack, useRouter } from 'expo-router';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import { useAuthInitializer } from '../hooks/state/useAuthInitializer';
 import { usePreloadAssets } from '../hooks/usePreloadAssets';
 import { API_BASE_URL } from '../constants/api';
@@ -20,6 +22,17 @@ function AppContentLayout() {
   useAuthInitializer(API_BASE_URL);
   const { isReady: assetsReady } = usePreloadAssets();
   const [splashDone, setSplashDone] = useState(false);
+  const router = useRouter();
+  const auth = useSelector((s: RootState) => s.auth);
+
+  // Persistent listener: if the axios interceptor logs the user out (expired/invalid
+  // tokens) while they are deep in the tabs, redirect them back to login.
+  useEffect(() => {
+    if (auth.isInitializing) return;
+    if (!auth.isAuthenticated && !auth.tokens && splashDone) {
+      router.replace('/(auth)/login');
+    }
+  }, [auth.isAuthenticated, auth.tokens, auth.isInitializing, splashDone]);
 
   useEffect(() => {
     if (assetsReady && splashDone) {

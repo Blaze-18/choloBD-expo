@@ -58,7 +58,7 @@ const initialState: TourBuilderState = {
  */
 export const fetchTourPlans = createAsyncThunk(
   'tourBuilder/fetchTourPlans',
-  async (filters?: TourFilters, { rejectWithValue }) => {
+  async (filters: TourFilters | undefined, { rejectWithValue }) => {
     try {
       console.log('[tourBuilderSlice] Fetching tour plans with filters:', filters);
       const tours = await tourApi.getTourPlans(filters);

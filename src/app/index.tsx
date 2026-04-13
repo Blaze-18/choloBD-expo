@@ -9,15 +9,15 @@ export default function RootRedirect() {
   const auth = useSelector((s: RootState) => s.auth);
 
   useEffect(() => {
-    // Redirect based on authentication status
+    // Wait until tokens are restored from SecureStore before deciding
+    if (auth.isInitializing) return;
+
     if (auth.isAuthenticated && auth.tokens) {
-      // User is authenticated, show tabs layout (which includes the homepage)
       router.replace('/(tabs)');
     } else {
-      // User is not authenticated, show login page
       router.replace('/(auth)/login');
     }
-  }, [auth.isAuthenticated, auth.tokens]);
+  }, [auth.isAuthenticated, auth.tokens, auth.isInitializing]);
 
   return (
     <SafeAreaView className="items-center justify-center flex-1 bg-surface dark:bg-surface-dark">

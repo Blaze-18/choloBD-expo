@@ -25,6 +25,11 @@ export function UserExploreInterface() {
     router.push('/(tabs)/explore/tour-list');
   };
 
+  const handleCreateTripPlan = () => {
+    console.log('[UserExploreInterface] Navigating to trip planner');
+    router.push('/(tabs)/trip-planner');
+  };
+
   return (
     <SafeAreaView
       className="flex-1 bg-background dark:bg-background-dark"
@@ -57,6 +62,14 @@ export function UserExploreInterface() {
             iconName="map"
             colorKey="success"
             onPress={handleBrowseTours}
+          />
+
+          <ExploreMainCard
+            title="Plan Your Trip"
+            description="Create a custom trip itinerary"
+            iconName="compass"
+            colorKey="accent"
+            onPress={handleCreateTripPlan}
           />
         </View>
       </ScrollView>

@@ -50,7 +50,7 @@ export default function HomePage() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
+    <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-background dark:bg-background-dark">
       {/* Header */}
       <HomeHeader onNavigate={handleNavigate} onLogout={handleLogout} />
 
