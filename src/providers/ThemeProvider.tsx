@@ -19,7 +19,7 @@ const FORCE_DARK = false;
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [system, setSystem] = useState<string | null>(Appearance.getColorScheme());
+  const [system, setSystem] = useState<string | null>(Appearance.getColorScheme() ?? null);
   const [mode, setModeState] = useState<ThemeMode>('system');
   const [isReady, setIsReady] = useState(false);
 

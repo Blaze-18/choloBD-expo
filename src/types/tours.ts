@@ -185,4 +185,3 @@ export interface ValidationResult {
   errors: Record<string, string>;
 }
 
-console.log('[tours.ts] Tour types module loaded');

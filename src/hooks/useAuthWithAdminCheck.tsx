@@ -7,8 +7,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { AuthUser, UserRole } from '../types/auth';
 
-console.log('[useAuthWithAdminCheck] Loading hook...');
-
 /**
  * Check if user has admin role (includes SERVICE_ADMIN)
  */
@@ -21,7 +19,7 @@ function isMasterAdminUser(user: AuthUser | null): boolean {
  * Check if user has master admin role specifically
  */
 function isMasterAdmin(user: AuthUser | null): boolean {
-  return user?.role === 'masterAdmin' ?? false;
+  return user?.role === 'masterAdmin';
 }
 
 export interface AuthWithAdminStatus {

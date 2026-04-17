@@ -33,14 +33,11 @@ export default function Register() {
   const ROLE_OPTIONS = ['MASTER_ADMIN', 'SERVICE_ADMIN', 'EMPLOYEE', 'USER'] as const;
 
   const onSubmit = (values: RegisterForm) => {
-    console.log('[Register] Form submitted with values:', values);
     void dispatch(registerUser({ email: values.email, password: values.password, userName: values.userName, role: values.role }));
   };
 
   useEffect(() => {
-    console.log('[Register] Auth state changed:', { isAuthenticated: auth.isAuthenticated, isLoading: auth.isLoading, error: auth.error });
     if (auth.isAuthenticated) {
-      console.log('[Register] Authenticated! Redirecting to /(tabs)...');
       router.replace('/(tabs)/dashboard');
     }
   }, [auth.isAuthenticated, auth.isLoading, auth.error]);

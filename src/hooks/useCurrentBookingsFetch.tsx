@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getApiInstance } from '../services/api/axiosClient';
+import { getHotelBookings } from '../services/api/bookings';
 import { useServiceAdminLogic } from './useServiceAdminLogic';
 
 export interface Booking {
@@ -51,46 +51,12 @@ export function useCurrentBookingsFetch(limit = 20): UseCurrentBookingsFetchRetu
     try {
       setLoading(true);
       setError(null);
-      
-      const api = getApiInstance();
-      console.log('[useCurrentBookingsFetch] Fetching bookings with params:', { hotelId: hId, page, limit });
-      
-      const res = await api.get('/api/bookings/hotel-rooms', {
-        params: { 
-          hotelId: hId, 
-          page, 
-          limit,
-        },
-      });
-
-      console.log('[useCurrentBookingsFetch] API Response:', {
-        status: res.status,
-        fullData: res.data,
-        dataField: res.data?.data,
-        pagination: res.data?.pagination,
-      });
-
-      // Parse response - server returns { status, message, data: { data: [...], pagination: {...} } }
-      // So we need res.data.data.data for bookings and res.data.data.pagination for pagination
-      const responseData = res.data?.data?.data || [];
-      const responsePagination = res.data?.data?.pagination || null;
-
-      console.log('[useCurrentBookingsFetch] Parsed data:', {
-        bookingsCount: Array.isArray(responseData) ? responseData.length : 0,
-        bookings: responseData,
-        pagination: responsePagination,
-      });
-
-      setBookings(Array.isArray(responseData) ? responseData : []);
+      const { data: responseData, pagination: responsePagination } = await getHotelBookings(hId, page, limit);
+      setBookings(responseData);
       setPagination(responsePagination);
     } catch (e: any) {
       const errorMsg = e?.response?.data?.message || e?.message || 'Failed to load bookings';
-      console.error('[useCurrentBookingsFetch] Error:', {
-        message: errorMsg,
-        status: e?.response?.status,
-        data: e?.response?.data,
-        fullError: e,
-      });
+      if (__DEV__) console.error('[useCurrentBookingsFetch] Error:', errorMsg);
       setError(errorMsg);
       setBookings([]);
       setPagination(null);
@@ -107,27 +73,18 @@ export function useCurrentBookingsFetch(limit = 20): UseCurrentBookingsFetchRetu
       try {
         setLoading(true);
         setError(null);
-
-        console.log('[useCurrentBookingsFetch] Initializing...');
-
         const profile = await fetchProfile();
-        console.log('[useCurrentBookingsFetch] Profile fetched:', profile);
-
         if (!mounted) return;
-
         const retrievedHotelId = profile?.serviceEntityId;
-        console.log('[useCurrentBookingsFetch] Retrieved hotelId:', retrievedHotelId);
-
         if (!retrievedHotelId) {
           setError('No hotel assigned to your account');
           setLoading(false);
           return;
         }
-
         setHotelId(retrievedHotelId);
         await fetchBookings(retrievedHotelId, 1);
       } catch (e) {
-        console.error('[useCurrentBookingsFetch] Initialize error:', e);
+        if (__DEV__) console.error('[useCurrentBookingsFetch] Initialize error:', e);
         if (mounted) {
           setError('Failed to initialize bookings');
           setLoading(false);

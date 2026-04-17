@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useFetchLocations } from '../../../services/api/locations';
-import { useFetchHotels } from '../../../services/api/hotels';
-import { useFetchHotelDetail } from '../../../services/api/hotelDetail';
+import { useFetchLocations } from '../../../hooks/useFetchLocations';
+import { useFetchHotels } from '../../../hooks/useFetchHotels';
+import { useFetchHotelDetail } from '../../../hooks/useFetchHotelDetail';
 import { useBookingLogic } from '../../../hooks/useBookingLogic';
 import { useRouter } from 'expo-router';
 
@@ -71,7 +71,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
       // enforce availableCount if present on hotelDetail
       try {
         const rt = (hotelDetail?.roomTypes || []).find((r: any) => r.id === roomTypeId);
-        const avail = rt?.availableCount ?? rt?.totalCount ?? undefined;
+        const avail = rt?.availableCount ?? (rt as any)?.totalCount ?? undefined;
         if (avail !== undefined) {
           newQty = Math.min(newQty, avail);
         }

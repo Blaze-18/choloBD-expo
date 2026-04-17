@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } fr
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { TripPlan } from '../../../types/trips';
-import { useFetchLocationHotels } from '../../../services/api/hotelBookings';
+import { useFetchLocationHotels } from '../../../hooks/useFetchLocationHotels';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 

@@ -4,11 +4,8 @@
  */
 
 export { ExploreMainCard } from './ExploreMainCard';
-export { UserExploreInterface } from './UserExploreInterface';
-export { AdminExploreInterface } from './AdminExploreInterface';
+export { ExploreInterface } from './ExploreInterface';
+// Legacy named exports kept for backward compatibility
+export { ExploreInterface as UserExploreInterface } from './ExploreInterface';
+export { ExploreInterface as AdminExploreInterface } from './ExploreInterface';
 
-export default {
-  ExploreMainCard,
-  UserExploreInterface,
-  AdminExploreInterface,
-};

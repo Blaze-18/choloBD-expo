@@ -22,8 +22,6 @@ const MAX_CHARS = 5000;
 const CHAR_THRESHOLD = 4000; // 80% of max
 
 export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
-  console.log('[ItineraryTab] Rendering with tripId:', trip.id, 'notes count:', trip.generalNotes?.length || 0);
-
   const { isDark } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -64,14 +62,12 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       return;
     }
 
-    console.log('[ItineraryTab] Adding note:', trimmedNote.substring(0, 30) + '...');
     setNotesList([...notesList, trimmedNote]);
     setNewNote('');
     setError(null);
   };
 
   const deleteNote = (index: number) => {
-    console.log('[ItineraryTab] Deleting note at index:', index);
     setNotesList(notesList.filter((_, i) => i !== index));
     setError(null);
   };
@@ -97,8 +93,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
     setError(null);
 
     try {
-      console.log('[ItineraryTab] Saving notes, count:', notesList.length, 'total chars:', totalCharCount);
-      
       const result = await dispatch(
         updateTripAsync({
           id: trip.id,
@@ -107,7 +101,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       );
 
       if (result.payload) {
-        console.log('[ItineraryTab] Successfully saved notes');
         const updatedTrip = result.payload as TripPlan;
         setIsEditing(false);
         
@@ -121,7 +114,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to save notes';
-      console.error('[ItineraryTab] Error saving notes:', err);
+      if (__DEV__) console.error('[ItineraryTab] Error saving notes:', err);
       setError(errorMsg);
       Alert.alert('Error', errorMsg);
     } finally {
@@ -138,7 +131,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         {
           text: 'Clear All',
           onPress: () => {
-            console.log('[ItineraryTab] Clearing all notes');
             setNotesList([]);
             setNewNote('');
             setError(null);
@@ -187,7 +179,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            console.log('[ItineraryTab] Starting to edit notes');
             setIsEditing(true);
           }}
           className="flex-row items-center px-6 py-3 rounded-lg bg-primary"
@@ -274,7 +265,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
                 </View>
               )}
               scrollEnabled={false}
-              scrollEnabled={false}
             />
           )}
         </View>
@@ -356,7 +346,6 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            console.log('[ItineraryTab] Switching to edit mode');
             setIsEditing(true);
           }}
         >

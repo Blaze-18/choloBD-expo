@@ -6,7 +6,6 @@
 import { z } from 'zod';
 import { TourDaySegmentInput, ValidationResult, TourType, TransportServiceType, TransportQualityType, HotelOptionType } from '../types/tours';
 
-console.log('[tours.ts validators] Loading validation schemas...');
 
 /**
  * Schema for tour type
@@ -98,49 +97,19 @@ export const UpdateTourPlanSchema = z.object({
  * Validate create tour plan data
  */
 export function validateCreateTourPlan(data: any): ValidationResult {
-  console.log('[tours.ts validators] Validating create tour plan:', data.packageName);
   try {
     const result = CreateTourPlanSchema.safeParse(data);
     if (!result.success) {
       const errors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        const path = err.path.join('.');
+      result.error.issues.forEach((err) => {
+        const path = (err.path as (string | number)[]).join('.');
         errors[path] = err.message;
       });
-      console.warn('[tours.ts validators] Create validation failed:', errors);
       return { isValid: false, errors };
     }
-    console.log('[tours.ts validators] Create validation passed');
     return { isValid: true, errors: {} };
   } catch (e) {
-    console.error('[tours.ts validators] Unexpected validation error:', e);
-    return {
-      isValid: false,
-      errors: { _error: 'Unexpected validation error' },
-    };
-  }
-}
-
-/**
- * Validate update tour plan data
- */
-export function validateUpdateTourPlan(data: any): ValidationResult {
-  console.log('[tours.ts validators] Validating update tour plan');
-  try {
-    const result = UpdateTourPlanSchema.safeParse(data);
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        const path = err.path.join('.');
-        errors[path] = err.message;
-      });
-      console.warn('[tours.ts validators] Update validation failed:', errors);
-      return { isValid: false, errors };
-    }
-    console.log('[tours.ts validators] Update validation passed');
-    return { isValid: true, errors: {} };
-  } catch (e) {
-    console.error('[tours.ts validators] Unexpected validation error:', e);
+    if (__DEV__) console.error('[tours.ts validators] Unexpected validation error:', e);
     return {
       isValid: false,
       errors: { _error: 'Unexpected validation error' },
@@ -154,8 +123,6 @@ export function validateUpdateTourPlan(data: any): ValidationResult {
  * - No duplicate dayNumbers
  */
 export function validateSegmentsForDuration(segments: TourDaySegmentInput[], duration: number): ValidationResult {
-  console.log('[tours.ts validators] Validating segments for duration:', duration, 'segments:', segments.length);
-
   const errors: Record<string, string> = {};
   const dayNumbers = new Set<number>();
 
@@ -170,12 +137,6 @@ export function validateSegmentsForDuration(segments: TourDaySegmentInput[], dur
   });
 
   const isValid = Object.keys(errors).length === 0;
-  if (isValid) {
-    console.log('[tours.ts validators] Segment validation passed');
-  } else {
-    console.warn('[tours.ts validators] Segment validation failed:', errors);
-  }
-
   return { isValid, errors };
 }
 
@@ -183,14 +144,7 @@ export function validateSegmentsForDuration(segments: TourDaySegmentInput[], dur
  * Check if reducing duration would orphan any segments
  */
 export function checkOrphanedSegments(segments: TourDaySegmentInput[], newDuration: number): { orphaned: number[]; isValid: boolean } {
-  console.log('[tours.ts validators] Checking for orphaned segments with new duration:', newDuration);
-
   const orphaned = segments.filter((seg) => seg.dayNumber > newDuration).map((seg) => seg.dayNumber);
-
-  if (orphaned.length > 0) {
-    console.warn('[tours.ts validators] Found orphaned segments at days:', orphaned);
-  }
-
   return { orphaned, isValid: orphaned.length === 0 };
 }
 
@@ -198,9 +152,6 @@ export function checkOrphanedSegments(segments: TourDaySegmentInput[], newDurati
  * Helper to check if user is master admin
  */
 export function isMasterAdmin(userRole: string | null | undefined): boolean {
-  const isAdmin = userRole === 'masterAdmin' || userRole === 'admin';
-  console.log('[tours.ts validators] Admin check:', { userRole, isAdmin });
-  return isAdmin;
+  return userRole === 'masterAdmin' || userRole === 'admin';
 }
 
-console.log('[tours.ts validators] Validation module loaded');

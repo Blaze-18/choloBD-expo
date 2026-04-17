@@ -6,7 +6,7 @@ interface AppBrandSectionProps {
   height?: number;
 }
 
-export default function AppBrandSection({ width = 200, height = 100 }: AppBrandSectionProps) {
+export default function AppBrandSection({ width = 160, height = 80 }: AppBrandSectionProps) {
   return (
     <Image
       source={require('../../assets/splash/splash.png')}

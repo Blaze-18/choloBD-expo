@@ -4,10 +4,10 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Location } from '../../types/locations';
-import { useFetchLocations } from '../../services/api/locations';
+import { useFetchLocations } from '../../hooks/useFetchLocations';
 
 export interface LocationSelectionProps {
   onLocationSelected: (location: Location) => void;
@@ -41,7 +41,7 @@ export function LocationSelection({ onLocationSelected, selectedLocation }: Loca
       <View className="px-6 pb-4">
         <View className="flex-row items-center bg-surface dark:bg-surface-dark border border-border dark:border-border-dark rounded-lg px-4 py-3">
           <Feather name="search" size={18} color="#475569" />
-          <Text
+          <TextInput
             className="flex-1 ml-3 text-base text-text dark:text-text-dark"
             onChangeText={setSearchQuery}
             placeholder="Search locations..."

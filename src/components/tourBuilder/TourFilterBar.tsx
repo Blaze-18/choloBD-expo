@@ -93,7 +93,7 @@ export function TourFilterBar({ locations = [], onFilterChange, onReset }: TourF
                 <TouchableOpacity
                   key={type}
                   style={[styles.filterOption, filters.tourType === type && styles.filterOptionActive]}
-                  onPress={() => handleFilterUpdate({ ...filters, tourType: type })}
+                  onPress={() => handleFilterUpdate({ ...filters, tourType: type as import('../../types/tours').TourType })}
                 >
                   <Text style={[styles.filterOptionText, filters.tourType === type && styles.filterOptionTextActive]}>
                     {type}

@@ -11,7 +11,7 @@ import { theme } from '../../../constants/theme';
 import { HotelTypePreference, TransportTypePreference, UserSegment, CreateSegmentData, UpdateSegmentData } from '../../../types/trips';
 import { TripPlan } from '../../../types/trips';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useFetchActivitySpots, ActivitySpot } from '../../../services/api/activitySpots';
+import { useFetchActivitySpots, ActivitySpot } from '../../../hooks/useFetchActivitySpots';
 
 interface SegmentModalProps {
   visible: boolean;
@@ -37,7 +37,6 @@ export function SegmentModal({
   onSubmit,
   isSubmitting,
 }: SegmentModalProps) {
-  console.log('[SegmentModal] Rendering with visible:', visible, 'mode:', mode, 'dayNumber:', dayNumber);
   const { isDark } = useTheme();
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
@@ -151,7 +150,6 @@ export function SegmentModal({
           customHotel: selectedHotel,
           customTransport: selectedTransport,
         };
-        console.log('[SegmentModal] Submitting add with payload:', JSON.stringify(payload, null, 2));
         await onSubmit(payload);
       } else {
         // Edit mode
@@ -165,7 +163,6 @@ export function SegmentModal({
           customHotel: selectedHotel,
           customTransport: selectedTransport,
         };
-        console.log('[SegmentModal] Submitting update with payload:', JSON.stringify(payload, null, 2));
         await onSubmit(payload);
       }
       onClose();

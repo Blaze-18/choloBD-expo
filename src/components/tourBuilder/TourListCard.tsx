@@ -32,14 +32,11 @@ export function TourListCard({
   const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
   const errorColor = isDark ? theme.colors['error-dark'] : theme.colors.error;
   const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
-  const onErrorColor = isDark ? theme.colors['onError-dark'] : theme.colors['onError'];
-
-  console.log('[TourListCard] Rendering tour:', tour.packageName, 'adminActions:', showAdminActions);
+  const onErrorColor = isDark ? theme.colors['error-dark'] : theme.colors.error;
 
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log('[TourListCard] Pressed tour:', tour.id);
         onPress?.(tour.id);
       }}
       className="mx-3 mb-3 overflow-hidden rounded-2xl active:opacity-70"

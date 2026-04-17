@@ -21,8 +21,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
 import { getTourSpots, getActivitySpots } from '../../services/api/tourBuilder';
 
-console.log('[DaySegmentCard] Component loaded');
-
 interface DaySegmentCardProps {
   segment: TourDaySegment | TourDaySegmentInput;
   dayNumber: number;
@@ -72,30 +70,26 @@ export function DaySegmentCard({
   // Fetch available spots when edit mode opens or locationId changes
   useEffect(() => {
     if (isEditMode) {
-      console.log('[DaySegmentCard] Edit mode opened, fetching spots for locationId:', locationId);
       fetchAvailableSpots();
     }
   }, [isEditMode, locationId]);
 
   // Also fetch spots on mount to show names in display mode
   useEffect(() => {
-    console.log('[DaySegmentCard] Component mounted, fetching spots for locationId:', locationId);
     fetchAvailableSpots();
   }, [locationId]);
 
   const fetchAvailableSpots = async () => {
     try {
       setSpotsLoading(true);
-      console.log('[DaySegmentCard] Fetching spots with locationId:', locationId);
       const [spots, activities] = await Promise.all([
         getTourSpots(locationId),
         getActivitySpots(locationId),
       ]);
       setTourSpots(spots);
       setActivitySpots(activities);
-      console.log('[DaySegmentCard] Spots fetched: ', spots.length, 'activities:', activities.length);
     } catch (error) {
-      console.error('[DaySegmentCard] Error fetching spots:', error);
+      if (__DEV__) console.error('[DaySegmentCard] Error fetching spots:', error);
     } finally {
       setSpotsLoading(false);
     }
@@ -192,13 +186,11 @@ export function DaySegmentCard({
   const currentTransportQualityOptions = getQualityOptionsForTransport(editData.transportOption);
 
   const handleSave = () => {
-    console.log('[DaySegmentCard] Saving segment:', dayNumber, editData);
     onUpdate?.({ dayNumber, ...editData });
     setIsEditMode(false);
   };
 
   const handleCancel = () => {
-    console.log('[DaySegmentCard] Cancelled edit mode for day:', dayNumber);
     setEditData({
       tourSpotId: segment.tourSpotId,
       activitySpotId: segment.activitySpotId,
@@ -686,7 +678,6 @@ export function DaySegmentCard({
         {isEditable && (
           <TouchableOpacity
             onPress={() => {
-              console.log('[DaySegmentCard] Entering edit mode for day:', dayNumber);
               setIsEditMode(true);
             }}
             className="p-2"

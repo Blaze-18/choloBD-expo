@@ -5,8 +5,6 @@
 
 import { TourApiError } from '../types/tours';
 
-console.log('[errorHandling] Loading error handling utilities...');
-
 export interface ErrorDisplay {
   title: string;
   message: string;
@@ -25,8 +23,6 @@ export function mapTourApiError(error: TourApiError | null): ErrorDisplay {
       code: 'UNKNOWN',
     };
   }
-
-  console.log('[errorHandling] Mapping error:', error.type, error.statusCode, error.message);
 
   switch (error.type) {
     case 'VALIDATION':
@@ -96,8 +92,6 @@ export function parseValidationErrors(error: TourApiError | null): Record<string
     return {};
   }
 
-  console.log('[errorHandling] Parsing validation errors:', error.details);
-
   const errors: Record<string, string> = {};
 
   // If details is already a dict of field errors
@@ -114,18 +108,14 @@ export function parseValidationErrors(error: TourApiError | null): Record<string
  * Check if error is due to insufficient permissions
  */
 export function isPermissionError(error: TourApiError | null): boolean {
-  const isPermErr = error?.statusCode === 403 || error?.statusCode === 401;
-  console.log('[errorHandling] isPermissionError:', isPermErr);
-  return isPermErr;
+  return error?.statusCode === 403 || error?.statusCode === 401;
 }
 
 /**
  * Check if error is a network error (not from server response)
  */
 export function isNetworkError(error: TourApiError | null): boolean {
-  const isNetErr = error?.statusCode === 0 || error?.type === 'UNKNOWN';
-  console.log('[errorHandling] isNetworkError:', isNetErr);
-  return isNetErr;
+  return error?.statusCode === 0 || error?.type === 'UNKNOWN';
 }
 
 /**
@@ -147,4 +137,3 @@ export function getRecoveryAction(error: TourApiError | null): 'retry' | 'contac
   }
 }
 
-console.log('[errorHandling] Error handling utilities loaded');

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { getApiInstance } from '../services/api/axiosClient';
+import { scanQRCode as scanQRCodeService } from '../services/api/qr';
 import type { QRScanResponse, QRBookingDetail } from '../types/qr';
 
 export function useQRScanner() {
@@ -10,29 +10,12 @@ export function useQRScanner() {
     try {
       setLoading(true);
       setError(null);
-      const api = getApiInstance();
-
-      // eslint-disable-next-line no-console
-      console.log('[useQRScanner] Scanning QR code...');
-
-      const res = await api.post('/api/bookings/hotel-rooms/qr-scan', { qrToken });
-      const data = res.data as QRScanResponse;
-
-      // eslint-disable-next-line no-console
-      console.log('[useQRScanner] API Response:', JSON.stringify(data, null, 2));
-      // eslint-disable-next-line no-console
-      console.log('[useQRScanner] QR code validated successfully', {
-        bookingId: data.data?.booking?.id,
-        guestName: data.data?.booking?.user?.userName,
-        status: data.data?.booking?.status,
-      });
-
+      const data: QRScanResponse = await scanQRCodeService(qrToken);
       return data.data?.booking ?? null;
     } catch (e: any) {
       const status = e?.response?.status;
       let errorMsg = e?.response?.data?.message ?? e?.message ?? 'Failed to scan QR code';
 
-      // Map backend error messages to user-friendly messages
       if (status === 401) {
         if (errorMsg.includes('Invalid QR token')) {
           errorMsg = 'QR code is invalid or expired. Ask guest for a fresh code.';
@@ -57,8 +40,7 @@ export function useQRScanner() {
         errorMsg = 'Unable to validate QR code. Check your internet connection and try again.';
       }
 
-      // eslint-disable-next-line no-console
-      console.error('[useQRScanner] Error', status, errorMsg);
+      if (__DEV__) console.error('[useQRScanner] Error', status, errorMsg);
       setError(errorMsg);
       throw e;
     } finally {

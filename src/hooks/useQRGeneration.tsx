@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { getApiInstance } from '../services/api/axiosClient';
+import { generateQRToken as generateQRTokenService } from '../services/api/qr';
 import type { QRGenerateResponse } from '../types/qr';
 
 export function useQRGeneration() {
@@ -10,25 +10,11 @@ export function useQRGeneration() {
     try {
       setLoading(true);
       setError(null);
-      const api = getApiInstance();
-      
-      // eslint-disable-next-line no-console
-      console.log('[useQRGeneration] Generating QR token for booking:', bookingId);
-      
-      const res = await api.post(`/api/bookings/hotel-rooms/${bookingId}/qr-generate`, {});
-      const data = res.data as QRGenerateResponse;
-      
-      // eslint-disable-next-line no-console
-      console.log('[useQRGeneration] QR token generated successfully', {
-        expiresAt: data.data?.expiresAt,
-        tokenLength: data.data?.qrToken?.length,
-      });
-      
+      const data: QRGenerateResponse = await generateQRTokenService(bookingId);
       return data.data?.qrToken ?? null;
     } catch (e: any) {
       const errorMsg = e?.response?.data?.message ?? e?.message ?? 'Failed to generate QR code';
-      // eslint-disable-next-line no-console
-      console.error('[useQRGeneration] Error', e?.response?.status, errorMsg);
+      if (__DEV__) console.error('[useQRGeneration] Error', e?.response?.status, errorMsg);
       setError(errorMsg);
       throw e;
     } finally {

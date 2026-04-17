@@ -266,4 +266,3 @@ export interface TripFilters {
   limit?: number;
 }
 
-console.log('[trips.ts] Trip planner types module loaded');

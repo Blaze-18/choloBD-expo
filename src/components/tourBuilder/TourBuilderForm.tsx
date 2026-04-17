@@ -34,8 +34,6 @@ import { DaySegmentCard } from './DaySegmentCard';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
 
-console.log('[TourBuilderForm] Component loaded');
-
 interface TourBuilderFormProps {
   initialData?: TourPackage;
   isEditing?: boolean;
@@ -95,19 +93,19 @@ export function TourBuilderForm({
       ? {
           packageName: initialData.packageName,
           shortDescription: initialData.shortDescription,
-          tourType: initialData.tourType,
+          tourType: initialData.tourType ?? undefined,
           duration: initialData.duration,
           maxGroupSize: initialData.maxGroupSize,
           totalBudget: initialData.totalBudget,
           rating: initialData.rating,
           isActive: initialData.isActive,
           isPopular: initialData.isPopular,
-          locationId: initialData.locationId || '',
+          locationId: (initialData as any).locationId || initialData.location?.id || '',
         }
       : {
           packageName: '',
           shortDescription: '',
-          tourType: '',
+          tourType: undefined,
           duration: 1,
           maxGroupSize: 10,
           totalBudget: 0,
@@ -128,13 +126,12 @@ export function TourBuilderForm({
     if (daySegments.length > 0 && duration) {
       const segmentValidation = validateSegmentsForDuration(daySegments, duration);
       if (!segmentValidation.isValid) {
-        console.warn('[TourBuilderForm] Segments are invalid for new duration:', segmentValidation.errors);
+        if (__DEV__) console.warn('[TourBuilderForm] Segments are invalid for new duration:', segmentValidation.errors);
       }
     }
   }, [duration, daySegments]);
 
   const handleAddSegment = () => {
-    console.log('[TourBuilderForm] Adding segment for day:', daySegments.length + 1);
     const newSegment: TourDaySegmentInput = {
       dayNumber: daySegments.length + 1,
       tourSpotId: '',
@@ -145,7 +142,6 @@ export function TourBuilderForm({
   };
 
   const handleUpdateSegment = (index: number, segment: TourDaySegmentInput) => {
-    console.log('[TourBuilderForm] Updating segment at index:', index);
     const updated = [...daySegments];
     updated[index] = segment;
     // Re-number to ensure sequential days
@@ -156,7 +152,6 @@ export function TourBuilderForm({
   };
 
   const handleDeleteSegment = (index: number) => {
-    console.log('[TourBuilderForm] Deleting segment at index:', index);
     const updated = daySegments.filter((_, idx) => idx !== index);
     // Re-number
     updated.forEach((seg, idx) => {
@@ -166,21 +161,12 @@ export function TourBuilderForm({
   };
 
   const onSubmitForm = (formData: any) => {
-    console.log('[TourBuilderForm] ========== FORM SUBMITTED ==========');
-    console.log('[TourBuilderForm] Form data:', formData);
-    console.log('[TourBuilderForm] Day segments:', daySegments);
-
-    // Validate segments
     if (daySegments.length > 0) {
-      console.log('[TourBuilderForm] Validating segments for duration:', formData.duration);
       const segmentValidation = validateSegmentsForDuration(daySegments, formData.duration);
       if (!segmentValidation.isValid) {
-        console.error('[TourBuilderForm] ❌ Segment validation failed:', segmentValidation.errors);
+        if (__DEV__) console.error('[TourBuilderForm] Segment validation failed:', segmentValidation.errors);
         return;
       }
-      console.log('[TourBuilderForm] ✅ Segments validation passed');
-    } else {
-      console.log('[TourBuilderForm] No day segments provided');
     }
 
     const payload = {
@@ -188,29 +174,17 @@ export function TourBuilderForm({
       daySegments: daySegments.length > 0 ? daySegments : undefined,
     };
 
-    // Validate entire payload
-    console.log('[TourBuilderForm] Validating payload...');
     const validation = validateCreateTourPlan(payload);
     if (!validation.isValid) {
-      console.error('[TourBuilderForm] ❌ Form validation failed:', validation.errors);
+      if (__DEV__) console.error('[TourBuilderForm] Form validation failed:', validation.errors);
       return;
     }
-    console.log('[TourBuilderForm] ✅ Payload validation passed');
-    console.log('[TourBuilderForm] Calling onSubmit callback with payload');
 
     onSubmit(payload);
   };
 
   const handleSubmitButtonPress = () => {
-    console.log('[TourBuilderForm] ========== SUBMIT BUTTON PRESSED ==========');
-    console.log('[TourBuilderForm] isSubmitting:', isSubmitting);
-    console.log('[TourBuilderForm] Form errors:', JSON.stringify(errors, null, 2));
-    console.log('[TourBuilderForm] Watched form values:', watch());
-    if (isSubmitting) {
-      console.log('[TourBuilderForm] Button disabled (already submitting)');
-      return;
-    }
-    console.log('[TourBuilderForm] Triggering form submission via handleSubmit...');
+    if (isSubmitting) return;
     handleSubmit(onSubmitForm)();
   };
 
@@ -228,7 +202,6 @@ export function TourBuilderForm({
       borderColor: borderColor,
       backgroundColor: surfaceColor,
       color: textColor,
-      placeholderTextColor: mutedColor,
     },
     inputError: {
       borderColor: errorColor,
@@ -304,7 +277,7 @@ export function TourBuilderForm({
               <>
                 <TouchableOpacity
                   onPress={() => setLocationModalVisible(true)}
-                  style={[styles.input, dynamicStyles.input, errors.locationId && dynamicStyles.inputError]}
+                  style={[styles.input, dynamicStyles.input, (errors as any).locationId && dynamicStyles.inputError]}
                   className="px-4 py-3 rounded-lg border flex-row justify-between items-center"
                 >
                   <Text style={{ color: value ? textColor : mutedColor }}>
@@ -408,9 +381,9 @@ export function TourBuilderForm({
               </>
             )}
           />
-          {errors.locationId && (
+          {(errors as any).locationId && (
             <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
-              {errors.locationId.message}
+              {(errors as any).locationId.message}
             </Text>
           )}
         </View>
@@ -678,10 +651,9 @@ export function TourBuilderForm({
             </Text>
             <TouchableOpacity
               className="flex-row items-center gap-1 px-3 py-2 rounded-lg"
-              style={{ backgroundColor: primaryColor }}
               onPress={handleAddSegment}
-              disabled={daySegments.length >= duration}
-              style={[{ backgroundColor: primaryColor }, daySegments.length >= duration && { opacity: 0.5 }]}
+              disabled={daySegments.length >= (duration ?? 0)}
+              style={[{ backgroundColor: primaryColor }, daySegments.length >= (duration ?? 0) && { opacity: 0.5 }]}
             >
               <Ionicons name="add" size={16} color="#fff" />
               <Text className="text-xs font-semibold text-white">Add Day</Text>

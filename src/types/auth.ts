@@ -1,10 +1,12 @@
-export type UserRole = 'user' | 'admin' | 'masterAdmin';
+export type UserRole = 'user' | 'admin' | 'masterAdmin' | 'SERVICE_ADMIN';
 
 export type AuthUser = {
   id: string;
   email: string;
   userName: string;
   role: UserRole;
+  imageUrl?: string;
+  userStatus?: string;
 };
 
 export type AuthTokens = {

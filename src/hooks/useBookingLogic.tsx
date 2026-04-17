@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { getApiInstance } from '../services/api/axiosClient';
+import { createBooking, getUserBookings, getBookingById } from '../services/api/bookings';
 
 export function useBookingLogic() {
   const auth = useSelector((s: RootState) => s.auth);
@@ -37,30 +37,16 @@ export function useBookingLogic() {
 
     setSubmitting(true);
     try {
-      const api = getApiInstance();
       const userId = auth.user?.id;
       if (!userId) {
         Alert.alert('Authentication required', 'Please login to create a booking');
         return null;
       }
-      const body = {
-        hotelId: bookingData.hotelId,
-        userId,
-        checkInDate: bookingData.checkInDate,
-        checkOutDate: bookingData.checkOutDate,
-        selectedRoomsMap: bookingData.selectedRoomsMap,
-        guestName: bookingData.guestName,
-        guestEmail: bookingData.guestEmail,
-        guestPhoneNumber: bookingData.guestPhoneNumber,
-        paymentMethod: bookingData.paymentMethod,
-        specialRequests: bookingData.specialRequests,
-      };
-      const res = await api.post('/api/bookings/hotel-rooms', body);
-      console.log('[Booking] booking created', res.data);
-      Alert.alert('Success', 'Booking created: ' + (res.data.data?.confirmationCode || ''));
-      return res.data.data;
+      const result = await createBooking({ ...bookingData, userId });
+      Alert.alert('Success', 'Booking created: ' + (result?.confirmationCode || ''));
+      return result;
     } catch (e: any) {
-      console.error('[Booking] submitBooking error', e?.response?.data || e.message);
+      if (__DEV__) console.error('[useBookingLogic] submitBooking error', e?.response?.data || e.message);
       Alert.alert('Error', 'Failed to create booking');
       return null;
     } finally {
@@ -77,6 +63,8 @@ export function useBookingLogic() {
       guestName: string;
       guestEmail: string;
       guestPhoneNumber: string;
+      paymentMethod?: string;
+      specialRequests?: string;
     },
     onSuccess?: (data: any) => void
   ) => {
@@ -99,17 +87,13 @@ export function useBookingLogic() {
     fetchUserBookings: useCallback(async (page = 1, limit = 20) => {
       setLoadingBookings(true);
       try {
-        const api = getApiInstance();
         const userId = auth.user?.id;
         if (!userId) {
-          console.warn('[useBookingLogic] fetchUserBookings: no authenticated user');
           return { data: [], pagination: { total: 0, page, limit, pages: 0 } };
         }
-        const res = await api.get(`/api/bookings/hotel-rooms?userId=${userId}&page=${page}&limit=${limit}`);
-        const payload = res.data?.data ?? {};
-        return payload;
+        return await getUserBookings(userId, page, limit);
       } catch (e) {
-        console.error('[useBookingLogic] fetchUserBookings error', e);
+        if (__DEV__) console.error('[useBookingLogic] fetchUserBookings error', e);
         throw e;
       } finally {
         setLoadingBookings(false);
@@ -117,11 +101,9 @@ export function useBookingLogic() {
     }, [auth.user?.id]),
     fetchBookingDetails: useCallback(async (bookingId: string) => {
       try {
-        const api = getApiInstance();
-        const res = await api.get(`/api/bookings/hotel-rooms/${bookingId}`);
-        return res.data?.data ?? null;
+        return await getBookingById(bookingId);
       } catch (e) {
-        console.error('[useBookingLogic] fetchBookingDetails error', e);
+        if (__DEV__) console.error('[useBookingLogic] fetchBookingDetails error', e);
         throw e;
       }
     }, []),

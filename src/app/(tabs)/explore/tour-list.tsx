@@ -10,14 +10,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../store/store';
-import { fetchTourPlans } from '../../../store/slices/tourBuilderSlice';
+import { fetchTourPlans, setFilters } from '../../../store/slices/tourBuilderSlice';
 import { TourFilterBar } from '../../../components/tourBuilder/TourFilterBar';
 import { TourListCard } from '../../../components/tourBuilder/TourListCard';
 import { ErrorAlert } from '../../../components/tourBuilder/ErrorAlert';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
-
-console.log('[TourListPage] Component loaded');
 
 export default function TourListPage() {
   const router = useRouter();
@@ -31,17 +29,14 @@ export default function TourListPage() {
   const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
 
   useEffect(() => {
-    console.log('[TourListPage] Mounting, fetching tours');
     dispatch(fetchTourPlans(filters));
   }, []);
 
   const handleBack = () => {
-    console.log('[TourListPage] Going back to explore');
     router.back();
   };
 
   const handleTourPress = (tourId: string) => {
-    console.log('[TourListPage] Navigating to tour detail:', tourId);
     router.push({
       pathname: '/(tabs)/explore/tour-detail',
       params: { id: tourId },
@@ -111,7 +106,12 @@ export default function TourListPage() {
       {/* Filter Bar */}
       {showFilters && (
         <View className="px-4 mb-4">
-          <TourFilterBar />
+          <TourFilterBar
+            onFilterChange={(f) => {
+              dispatch(setFilters(f));
+              dispatch(fetchTourPlans(f));
+            }}
+          />
         </View>
       )}
 

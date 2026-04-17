@@ -40,8 +40,6 @@ import {
 import { Location } from '../types/locations';
 import { Spot } from '../components/tripPlanner/SpotsSelection';
 
-console.log('[useTripPlannerLogic] Hook loaded');
-
 export interface TripPlannerLogic {
   // List State
   trips: TripPlan[];
@@ -121,91 +119,74 @@ export function useTripPlannerLogic(): TripPlannerLogic {
   const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: RootState) => state.tripPlanner);
 
-  console.log('[useTripPlannerLogic] Hook called, tripCount:', state.list.length);
-
   // ============= TRIP LIST ACTIONS =============
 
   const loadTrips = async (filters?: TripFilters) => {
-    console.log('[useTripPlannerLogic] Loading trips with filters:', filters);
     try {
       await dispatch(fetchTrips(filters)).unwrap();
-      console.log('[useTripPlannerLogic] Trips loaded successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to load trips:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to load trips:', error);
       throw error;
     }
   };
 
   const refreshTrips = async () => {
-    console.log('[useTripPlannerLogic] Refreshing trips with current filters:', state.filters);
     try {
       await dispatch(fetchTrips(state.filters)).unwrap();
-      console.log('[useTripPlannerLogic] Trips refreshed successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to refresh trips:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to refresh trips:', error);
       throw error;
     }
   };
 
   const updateTripFilters = (newFilters: TripFilters) => {
-    console.log('[useTripPlannerLogic] Updating filters:', newFilters);
     dispatch(setFilters(newFilters));
   };
 
   const resetTripFilters = () => {
-    console.log('[useTripPlannerLogic] Resetting filters');
     dispatch(clearFilters());
   };
 
   // ============= TRIP DETAIL ACTIONS =============
 
   const loadTripDetail = async (tripId: string) => {
-    console.log('[useTripPlannerLogic] Loading trip detail:', tripId);
     try {
       await dispatch(fetchTripDetail(tripId)).unwrap();
-      console.log('[useTripPlannerLogic] Trip detail loaded successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to load trip detail:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to load trip detail:', error);
       throw error;
     }
   };
 
   const createTrip = async (data: CreateTripData): Promise<TripPlan> => {
-    console.log('[useTripPlannerLogic] Creating trip:', data.name);
     try {
       const result = await dispatch(createTripAsync(data)).unwrap();
-      console.log('[useTripPlannerLogic] Trip created successfully:', result.id);
       return result;
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to create trip:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to create trip:', error);
       throw error;
     }
   };
 
   const updateTrip = async (tripId: string, data: UpdateTripData) => {
-    console.log('[useTripPlannerLogic] Updating trip:', tripId);
     try {
       await dispatch(updateTripAsync({ id: tripId, payload: data })).unwrap();
-      console.log('[useTripPlannerLogic] Trip updated successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to update trip:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to update trip:', error);
       throw error;
     }
   };
 
   const deleteTrip = async (tripId: string) => {
-    console.log('[useTripPlannerLogic] Deleting trip:', tripId);
     try {
       await dispatch(deleteTripAsync(tripId)).unwrap();
-      console.log('[useTripPlannerLogic] Trip deleted successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to delete trip:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to delete trip:', error);
       throw error;
     }
   };
 
   const clearCurrentTripData = () => {
-    console.log('[useTripPlannerLogic] Clearing current trip data');
     dispatch(clearCurrentTrip());
   };
 
@@ -215,13 +196,11 @@ export function useTripPlannerLogic(): TripPlannerLogic {
     tripId: string,
     data: CreateSegmentData
   ): Promise<UserSegment> => {
-    console.log('[useTripPlannerLogic] Adding segment to trip:', tripId);
     try {
       const result = await dispatch(addSegmentAsync({ tripId, payload: data })).unwrap();
-      console.log('[useTripPlannerLogic] Segment added successfully:', result.id);
       return result;
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to add segment:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to add segment:', error);
       throw error;
     }
   };
@@ -231,23 +210,19 @@ export function useTripPlannerLogic(): TripPlannerLogic {
     segmentId: string,
     data: UpdateSegmentData
   ) => {
-    console.log('[useTripPlannerLogic] Updating segment:', segmentId);
     try {
       await dispatch(updateSegmentAsync({ tripId, segmentId, payload: data })).unwrap();
-      console.log('[useTripPlannerLogic] Segment updated successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to update segment:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to update segment:', error);
       throw error;
     }
   };
 
   const deleteSegment = async (tripId: string, segmentId: string) => {
-    console.log('[useTripPlannerLogic] Deleting segment:', segmentId);
     try {
       await dispatch(deleteSegmentAsync({ tripId, segmentId })).unwrap();
-      console.log('[useTripPlannerLogic] Segment deleted successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to delete segment:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to delete segment:', error);
       throw error;
     }
   };
@@ -255,42 +230,35 @@ export function useTripPlannerLogic(): TripPlannerLogic {
   // ============= SUMMARY ACTIONS =============
 
   const loadTripSummary = async (tripId: string) => {
-    console.log('[useTripPlannerLogic] Loading trip summary:', tripId);
     try {
       await dispatch(fetchTripSummary(tripId)).unwrap();
-      console.log('[useTripPlannerLogic] Trip summary loaded successfully');
     } catch (error) {
-      console.error('[useTripPlannerLogic] Failed to load trip summary:', error);
+      if (__DEV__) console.error('[useTripPlannerLogic] Failed to load trip summary:', error);
       throw error;
     }
   };
 
   const clearSummaryData = () => {
-    console.log('[useTripPlannerLogic] Clearing trip summary');
     dispatch(clearTripSummary());
   };
 
   // ============= GENERAL ACTIONS =============
 
   const clearFormErrorAction = () => {
-    console.log('[useTripPlannerLogic] Clearing form error');
     dispatch(clearFormError());
   };
 
   const clearAllData = () => {
-    console.log('[useTripPlannerLogic] Clearing all trip data');
     dispatch(clearTripsData());
   };
 
   // ============= WIZARD ACTIONS =============
 
   const setWizardLocationAction = (location: Location | null) => {
-    console.log('[useTripPlannerLogic] Setting wizard location:', location?.name);
     dispatch(setWizardLocation(location));
   };
 
   const setWizardDatesAction = (startDate: Date, endDate: Date) => {
-    console.log('[useTripPlannerLogic] Setting wizard dates');
     dispatch(setWizardDates({ 
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString()
@@ -298,17 +266,14 @@ export function useTripPlannerLogic(): TripPlannerLogic {
   };
 
   const setWizardSpotsAction = (spots: Spot[]) => {
-    console.log('[useTripPlannerLogic] Setting wizard spots, count:', spots.length);
     dispatch(setWizardSpots(spots));
   };
 
   const setWizardStepAction = (step: number) => {
-    console.log('[useTripPlannerLogic] Setting wizard step:', step);
     dispatch(setWizardStep(step));
   };
 
   const resetWizardAction = () => {
-    console.log('[useTripPlannerLogic] Resetting wizard');
     dispatch(resetWizard());
   };
 
@@ -380,4 +345,4 @@ export function useTripPlannerLogic(): TripPlannerLogic {
   };
 }
 
-console.log('[useTripPlannerLogic] Hook module loaded');
+

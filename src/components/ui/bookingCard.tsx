@@ -36,26 +36,26 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
   const getStatusColor = (status?: string) => {
     switch (status?.toLowerCase()) {
       case 'confirmed':
-        return '#10b981';
+        return isDark ? theme.colors['success-dark'] : theme.colors.success;
       case 'pending':
-        return '#f59e0b';
+        return isDark ? theme.colors['warning-dark'] : theme.colors.warning;
       case 'cancelled':
-        return '#ef4444';
+        return isDark ? theme.colors['error-dark'] : theme.colors.error;
       default:
-        return '#6b7280';
+        return isDark ? theme.colors['muted-dark'] : theme.colors.muted;
     }
   };
 
   const getPaymentStatusColor = (status?: string) => {
     switch (status?.toLowerCase()) {
       case 'paid':
-        return '#10b981';
+        return isDark ? theme.colors['success-dark'] : theme.colors.success;
       case 'pending':
-        return '#f59e0b';
+        return isDark ? theme.colors['warning-dark'] : theme.colors.warning;
       case 'failed':
-        return '#ef4444';
+        return isDark ? theme.colors['error-dark'] : theme.colors.error;
       default:
-        return '#6b7280';
+        return isDark ? theme.colors['muted-dark'] : theme.colors.muted;
     }
   };
 

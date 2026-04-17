@@ -13,8 +13,6 @@ import {
 } from '../../types/tours';
 import * as tourApi from '../../services/api/tourBuilder';
 
-console.log('[tourBuilderSlice] Initializing tour builder slice...');
-
 /**
  * Tour builder state shape
  */
@@ -60,12 +58,10 @@ export const fetchTourPlans = createAsyncThunk(
   'tourBuilder/fetchTourPlans',
   async (filters: TourFilters | undefined, { rejectWithValue }) => {
     try {
-      console.log('[tourBuilderSlice] Fetching tour plans with filters:', filters);
       const tours = await tourApi.getTourPlans(filters);
-      console.log('[tourBuilderSlice] Fetched', tours.length, 'tours');
       return tours;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] fetchTourPlans error:', error);
+      if (__DEV__) console.error('[tourBuilderSlice] fetchTourPlans error:', error);
       return rejectWithValue(error);
     }
   }
@@ -79,12 +75,10 @@ export const fetchTourPlansByAdmin = createAsyncThunk(
   'tourBuilder/fetchTourPlansByAdmin',
   async ({ adminId = 'me', filters }: { adminId?: string; filters?: TourFilters } = {}, { rejectWithValue }) => {
     try {
-      console.log('[tourBuilderSlice] Fetching tour plans by admin:', adminId, 'filters:', filters);
       const tours = await tourApi.getTourPlansByAdmin(adminId, filters);
-      console.log('[tourBuilderSlice] Fetched', tours.length, 'tours for admin:', adminId);
       return tours;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] fetchTourPlansByAdmin error:', error);
+      if (__DEV__) console.error('[tourBuilderSlice] fetchTourPlansByAdmin error:', error);
       return rejectWithValue(error);
     }
   }
@@ -97,12 +91,10 @@ export const fetchTourPlanDetail = createAsyncThunk(
   'tourBuilder/fetchTourPlanDetail',
   async (tourPackageId: string, { rejectWithValue }) => {
     try {
-      console.log('[tourBuilderSlice] Fetching tour detail:', tourPackageId);
       const tour = await tourApi.getTourPlan(tourPackageId);
-      console.log('[tourBuilderSlice] Fetched tour detail:', tour.packageName);
       return tour;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] fetchTourPlanDetail error:', error);
+      if (__DEV__) console.error('[tourBuilderSlice] fetchTourPlanDetail error:', error);
       return rejectWithValue(error);
     }
   }
@@ -115,17 +107,10 @@ export const createTourPlanAsync = createAsyncThunk(
   'tourBuilder/createTourPlan',
   async (payload: CreateTourPlanData, { rejectWithValue }) => {
     try {
-      console.log('[tourBuilderSlice] ========== THUNK: CREATE TOUR PLAN ==========');
-      console.log('[tourBuilderSlice] Package Name:', payload.packageName);
-      console.log('[tourBuilderSlice] Calling tourApi.createTourPlan()...');
       const tour = await tourApi.createTourPlan(payload);
-      console.log('[tourBuilderSlice] ✅ Tour created by API:', tour.id);
-      console.log('[tourBuilderSlice] Returning tour object');
       return tour;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] ❌ createTourPlan thunk error:', error);
-      console.error('[tourBuilderSlice] Error type:', error?.type);
-      console.error('[tourBuilderSlice] Error message:', error?.message);
+      if (__DEV__) console.error('[tourBuilderSlice] createTourPlan error:', error);
       return rejectWithValue(error);
     }
   }
@@ -141,12 +126,10 @@ export const updateTourPlanAsync = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log('[tourBuilderSlice] Updating tour plan:', id);
       const tour = await tourApi.updateTourPlan(id, payload);
-      console.log('[tourBuilderSlice] Tour updated:', tour.id);
       return tour;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] updateTourPlan error:', error);
+      if (__DEV__) console.error('[tourBuilderSlice] updateTourPlan error:', error);
       return rejectWithValue(error);
     }
   }
@@ -159,12 +142,10 @@ export const deleteTourPlanAsync = createAsyncThunk(
   'tourBuilder/deleteTourPlan',
   async (tourPackageId: string, { rejectWithValue }) => {
     try {
-      console.log('[tourBuilderSlice] Deleting tour plan:', tourPackageId);
       await tourApi.deleteTourPlan(tourPackageId);
-      console.log('[tourBuilderSlice] Tour deleted:', tourPackageId);
       return tourPackageId;
     } catch (error: any) {
-      console.error('[tourBuilderSlice] deleteTourPlan error:', error);
+      if (__DEV__) console.error('[tourBuilderSlice] deleteTourPlan error:', error);
       return rejectWithValue(error);
     }
   }
@@ -178,7 +159,6 @@ const tourBuilderSlice = createSlice({
      * Update filters and keep in state for re-fetching
      */
     setFilters(state, action: PayloadAction<TourFilters>) {
-      console.log('[tourBuilderSlice] Setting filters:', action.payload);
       state.filters = action.payload;
     },
 
@@ -186,7 +166,6 @@ const tourBuilderSlice = createSlice({
      * Clear all filters
      */
     clearFilters(state) {
-      console.log('[tourBuilderSlice] Clearing filters');
       state.filters = {};
     },
 
@@ -194,7 +173,6 @@ const tourBuilderSlice = createSlice({
      * Set admin mode
      */
     setAdminMode(state, action: PayloadAction<boolean>) {
-      console.log('[tourBuilderSlice] Setting admin mode:', action.payload);
       state.adminMode = action.payload;
     },
 
@@ -202,7 +180,6 @@ const tourBuilderSlice = createSlice({
      * Clear list and detail
      */
     clearTourData(state) {
-      console.log('[tourBuilderSlice] Clearing tour data');
       state.list = [];
       state.detail = null;
       state.listError = null;
@@ -213,7 +190,6 @@ const tourBuilderSlice = createSlice({
      * Clear form error
      */
     clearFormError(state) {
-      console.log('[tourBuilderSlice] Clearing form error');
       state.formError = null;
     },
 
@@ -221,7 +197,6 @@ const tourBuilderSlice = createSlice({
      * Clear detail
      */
     clearDetail(state) {
-      console.log('[tourBuilderSlice] Clearing detail');
       state.detail = null;
       state.detailError = null;
     },
@@ -230,18 +205,15 @@ const tourBuilderSlice = createSlice({
     // Fetch tour plans
     builder
       .addCase(fetchTourPlans.pending, (state) => {
-        console.log('[tourBuilderSlice] fetchTourPlans pending');
         state.listLoading = true;
         state.listError = null;
       })
       .addCase(fetchTourPlans.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] fetchTourPlans fulfilled, count:', action.payload.length);
         state.listLoading = false;
         state.list = action.payload;
         state.listError = null;
       })
       .addCase(fetchTourPlans.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] fetchTourPlans rejected:', action.payload);
         state.listLoading = false;
         state.listError = action.payload;
       });
@@ -249,18 +221,15 @@ const tourBuilderSlice = createSlice({
     // Fetch tour plans by admin
     builder
       .addCase(fetchTourPlansByAdmin.pending, (state) => {
-        console.log('[tourBuilderSlice] fetchTourPlansByAdmin pending');
         state.listLoading = true;
         state.listError = null;
       })
       .addCase(fetchTourPlansByAdmin.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] fetchTourPlansByAdmin fulfilled, count:', action.payload.length);
         state.listLoading = false;
         state.list = action.payload;
         state.listError = null;
       })
       .addCase(fetchTourPlansByAdmin.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] fetchTourPlansByAdmin rejected:', action.payload);
         state.listLoading = false;
         state.listError = action.payload;
       });
@@ -268,18 +237,15 @@ const tourBuilderSlice = createSlice({
     // Fetch tour detail
     builder
       .addCase(fetchTourPlanDetail.pending, (state) => {
-        console.log('[tourBuilderSlice] fetchTourPlanDetail pending');
         state.detailLoading = true;
         state.detailError = null;
       })
       .addCase(fetchTourPlanDetail.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] fetchTourPlanDetail fulfilled:', action.payload.packageName);
         state.detailLoading = false;
         state.detail = action.payload;
         state.detailError = null;
       })
       .addCase(fetchTourPlanDetail.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] fetchTourPlanDetail rejected:', action.payload);
         state.detailLoading = false;
         state.detailError = action.payload;
       });
@@ -287,25 +253,18 @@ const tourBuilderSlice = createSlice({
     // Create tour plan
     builder
       .addCase(createTourPlanAsync.pending, (state) => {
-        console.log('[tourBuilderSlice] ⏳ createTourPlan PENDING - Setting formLoading=true');
         state.formLoading = true;
         state.formError = null;
       })
       .addCase(createTourPlanAsync.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] ✅ createTourPlan FULFILLED');
-        console.log('[tourBuilderSlice] Created tour ID:', action.payload.id);
-        console.log('[tourBuilderSlice] Payload:', action.payload);
         state.formLoading = false;
         state.formError = null;
         // Add to list
         state.list.push(action.payload);
         // Set as detail
         state.detail = action.payload;
-        console.log('[tourBuilderSlice] Added to state.list and state.detail');
       })
       .addCase(createTourPlanAsync.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] ❌ createTourPlan REJECTED');
-        console.error('[tourBuilderSlice] Error payload:', action.payload);
         state.formLoading = false;
         state.formError = action.payload;
       });
@@ -313,12 +272,10 @@ const tourBuilderSlice = createSlice({
     // Update tour plan
     builder
       .addCase(updateTourPlanAsync.pending, (state) => {
-        console.log('[tourBuilderSlice] updateTourPlan pending');
         state.formLoading = true;
         state.formError = null;
       })
       .addCase(updateTourPlanAsync.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] updateTourPlan fulfilled:', action.payload.id);
         state.formLoading = false;
         state.formError = null;
         // Update in list
@@ -332,7 +289,6 @@ const tourBuilderSlice = createSlice({
         }
       })
       .addCase(updateTourPlanAsync.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] updateTourPlan rejected:', action.payload);
         state.formLoading = false;
         state.formError = action.payload;
       });
@@ -340,12 +296,10 @@ const tourBuilderSlice = createSlice({
     // Delete tour plan
     builder
       .addCase(deleteTourPlanAsync.pending, (state) => {
-        console.log('[tourBuilderSlice] deleteTourPlan pending');
         state.formLoading = true;
         state.formError = null;
       })
       .addCase(deleteTourPlanAsync.fulfilled, (state, action) => {
-        console.log('[tourBuilderSlice] deleteTourPlan fulfilled:', action.payload);
         state.formLoading = false;
         state.formError = null;
         // Remove from list
@@ -356,7 +310,6 @@ const tourBuilderSlice = createSlice({
         }
       })
       .addCase(deleteTourPlanAsync.rejected, (state, action: any) => {
-        console.error('[tourBuilderSlice] deleteTourPlan rejected:', action.payload);
         state.formLoading = false;
         state.formError = action.payload;
       });
@@ -366,5 +319,3 @@ const tourBuilderSlice = createSlice({
 export const { setFilters, clearFilters, setAdminMode, clearTourData, clearFormError, clearDetail } = tourBuilderSlice.actions;
 
 export default tourBuilderSlice.reducer;
-
-console.log('[tourBuilderSlice] Slice initialized');

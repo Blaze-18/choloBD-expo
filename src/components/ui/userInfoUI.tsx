@@ -23,7 +23,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
   return (
     <View className="mb-6">
       {/* Profile Header Card with gradient-like appearance */}
-      <View className="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8 }}>
+      <View className="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center flex-1">
             {/* Avatar */}
@@ -55,7 +55,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
 
       {/* Stats Grid */}
       <View className="flex-row gap-3 mt-4">
-        <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4 }}>
+        <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Role</Text>
@@ -65,7 +65,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
           </View>
         </View>
         
-        <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4 }}>
+        <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Status</Text>

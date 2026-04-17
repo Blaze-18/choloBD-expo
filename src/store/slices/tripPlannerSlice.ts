@@ -89,7 +89,7 @@ const initialState: TripPlannerState = {
  */
 export const fetchTrips = createAsyncThunk(
   'tripPlanner/fetchTrips',
-  async (filters?: TripFilters, { rejectWithValue }) => {
+  async (filters: TripFilters | undefined, { rejectWithValue }) => {
     try {
       console.log('[tripPlannerSlice] Fetching trips with filters:', filters);
       const { trips, pagination } = await tripApi.getTrips(filters);

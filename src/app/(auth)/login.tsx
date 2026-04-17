@@ -26,14 +26,11 @@ export default function Login() {
   }, [register]);
 
   const onSubmit = (values: LoginForm) => {
-    console.log('[Login] Form submitted with values:', values);
     void dispatch(loginUser(values));
   };
 
   useEffect(() => {
-    console.log('[Login] Auth state changed:', { isAuthenticated: auth.isAuthenticated, isLoading: auth.isLoading, error: auth.error });
     if (auth.isAuthenticated) {
-      console.log('[Login] Authenticated! Redirecting to /(tabs)...');
       router.replace('/(tabs)/dashboard');
     }
   }, [auth.isAuthenticated, auth.isLoading, auth.error]);

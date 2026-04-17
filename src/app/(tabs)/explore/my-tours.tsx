@@ -15,8 +15,6 @@ import { TourListCard } from '../../../components/tourBuilder/TourListCard';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 
-console.log('[MyToursPage] Component loaded');
-
 export default function MyToursPage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -28,22 +26,18 @@ export default function MyToursPage() {
 
   // Fetch tours when page loads
   useEffect(() => {
-    console.log('[MyToursPage] Mounting, fetching my tours');
-    dispatch(fetchTourPlansByAdmin());
+    dispatch(fetchTourPlansByAdmin({}));
   }, [dispatch]);
 
   const handleBack = () => {
-    console.log('[MyToursPage] Going back');
     router.back();
   };
 
   const handlePressTour = (tourId: string) => {
-    console.log('[MyToursPage] Viewing tour:', tourId);
     router.push(`/(tabs)/explore/tour-detail?id=${tourId}`);
   };
 
   const handleCreateNew = () => {
-    console.log('[MyToursPage] Creating new tour');
     router.push('/(tabs)/explore/tour-create');
   };
 

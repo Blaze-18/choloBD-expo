@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as tourBuilder from '../../services/api/tourBuilder';
 
@@ -99,7 +99,7 @@ export function SpotsSelection({
       <View className="px-6 pb-4">
         <View className="flex-row items-center px-4 py-3 border rounded-lg bg-surface dark:bg-surface-dark border-border dark:border-border-dark">
           <Feather name="search" size={18} color="#475569" />
-          <Text
+          <TextInput
             className="flex-1 ml-3 text-base text-text dark:text-text-dark"
             onChangeText={setSearchQuery}
             placeholder="Search spots..."
