@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { Feather } from '@expo/vector-icons';
 import SuggestedTourCard from './SuggestedTourCard';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface Tour {
   id: string;
@@ -58,6 +61,8 @@ const SUGGESTED_TOURS: Tour[] = [
 export default function SuggestedToursSection() {
   const router = useRouter();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
 
   const handleTourPress = (tour: Tour) => {
     console.log('Selected tour:', tour.id);
@@ -70,15 +75,15 @@ export default function SuggestedToursSection() {
   };
 
   return (
-    <View className="bg-white dark:bg-neutral-950 px-4 py-12">
+    <View className="bg-white dark:bg-neutral-950 px-4 pt-8 pb-4">
       {/* Header */}
       <View className="flex-row items-center justify-between mb-6">
         <View>
-          <Text className="text-2xl font-bold text-neutral-900 dark:text-white">
-            Suggested Tours
+          <Text className="text-2xl font-bold text-neutral-900 dark:text-white flex-1">
+            {t(TRANSLATION_KEYS.HOME.SUGGESTED_TOURS)}
           </Text>
-          <Text className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Handpicked for your interests
+          <Text className="text-sm text-neutral-600 dark:text-neutral-400 mt-1 flex-1">
+            {t(TRANSLATION_KEYS.HOME.SUGGESTED_TOURS_DESC)}
           </Text>
         </View>
         <TouchableOpacity

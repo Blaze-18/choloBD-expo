@@ -17,6 +17,8 @@ import { CreateTourPlanData } from '../../../types/tours';
 import { useExplore } from './_provider';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 console.log('[TourCreatePage] Component loaded');
 
@@ -25,6 +27,7 @@ export default function TourCreatePage() {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch<AppDispatch>();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const { formError, formLoading } = useSelector((state: RootState) => state.tourBuilder);
   const { locations } = useExplore();
 
@@ -77,10 +80,10 @@ export default function TourCreatePage() {
 
         <View className="px-6 pb-4">
           <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
-            Create Tour
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_PAGE_TITLE)}
           </Text>
           <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
-            Design a new tour package
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_PAGE_SUBTITLE)}
           </Text>
         </View>
 

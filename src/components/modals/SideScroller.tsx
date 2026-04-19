@@ -6,12 +6,14 @@ import {
   ScrollView,
   Dimensions,
   Modal,
-  FlatList,
   Animated,
   Easing,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
+import { useTranslation } from 'react-i18next';
+import { SIDE_MENU_CONFIG } from '../menus/SideMenuConfig';
+import LanguageToggle from '../ui/LanguageToggle';
 import theme from '../../constants/theme';
 
 interface SideScrollerProps {
@@ -19,59 +21,11 @@ interface SideScrollerProps {
   onLogout?: () => void;
 }
 
-interface MenuSection {
-  id: string;
-  title: string;
-  icon: string;
-  items: Array<{
-    id: string;
-    label: string;
-    icon: string;
-  }>;
-}
-
-const getMenuSections = (): MenuSection[] => [
-  {
-    id: 'pages',
-    title: 'Pages',
-    icon: 'book',
-    items: [
-      { id: 'explore', label: 'Explore Hotels', icon: 'map-pin' },
-      { id: 'bookings', label: 'My Bookings', icon: 'calendar' },
-      { id: 'activity', label: 'Activity Spots', icon: 'align-left' },
-      { id: 'tours', label: 'Tour Spots', icon: 'compass' },
-    ],
-  },
-  {
-    id: 'quick-actions',
-    title: 'Quick Actions',
-    icon: 'zap',
-    items: [
-      { id: 'scan-qr', label: 'Scan QR', icon: 'camera' },
-      { id: 'wallet', label: 'Wallet', icon: 'credit-card' },
-      { id: 'payment', label: 'Make Payment', icon: 'dollar-sign' },
-      { id: 'track', label: 'Track Booking', icon: 'navigation' },
-    ],
-  },
-  {
-    id: 'general',
-    title: 'General',
-    icon: 'settings',
-    items: [
-      { id: 'profile', label: 'My Profile', icon: 'user' },
-      { id: 'settings', label: 'Settings', icon: 'settings' },
-      { id: 'help', label: 'Help & Support', icon: 'help-circle' },
-      { id: 'about', label: 'About', icon: 'info' },
-      { id: 'logout', label: 'Logout', icon: 'log-out' },
-    ],
-  },
-];
-
 export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const { isDark } = useTheme();
-  const menuSections = getMenuSections();
+  const { t } = useTranslation();
 
   const screenWidth = Dimensions.get('window').width;
   // Panel will take up to 70% of screen but never exceed 360px
@@ -99,7 +53,7 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
         useNativeDriver: true,
       }),
     ]).start();
-  }, [isMenuOpen, slideAnim]);
+  }, [isMenuOpen, slideAnim, panelWidth]);
 
   const handleMenuPress = (sectionId: string) => {
     setSelectedSection(selectedSection === sectionId ? null : sectionId);
@@ -155,8 +109,13 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
             }}
             className="bg-white dark:bg-surface-dark"
           >
-            {/* Close Button */}
-            <View className="flex-row justify-end px-4 py-3">
+            {/* Close Button and Language Toggle */}
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+              <LanguageToggle
+                textColor={textColor}
+                isDark={isDark}
+                size="medium"
+              />
               <TouchableOpacity
                 onPress={() => setIsMenuOpen(false)}
                 className="p-2"
@@ -167,7 +126,7 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
 
             {/* Menu Sections */}
             <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-              {menuSections.map((section) => (
+              {SIDE_MENU_CONFIG.map((section) => (
                 <View key={section.id}>
                   {/* Section Header */}
                   <TouchableOpacity
@@ -178,10 +137,10 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
                     <View className="flex-row items-center flex-1">
                       <Feather name={section.icon as any} size={22} color={iconColor} />
                       <Text 
-                        style={{ color: textColor }}
-                        className="text-lg font-semibold ml-3"
+                        style={{ color: textColor, flex: 1 }}
+                        className="ml-3 text-lg font-semibold"
                       >
-                        {section.title}
+                        {t(section.titleKey)}
                       </Text>
                     </View>
                     <Feather
@@ -203,10 +162,13 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
                         >
                           <Feather name={item.icon as any} size={18} color={mutedIconColor} />
                           <Text 
-                            style={{ color: isDark ? theme.colors['muted-dark'] : theme.colors.muted }}
-                            className="text-base ml-3"
+                            style={{ 
+                              color: isDark ? theme.colors['muted-dark'] : theme.colors.muted,
+                              flex: 1,
+                            }}
+                            className="ml-3 text-base"
                           >
-                            {item.label}
+                            {t(item.labelKey)}
                           </Text>
                         </TouchableOpacity>
                       ))}
@@ -228,3 +190,4 @@ export default function SideScroller({ onNavigate, onLogout }: SideScrollerProps
     </>
   );
 }
+

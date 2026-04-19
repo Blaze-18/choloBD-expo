@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Link } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,12 +12,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, RegisterForm } from '../../validators/auth';
 import AppBrandSection from '../../components/homepage/AppBrandSection';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 export default function Register() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const auth = useSelector((s: RootState) => s.auth);
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const placeholderColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
 
   const { register, setValue, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
@@ -56,67 +59,67 @@ export default function Register() {
             <View className="items-center mb-6">
               <AppBrandSection width={240} height={90} />
             </View>
-            <Text className="mb-2 text-3xl font-bold text-center font-heading text-text dark:text-text-dark">Create account</Text>
-            <Text className="mb-6 text-center text-muted dark:text-muted-dark">Start your CholoBD journey</Text>
+            <Text className="mt-4 mb-2 text-3xl font-bold text-center font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.CREATE_ACCOUNT)}</Text>
+            <Text className="mb-6 text-center text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.SUBTITLE)}</Text>
 
             <View className="space-y-4">
               <View>
-                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Username</Text>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.USERNAME_LABEL)}</Text>
                 <TextInput
                   onChangeText={(v) => setValue('userName', v)}
                   autoCapitalize="none"
                   className="p-3 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark text-text dark:text-text-dark"
-                  placeholder="Your name"
+                  placeholder={t(TRANSLATION_KEYS.AUTH.REGISTER.USERNAME_PLACEHOLDER)}
                   placeholderTextColor={placeholderColor}
                 />
                 {errors.userName ? <Text className="mt-1 text-xs text-danger">{String(errors.userName.message)}</Text> : null}
               </View>
 
               <View>
-                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Email</Text>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.EMAIL_LABEL)}</Text>
                 <TextInput
                   onChangeText={(v) => setValue('email', v)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   className="p-3 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark text-text dark:text-text-dark"
-                  placeholder="you@example.com"
+                  placeholder={t(TRANSLATION_KEYS.AUTH.REGISTER.EMAIL_PLACEHOLDER)}
                   placeholderTextColor={placeholderColor}
                 />
                 {errors.email ? <Text className="mt-1 text-xs text-danger">{String(errors.email.message)}</Text> : null}
               </View>
 
               <View>
-                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Password</Text>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.PASSWORD_LABEL)}</Text>
                 <TextInput
                   onChangeText={(v) => setValue('password', v)}
                   secureTextEntry
                   className="p-3 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark text-text dark:text-text-dark"
-                  placeholder="••••••••"
+                  placeholder={t(TRANSLATION_KEYS.AUTH.REGISTER.PASSWORD_PLACEHOLDER)}
                   placeholderTextColor={placeholderColor}
                 />
                 {errors.password ? <Text className="mt-1 text-xs text-danger">{String(errors.password.message)}</Text> : null}
               </View>
 
               <View>
-                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Confirm Password</Text>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.CONFIRM_PASSWORD_LABEL)}</Text>
                 <TextInput
                   onChangeText={(v) => setValue('confirm', v)}
                   secureTextEntry
                   className="p-3 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark text-text dark:text-text-dark"
-                  placeholder="••••••••"
+                  placeholder={t(TRANSLATION_KEYS.AUTH.REGISTER.PASSWORD_PLACEHOLDER)}
                   placeholderTextColor={placeholderColor}
                 />
                 {errors.confirm ? <Text className="mt-1 text-xs text-danger">{String(errors.confirm.message)}</Text> : null}
               </View>
 
               <View>
-                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">Role</Text>
+                <Text className="mb-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.ROLE_LABEL)}</Text>
                 <TouchableOpacity
                   onPress={() => setShowRolePicker(!showRolePicker)}
                   className="flex-row items-center justify-between p-3 border rounded-lg border-border dark:border-border-dark bg-background dark:bg-background-dark"
                 >
                   <Text className={"flex-1"}>
-                    {watch('role') || 'Select role'}
+                    {watch('role') || t(TRANSLATION_KEYS.AUTH.REGISTER.SELECT_ROLE)}
                   </Text>
                   <Ionicons name={showRolePicker ? 'chevron-up' : 'chevron-down'} size={20} color={theme.colors.primary} />
                 </TouchableOpacity>
@@ -138,35 +141,35 @@ export default function Register() {
                   </View>
                 )}
 
-                <Text className="mt-2 text-xs text-muted dark:text-muted-dark">Select your role. MASTER_ADMIN is reserved — if unavailable the server will reject it.</Text>
+                <Text className="mt-2 text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.ROLE_DESC)}</Text>
                 {errors.role ? <Text className="mt-1 text-xs text-danger">{String((errors.role as any).message)}</Text> : null}
               </View>
 
               <TouchableOpacity onPress={handleSubmit(onSubmit)} className="p-3 rounded-lg bg-primary dark:bg-primary-dark">
-                <Text className="font-medium text-center text-white">{auth.isLoading ? 'Creating...' : 'Create account'}</Text>
+                <Text className="font-medium text-center text-white">{auth.isLoading ? t(TRANSLATION_KEYS.AUTH.REGISTER.CREATING) : t(TRANSLATION_KEYS.AUTH.REGISTER.CREATE_BTN)}</Text>
               </TouchableOpacity>
               {auth.error ? <Text className="mt-2 text-sm text-center text-danger">{String(auth.error)}</Text> : null}
             </View>
 
             <View className="flex-row items-center my-4">
               <View className="flex-1 h-px bg-border dark:bg-border-dark" />
-              <Text className="px-3 text-sm text-muted dark:text-muted-dark">Or sign up with</Text>
+              <Text className="px-3 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.OR_CONTINUE)}</Text>
               <View className="flex-1 h-px bg-border dark:bg-border-dark" />
             </View>
 
             <View className="flex-row justify-center space-x-3">
               <TouchableOpacity className="items-center flex-1 p-3 bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark">
-                <Text className="text-sm text-text dark:text-text-dark">Google</Text>
+                <Text className="text-sm text-text dark:text-text-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.GOOGLE)}</Text>
               </TouchableOpacity>
               <TouchableOpacity className="items-center flex-1 p-3 bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark">
-                <Text className="text-sm text-text dark:text-text-dark">Facebook</Text>
+                <Text className="text-sm text-text dark:text-text-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.FACEBOOK)}</Text>
               </TouchableOpacity>
             </View>
 
             <View className="flex-row justify-center mt-4">
-              <Text className="text-sm text-muted dark:text-muted-dark">Already have an account?</Text>
+              <Text className="text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.ALREADY_ACCOUNT)}</Text>
               <Link href="/login">
-                <Text className="ml-2 text-sm text-primary dark:text-primary-dark">Sign in</Text>
+                <Text className="ml-2 text-sm text-primary dark:text-primary-dark">{t(TRANSLATION_KEYS.AUTH.REGISTER.SIGN_IN)}</Text>
               </Link>
             </View>
           </View>

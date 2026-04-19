@@ -8,7 +8,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
   ScrollView,
   FlatList,
@@ -33,6 +32,8 @@ import {
 import { DaySegmentCard } from './DaySegmentCard';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface TourBuilderFormProps {
   initialData?: TourPackage;
@@ -54,6 +55,7 @@ export function TourBuilderForm({
   errorMessage,
 }: TourBuilderFormProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   
   const surfaceColor = isDark ? theme.colors['surface-dark'] : theme.colors.surface;
   const bgColor = isDark ? theme.colors['background-dark'] : theme.colors.background;
@@ -188,78 +190,50 @@ export function TourBuilderForm({
     handleSubmit(onSubmitForm)();
   };
 
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      backgroundColor: bgColor,
-    },
-    title: {
-      color: textColor,
-    },
-    label: {
-      color: textColor,
-    },
-    input: {
-      borderColor: borderColor,
-      backgroundColor: surfaceColor,
-      color: textColor,
-    },
-    inputError: {
-      borderColor: errorColor,
-      backgroundColor: errorColor + '10',
-    },
-    errorText: {
-      color: errorColor,
-    },
-    errorAlert: {
-      backgroundColor: errorColor + '10',
-      borderColor: errorColor,
-    },
-    switchRow: {
-      backgroundColor: surfaceColor,
-    },
-    emptyText: {
-      color: mutedColor,
-      backgroundColor: surfaceColor,
-    },
-    sectionTitle: {
-      color: textColor,
-    },
-  });
-
   return (
-    <ScrollView style={[styles.container, dynamicStyles.container]}>
+    <ScrollView className="flex-1" style={{ backgroundColor: bgColor }}>
       {errorMessage && (
-        <View className="mx-4 mb-4 p-3 rounded-lg border" style={[dynamicStyles.errorAlert, { borderColor: errorColor }]}>
+        <View className="p-3 mx-4 mb-4 border rounded-lg" style={{ backgroundColor: errorColor + '10', borderColor: errorColor }}>
           <View className="flex-row items-center gap-2">
             <Ionicons name="alert-circle" size={18} color={errorColor} />
-            <Text style={[styles.errorText, dynamicStyles.errorText]} className="flex-1">
+            <Text style={{ color: errorColor }} className="flex-1 text-sm font-medium">
               {errorMessage}
             </Text>
           </View>
         </View>
       )}
 
-      <View className="px-4 gap-4 pb-6">
+      <View className="gap-4 px-4 pb-6">
         {/* Package Name */}
         <View>
-          <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-            Package Name *
+          <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.PACKAGE_NAME)}
           </Text>
           <Controller
             control={control}
             name="packageName"
             render={({ field: { value, onChange } }) => (
               <TextInput
-                style={[styles.input, dynamicStyles.input, errors.packageName && dynamicStyles.inputError]}
+                style={{
+                  borderColor: errors.packageName ? errorColor : borderColor,
+                  backgroundColor: errors.packageName ? errorColor + '10' : surfaceColor,
+                  color: textColor,
+                  borderWidth: errors.packageName ? 1.5 : 1,
+                  borderRadius: 12,
+                  paddingHorizontal: 14,
+                  paddingVertical: 12,
+                  fontSize: 14,
+                  minHeight: 44,
+                }}
                 value={value}
                 onChangeText={onChange}
-                placeholder="Enter package name"
+                placeholder={t(TRANSLATION_KEYS.TOUR_BUILDER.ENTER_PACKAGE_NAME)}
                 placeholderTextColor={mutedColor}
               />
             )}
           />
           {errors.packageName && (
-            <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
+            <Text style={{ color: errorColor }} className="mt-1 text-xs font-medium">
               {errors.packageName.message}
             </Text>
           )}
@@ -267,8 +241,8 @@ export function TourBuilderForm({
 
         {/* Location */}
         <View>
-          <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-            Location *
+          <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.LOCATION)}
           </Text>
           <Controller
             control={control}
@@ -277,14 +251,21 @@ export function TourBuilderForm({
               <>
                 <TouchableOpacity
                   onPress={() => setLocationModalVisible(true)}
-                  style={[styles.input, dynamicStyles.input, (errors as any).locationId && dynamicStyles.inputError]}
-                  className="px-4 py-3 rounded-lg border flex-row justify-between items-center"
+                  style={{
+                    borderColor: (errors as any).locationId ? errorColor : borderColor,
+                    backgroundColor: (errors as any).locationId ? errorColor + '10' : surfaceColor,
+                    borderWidth: (errors as any).locationId ? 1.5 : 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                  }}
+                  className="flex-row items-center justify-between"
                 >
                   <Text style={{ color: value ? textColor : mutedColor }}>
                     {value
                       ? locations.find((loc) => loc.id === value)?.name ||
-                        'Select Location...'
-                      : 'Select Location...'}
+                        t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_LOCATION)
+                      : t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_LOCATION)}
                   </Text>
                   <Ionicons name="chevron-down" size={20} color={textColor} />
                 </TouchableOpacity>
@@ -300,17 +281,17 @@ export function TourBuilderForm({
                     onPress={() => setLocationModalVisible(false)}
                     activeOpacity={1}
                   >
-                    <View className="flex-1 justify-end">
+                    <View className="justify-end flex-1">
                       <View
                         style={{ backgroundColor: surfaceColor }}
-                        className="rounded-t-2xl p-4 max-h-96"
+                        className="p-4 rounded-t-2xl max-h-96"
                       >
-                        <View className="flex-row justify-between items-center mb-4">
+                        <View className="flex-row items-center justify-between mb-4">
                           <Text
                             style={{ color: textColor }}
                             className="text-lg font-semibold"
                           >
-                            Select Location
+                            {t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_LOCATION)}
                           </Text>
                           <TouchableOpacity
                             onPress={() => setLocationModalVisible(false)}
@@ -320,7 +301,17 @@ export function TourBuilderForm({
                         </View>
 
                         <TextInput
-                          style={[styles.input, dynamicStyles.input]}
+                          style={{
+                            borderColor,
+                            backgroundColor: surfaceColor,
+                            color: textColor,
+                            borderWidth: 1,
+                            borderRadius: 12,
+                            paddingHorizontal: 14,
+                            paddingVertical: 12,
+                            fontSize: 14,
+                            minHeight: 44,
+                          }}
                           value={locationSearch}
                           onChangeText={setLocationSearch}
                           placeholder="Search locations..."
@@ -382,7 +373,7 @@ export function TourBuilderForm({
             )}
           />
           {(errors as any).locationId && (
-            <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
+            <Text style={{ color: errorColor }} className="mt-1 text-xs font-medium">
               {(errors as any).locationId.message}
             </Text>
           )}
@@ -390,8 +381,8 @@ export function TourBuilderForm({
 
         {/* Tour Type */}
         <View>
-          <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-            Tour Type *
+          <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.TOUR_TYPE)}
           </Text>
           <Controller
             control={control}
@@ -400,11 +391,18 @@ export function TourBuilderForm({
               <>
                 <TouchableOpacity
                   onPress={() => setTourTypeModalVisible(true)}
-                  style={[styles.input, dynamicStyles.input, errors.tourType && dynamicStyles.inputError]}
-                  className="px-4 py-3 rounded-lg border flex-row justify-between items-center"
+                  style={{
+                    borderColor: errors.tourType ? errorColor : borderColor,
+                    backgroundColor: errors.tourType ? errorColor + '10' : surfaceColor,
+                    borderWidth: errors.tourType ? 1.5 : 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                  }}
+                  className="flex-row items-center justify-between"
                 >
                   <Text style={{ color: value ? textColor : mutedColor }}>
-                    {value || 'Select Tour Type...'}
+                    {value || t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_TOUR_TYPE)}
                   </Text>
                   <Ionicons name="chevron-down" size={20} color={textColor} />
                 </TouchableOpacity>
@@ -420,17 +418,17 @@ export function TourBuilderForm({
                     onPress={() => setTourTypeModalVisible(false)}
                     activeOpacity={1}
                   >
-                    <View className="flex-1 justify-end">
+                    <View className="justify-end flex-1">
                       <View
                         style={{ backgroundColor: surfaceColor }}
-                        className="rounded-t-2xl p-4 max-h-96"
+                        className="p-4 rounded-t-2xl max-h-96"
                       >
-                        <View className="flex-row justify-between items-center mb-4">
+                        <View className="flex-row items-center justify-between mb-4">
                           <Text
                             style={{ color: textColor }}
                             className="text-lg font-semibold"
                           >
-                            Select Tour Type
+                            {t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_TOUR_TYPE)}
                           </Text>
                           <TouchableOpacity
                             onPress={() => setTourTypeModalVisible(false)}
@@ -460,7 +458,7 @@ export function TourBuilderForm({
                                   fontWeight: value === type ? '600' : '400',
                                 }}
                               >
-                                {type.replace(/_/g, ' ')}
+                                {t((TRANSLATION_KEYS.TOUR_BUILDER.TOUR_TYPES as any)[type] || `tourBuilder.tourTypes.${type.toLowerCase()}`)}
                               </Text>
                               {value === type && (
                                 <Ionicons
@@ -480,7 +478,7 @@ export function TourBuilderForm({
             )}
           />
           {errors.tourType && (
-            <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
+            <Text style={{ color: errorColor }} className="mt-1 text-xs font-medium">
               {errors.tourType.message}
             </Text>
           )}
@@ -489,50 +487,70 @@ export function TourBuilderForm({
         {/* Duration & Budget Row */}
         <View className="flex-row gap-3">
           <View className="flex-1">
-            <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-              Duration (days) *
+            <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.DURATION_DAYS)}
             </Text>
             <Controller
               control={control}
               name="duration"
               render={({ field: { value, onChange } }) => (
                 <TextInput
-                  style={[styles.input, dynamicStyles.input, errors.duration && dynamicStyles.inputError]}
+                  style={{
+                    borderColor: errors.duration ? errorColor : borderColor,
+                    backgroundColor: errors.duration ? errorColor + '10' : surfaceColor,
+                    color: textColor,
+                    borderWidth: errors.duration ? 1.5 : 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    minHeight: 44,
+                  }}
                   value={String(value)}
                   onChangeText={(text) => onChange(parseInt(text) || 0)}
-                  placeholder="Days"
+                  placeholder={t(TRANSLATION_KEYS.COMMON.SEARCH)}
                   keyboardType="number-pad"
                   placeholderTextColor={mutedColor}
                 />
               )}
             />
             {errors.duration && (
-              <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
+              <Text style={{ color: errorColor }} className="mt-1 text-xs font-medium">
                 {errors.duration.message}
               </Text>
             )}
           </View>
 
           <View className="flex-1">
-            <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-              Budget (৳) *
+            <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.BUDGET)}
             </Text>
             <Controller
               control={control}
               name="totalBudget"
               render={({ field: { value, onChange } }) => (
                 <TextInput
-                  style={[styles.input, dynamicStyles.input, errors.totalBudget && dynamicStyles.inputError]}
+                  style={{
+                    borderColor: errors.totalBudget ? errorColor : borderColor,
+                    backgroundColor: errors.totalBudget ? errorColor + '10' : surfaceColor,
+                    color: textColor,
+                    borderWidth: errors.totalBudget ? 1.5 : 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    minHeight: 44,
+                  }}
                   value={String(value)}
                   onChangeText={(text) => onChange(parseFloat(text) || 0)}
-                  placeholder="Amount"
+                  placeholder={t(TRANSLATION_KEYS.TOUR_BUILDER.AMOUNT)}
                   keyboardType="decimal-pad"
                   placeholderTextColor={mutedColor}
                 />
               )}
             />
             {errors.totalBudget && (
-              <Text style={[styles.errorText, dynamicStyles.errorText]} className="text-xs mt-1">
+              <Text style={{ color: errorColor }} className="mt-1 text-xs font-medium">
                 {errors.totalBudget.message}
               </Text>
             )}
@@ -542,18 +560,28 @@ export function TourBuilderForm({
         {/* Max Group Size & Rating Row */}
         <View className="flex-row gap-3">
           <View className="flex-1">
-            <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-              Max Group Size
+            <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.MAX_GROUP_SIZE)}
             </Text>
             <Controller
               control={control}
               name="maxGroupSize"
               render={({ field: { value, onChange } }) => (
                 <TextInput
-                  style={[styles.input, dynamicStyles.input]}
+                  style={{
+                    borderColor,
+                    backgroundColor: surfaceColor,
+                    color: textColor,
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    minHeight: 44,
+                  }}
                   value={String(value || '')}
                   onChangeText={(text) => onChange(parseInt(text) || undefined)}
-                  placeholder="Optional"
+                  placeholder={t(TRANSLATION_KEYS.BOOKING.OPTIONAL)}
                   keyboardType="number-pad"
                   placeholderTextColor={mutedColor}
                 />
@@ -562,15 +590,25 @@ export function TourBuilderForm({
           </View>
 
           <View className="flex-1">
-            <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-              Rating (0-5)
+            <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.RATING)}
             </Text>
             <Controller
               control={control}
               name="rating"
               render={({ field: { value, onChange } }) => (
                 <TextInput
-                  style={[styles.input, dynamicStyles.input]}
+                  style={{
+                    borderColor,
+                    backgroundColor: surfaceColor,
+                    color: textColor,
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    minHeight: 44,
+                  }}
                   value={String(value || '')}
                   onChangeText={(text) => onChange(parseFloat(text) || undefined)}
                   placeholder="0.0"
@@ -584,18 +622,29 @@ export function TourBuilderForm({
 
         {/* Short Description */}
         <View>
-          <Text style={[styles.label, dynamicStyles.label]} className="mb-2 text-sm font-semibold">
-            Short Description
+          <Text style={{ color: textColor }} className="mb-2 text-sm font-semibold">
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.SHORT_DESCRIPTION)}
           </Text>
           <Controller
             control={control}
             name="shortDescription"
             render={({ field: { value, onChange } }) => (
               <TextInput
-                style={[styles.input, dynamicStyles.input, styles.multilineInput]}
+                style={{
+                  borderColor,
+                  backgroundColor: surfaceColor,
+                  color: textColor,
+                  borderWidth: 1,
+                  borderRadius: 12,
+                  paddingHorizontal: 14,
+                  paddingVertical: 12,
+                  fontSize: 14,
+                  minHeight: 100,
+                  textAlignVertical: 'top',
+                }}
                 value={value}
                 onChangeText={onChange}
-                placeholder="Brief description of the tour"
+                placeholder={t(TRANSLATION_KEYS.TOUR_BUILDER.BRIEF_DESCRIPTION)}
                 multiline
                 numberOfLines={3}
                 placeholderTextColor={mutedColor}
@@ -605,10 +654,10 @@ export function TourBuilderForm({
         </View>
 
         {/* Active & Popular switches */}
-        <View className="gap-3 rounded-xl overflow-hidden">
-          <View style={[styles.switchRow, dynamicStyles.switchRow]} className="flex-row items-center justify-between px-4 py-3">
-            <Text style={[styles.label, dynamicStyles.label, { marginBottom: 0 }]} className="font-semibold">
-              Active
+        <View className="gap-3 overflow-hidden rounded-xl">
+          <View className="flex-row items-center justify-between px-4 py-3" style={{ backgroundColor: surfaceColor }}>
+            <Text style={{ color: textColor }} className="font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.ACTIVE)}
             </Text>
             <Controller
               control={control}
@@ -624,9 +673,9 @@ export function TourBuilderForm({
             />
           </View>
 
-          <View style={[styles.switchRow, dynamicStyles.switchRow]} className="flex-row items-center justify-between px-4 py-3">
-            <Text style={[styles.label, dynamicStyles.label, { marginBottom: 0 }]} className="font-semibold">
-              Popular
+          <View className="flex-row items-center justify-between px-4 py-3" style={{ backgroundColor: surfaceColor }}>
+            <Text style={{ color: textColor }} className="font-semibold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.POPULAR)}
             </Text>
             <Controller
               control={control}
@@ -644,10 +693,10 @@ export function TourBuilderForm({
         </View>
 
         {/* Day Segments Section */}
-        <View className="mt-4 pt-4 border-t" style={{ borderColor: borderColor }}>
+        <View className="pt-4 mt-4 border-t" style={{ borderColor: borderColor }}>
           <View className="flex-row items-center justify-between mb-4">
-            <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>
-              Day Segments ({daySegments.length} / {duration})
+            <Text style={{ color: textColor }} className="text-base font-bold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.DAY_SEGMENTS)} ({daySegments.length} / {duration})
             </Text>
             <TouchableOpacity
               className="flex-row items-center gap-1 px-3 py-2 rounded-lg"
@@ -656,15 +705,15 @@ export function TourBuilderForm({
               style={[{ backgroundColor: primaryColor }, daySegments.length >= (duration ?? 0) && { opacity: 0.5 }]}
             >
               <Ionicons name="add" size={16} color="#fff" />
-              <Text className="text-xs font-semibold text-white">Add Day</Text>
+              <Text className="text-xs font-semibold text-white">{t(TRANSLATION_KEYS.TOUR_BUILDER.ADD_DAY)}</Text>
             </TouchableOpacity>
           </View>
 
           {daySegments.length === 0 && (
-            <View style={[styles.emptyState, dynamicStyles.emptyText]} className="p-4 rounded-xl text-center">
-              <Ionicons name="calendar" size={32} color={mutedColor} style={{ marginBottom: 8, textAlign: 'center' }} />
-              <Text style={[styles.emptyText, dynamicStyles.emptyText]}>
-                No day segments added yet. Tap "Add Day" to start planning the tour.
+            <View className="items-center p-4 text-center rounded-xl" style={{ backgroundColor: surfaceColor }}>
+              <Ionicons name="calendar" size={32} color={mutedColor} style={{ marginBottom: 8 }} />
+              <Text style={{ color: mutedColor }} className="text-sm italic leading-none text-center">
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.NO_SEGMENTS)}
               </Text>
             </View>
           )}
@@ -685,21 +734,21 @@ export function TourBuilderForm({
       </View>
 
       {/* Form Actions */}
-      <View className="px-4 pb-8 gap-3">
+      <View className="gap-3 px-4 pb-8">
         {/* Validation Errors Summary */}
         {Object.keys(errors).length > 0 && (
-          <View className="p-3 rounded-lg border-l-4" style={{ backgroundColor: errorColor + '10', borderLeftColor: errorColor }}>
+          <View className="p-3 border-l-4 rounded-lg" style={{ backgroundColor: errorColor + '10', borderLeftColor: errorColor }}>
             <View className="flex-row items-center gap-2 mb-2">
               <Ionicons name="alert-circle" size={18} color={errorColor} />
-              <Text style={{ color: errorColor }} className="font-semibold text-sm">
-                Please fix the following errors:
+              <Text style={{ color: errorColor }} className="text-sm font-semibold">
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.PLEASE_FIX_ERRORS)}
               </Text>
             </View>
             {Object.entries(errors).map(([fieldName, error]: any) => (
               <Text
                 key={fieldName}
                 style={{ color: errorColor }}
-                className="text-xs ml-6 mb-1"
+                className="mb-1 ml-6 text-xs"
               >
                 • {fieldName}: {error?.message || 'Invalid'}
               </Text>
@@ -719,8 +768,8 @@ export function TourBuilderForm({
               size={18} 
               color="#fff" 
             />
-            <Text className="text-white font-bold text-base">
-              {isSubmitting ? 'Saving...' : isEditing ? 'Update Tour' : 'Create Tour'}
+            <Text className="text-base font-bold text-white">
+              {isSubmitting ? t(TRANSLATION_KEYS.TOUR_BUILDER.SAVING) : isEditing ? t(TRANSLATION_KEYS.TOUR_BUILDER.UPDATE_TOUR) : t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_TOUR)}
             </Text>
           </View>
         </TouchableOpacity>
@@ -732,8 +781,8 @@ export function TourBuilderForm({
             onPress={onCancel}
             disabled={isSubmitting}
           >
-            <Text style={{ color: primaryColor }} className="font-bold text-base">
-              Cancel
+            <Text style={{ color: primaryColor }} className="text-base font-bold">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.CANCEL)}
             </Text>
           </TouchableOpacity>
         )}
@@ -741,63 +790,5 @@ export function TourBuilderForm({
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 14,
-    minHeight: 44,
-  },
-  inputError: {
-    borderWidth: 1.5,
-  },
-  multilineInput: {
-    paddingVertical: 12,
-    textAlignVertical: 'top',
-    minHeight: 100,
-  },
-  switchRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderRadius: 12,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  emptyState: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 13,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  errorText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  errorAlert: {
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-});
 
 export default TourBuilderForm;

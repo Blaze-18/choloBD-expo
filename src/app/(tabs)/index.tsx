@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { AppDispatch, RootState } from '../../store/store';
 import { logoutUser } from '../../store/slices/authSlice';
 import { HomeHeader, ImageCarousel, HeroSection, FeaturesGrid, SuggestedToursSection, NearbyLocationsSection } from '../../components/homepage';
@@ -13,6 +14,7 @@ export default function HomePage() {
   const router = useRouter();
   const auth = useSelector((s: RootState) => s.auth);
   const { isDark } = useTheme();
+  const { currentLanguage } = useLanguage();
 
   const handleLogout = async () => {
     await dispatch(logoutUser());

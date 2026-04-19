@@ -2,9 +2,12 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
 import { AdminCard } from '../ui/adminCard';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface ServiceAdminDashboardProps {
   userName?: string;
@@ -25,13 +28,15 @@ export function ServiceAdminDashboard({
 }: ServiceAdminDashboardProps) {
   const router = useRouter();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} refreshControl={undefined}>
         <View className="px-6 pt-8 pb-2">
-          <Text className="text-sm text-muted dark:text-muted-dark">Welcome back,</Text>
-          <Text className="mt-1 text-3xl font-bold font-heading text-text dark:text-text-dark">Owner Dashboard</Text>
+          <Text className="text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.DASHBOARD.WELCOME_BACK)}</Text>
+          <Text className="mt-1 text-3xl font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.DASHBOARD.ADMIN_TITLE)}</Text>
         </View>
 
         <View className="px-6 pb-8">
@@ -46,28 +51,28 @@ export function ServiceAdminDashboard({
 
           <View className="mt-6 space-y-3">
             <AdminCard
-              title="My Hotel"
-              subtitle="View hotel information"
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.MY_HOTEL)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.MY_HOTEL_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin')}
             />
             <AdminCard
-              title="Current Bookings"
-              subtitle="View active bookings for your hotels"
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.CURRENT_BOOKINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.CURRENT_BOOKINGS_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/current-bookings')}
             />
             <AdminCard
-              title="QR Scanner"
-              subtitle="Scan guest check-in codes"
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.QR_SCANNER)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.QR_SCANNER_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/qr-scanner')}
             />
             <AdminCard
-              title="Employee / Staff Info"
-              subtitle="Manage your employees"
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.STAFF_INFO)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.STAFF_INFO_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/staff')}
             />
             <AdminCard
-              title="Your Bookings"
-              subtitle="Bookings you made as owner"
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.YOUR_BOOKINGS_ADMIN)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.YOUR_BOOKINGS_ADMIN_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/your-bookings')}
             />
           </View>

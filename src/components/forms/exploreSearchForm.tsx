@@ -3,6 +3,8 @@ import { View, TouchableOpacity, Text, ActivityIndicator, ScrollView } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface Location {
   id: string;
@@ -23,6 +25,7 @@ export function ExploreSearchForm({
   searching = false,
 }: ExploreSearchFormProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [showLocationPicker, setShowLocationPicker] = useState(false);
 
@@ -31,7 +34,7 @@ export function ExploreSearchForm({
 
   const handleSearch = () => {
     if (!selectedLocationId) {
-      alert('Please select a location');
+      alert(t(TRANSLATION_KEYS.COMMON.CANCEL));
       return;
     }
 
@@ -46,7 +49,7 @@ export function ExploreSearchForm({
     <View className="p-4 mb-6 bg-white border shadow dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
       {/* Location Picker */}
       <View className="mb-4">
-        <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">Select Location</Text>
+        <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.SELECT_LOCATION)}</Text>
         <TouchableOpacity
           onPress={() => setShowLocationPicker(!showLocationPicker)}
           className="flex-row items-center justify-between p-3 border rounded-lg border-border dark:border-border-dark bg-background dark:bg-background-dark"
@@ -54,7 +57,7 @@ export function ExploreSearchForm({
           <View className="flex-row items-center">
             <Ionicons name="location" size={16} color={primaryColor} style={{ marginRight: 8 }} />
             <Text className={selectedLocationId ? 'text-text dark:text-text-dark font-medium' : 'text-muted dark:text-muted-dark'}>
-              {selectedLocation?.name || 'Choose a location'}
+              {selectedLocation?.name || t(TRANSLATION_KEYS.EXPLORE.CHOOSE_LOCATION)}
             </Text>
           </View>
           <Ionicons name={showLocationPicker ? 'chevron-up' : 'chevron-down'} size={20} color={primaryColor} />
@@ -68,7 +71,7 @@ export function ExploreSearchForm({
               </View>
             ) : locations.length === 0 ? (
               <View className="items-center p-4">
-                <Text className="text-muted dark:text-muted-dark">No locations available</Text>
+                <Text className="text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.EXPLORE.NO_LOCATIONS)}</Text>
               </View>
             ) : (
               <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 256 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
@@ -113,7 +116,7 @@ export function ExploreSearchForm({
         ) : (
           <Ionicons name="search" size={18} color={onPrimaryColor} style={{ marginRight: 8 }} />
         )}
-        <Text className="font-bold text-white">{searching ? 'Searching...' : 'Find Hotels'}</Text>
+        <Text className="font-bold text-white">{searching ? t(TRANSLATION_KEYS.EXPLORE.SEARCHING) : t(TRANSLATION_KEYS.EXPLORE.FIND_HOTELS)}</Text>
       </TouchableOpacity>
     </View>
   );

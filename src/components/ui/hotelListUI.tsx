@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Hotel } from '../../types/hotels';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface HotelListUIProps {
   hotels: Hotel[];
@@ -23,13 +25,14 @@ export function HotelListUI({
 }: HotelListUIProps) {
   const { isDark } = useTheme();
   const starColor = isDark ? theme.colors['warning-dark'] : theme.colors.warning;
+  const { t } = useTranslation();
 
   if (loading) {
     return (
       <View className="items-center justify-center py-12">
         <ActivityIndicator size="large" color={theme.colors.primary} />
         {showImages && (
-          <Text className="mt-2 text-muted dark:text-muted-dark">Loading hotels...</Text>
+          <Text className="mt-2 text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.COMMON.LOADING)}</Text>
         )}
       </View>
     );
@@ -40,11 +43,11 @@ export function HotelListUI({
       <View className="items-center justify-center py-12">
         <Ionicons name="search" size={48} color={isDark ? '#9ca3af' : '#d1d5db'} />
         <Text className="mt-3 text-lg font-semibold text-text dark:text-text-dark">
-          No hotels found
+          {t(TRANSLATION_KEYS.EXPLORE.NO_HOTELS)}
         </Text>
         {showImages && (
           <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
-            Try adjusting your search filters
+            {t(TRANSLATION_KEYS.COMMON.TRY_AGAIN)}
           </Text>
         )}
       </View>
@@ -61,7 +64,7 @@ export function HotelListUI({
     <View className={showImages ? 'mb-6' : 'mt-4'}>
       {showImages && (
         <Text className="text-lg font-bold font-heading text-text dark:text-text-dark mb-3">
-          Found {hotels.length} Hotels
+          {`${hotels.length} ${t(TRANSLATION_KEYS.EXPLORE.TITLE)}`}
         </Text>
       )}
       <FlatList

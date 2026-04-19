@@ -1,9 +1,19 @@
-import React from 'react';
+/**
+ * Explore Interface Component
+ * Main explore page for browsing hotels and tours
+ * Supports both user and admin views
+ * Language changes are automatically reflected
+ */
+
+import React, { useMemo } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { ExploreMainCard } from './ExploreMainCard';
 import { TourBuilderCard } from '../tourBuilder/TourBuilderCard';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface ExploreInterfaceProps {
   isAdmin?: boolean;
@@ -11,65 +21,88 @@ interface ExploreInterfaceProps {
 
 export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
   const router = useRouter();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
 
-  const handleBookHotel = () => router.push('/(tabs)/explore/hotel-search');
-  const handleBrowseTours = () => router.push('/(tabs)/explore/tour-list');
-  const handleCreateTripPlan = () => router.push('/(tabs)/trip-planner');
-  const handleCreateTours = () => router.push('/(tabs)/explore/tour-create');
-  const handleMyTours = () => router.push('/(tabs)/explore/my-tours');
+  // Memoize navigation handlers to prevent unnecessary recreations
+  const navigationHandlers = useMemo(
+    () => ({
+      handleBookHotel: () => router.push('/(tabs)/explore/hotel-search'),
+      handleBrowseTours: () => router.push('/(tabs)/explore/tour-list'),
+      handleCreateTripPlan: () => router.push('/(tabs)/trip-planner'),
+      handleCreateTours: () => router.push('/(tabs)/explore/tour-create'),
+      handleMyTours: () => router.push('/(tabs)/explore/my-tours'),
+    }),
+    [router]
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {/* Header Section */}
         <View className="px-6 pt-4 pb-6">
           <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
-            {isAdmin ? 'Explore & Manage' : 'Explore'}
+            {isAdmin
+              ? t(TRANSLATION_KEYS.EXPLORE.TITLE_WITH_MANAGE)
+              : t(TRANSLATION_KEYS.EXPLORE.TITLE)}
           </Text>
           <Text className="mt-2 text-sm text-muted dark:text-muted-dark">
             {isAdmin
-              ? 'Manage hotels and tour packages'
-              : 'Discover amazing hotels and tours'}
+              ? t(TRANSLATION_KEYS.EXPLORE.SUBTITLE_ADMIN)
+              : t(TRANSLATION_KEYS.EXPLORE.SUBTITLE_USER)}
           </Text>
         </View>
 
+        {/* Cards Section */}
         <View className="px-6 pb-6">
+          {/* Book Hotel Card */}
           <ExploreMainCard
-            title="Book a Hotel"
-            description="Find and book your perfect stay"
+            title={t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)}
+            description={t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL_DESC)}
             iconName="bed"
             colorKey="primary"
-            onPress={handleBookHotel}
+            onPress={navigationHandlers.handleBookHotel}
           />
 
+          {/* Browse Tours Card */}
           <ExploreMainCard
-            title="Browse Tours"
-            description={isAdmin ? 'View all tour packages' : 'Explore exciting tour packages'}
+            title={t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_TOURS)}
+            description={
+              isAdmin
+                ? t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_TOURS_DESC_ADMIN)
+                : t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_TOURS_DESC)
+            }
             iconName="map"
             colorKey="success"
-            onPress={handleBrowseTours}
+            onPress={navigationHandlers.handleBrowseTours}
           />
 
+          {/* Admin or User Specific Section */}
           {isAdmin ? (
             <>
+              {/* Create Tours Card */}
               <TourBuilderCard
-                subtitle="Design and publish new tour packages for guests"
-                onPress={handleCreateTours}
+                subtitle={t(TRANSLATION_KEYS.EXPLORE.CARDS.CREATE_TOURS_DESC)}
+                onPress={navigationHandlers.handleCreateTours}
               />
+
+              {/* My Tours Card */}
               <ExploreMainCard
-                title="My Tours"
-                description="View all your created tour packages"
+                title={t(TRANSLATION_KEYS.EXPLORE.CARDS.MY_TOURS)}
+                description={t(TRANSLATION_KEYS.EXPLORE.CARDS.MY_TOURS_DESC)}
                 iconName="list"
                 colorKey="warning"
-                onPress={handleMyTours}
+                onPress={navigationHandlers.handleMyTours}
               />
             </>
           ) : (
+            /* Plan Trip Card */
             <ExploreMainCard
-              title="Plan Your Trip"
-              description="Create a custom trip itinerary"
+              title={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP)}
+              description={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP_DESC)}
               iconName="compass"
               colorKey="accent"
-              onPress={handleCreateTripPlan}
+              onPress={navigationHandlers.handleCreateTripPlan}
             />
           )}
         </View>

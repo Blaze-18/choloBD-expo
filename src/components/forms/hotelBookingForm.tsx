@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface HotelBookingFormProps {
   checkInDate: string;
@@ -42,13 +44,14 @@ export function HotelBookingForm({
   submitting,
 }: HotelBookingFormProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   return (
     <View className="mt-6 space-y-4">
-      <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">Booking Details</Text>
+      <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.BOOKING_DETAILS)}</Text>
 
       {/* Check-in Date */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Check-in Date</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.CHECK_IN)}</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -63,7 +66,7 @@ export function HotelBookingForm({
 
       {/* Check-out Date */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Check-out Date</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -78,7 +81,7 @@ export function HotelBookingForm({
 
       {/* Guest Name */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Guest Name</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.GUEST_NAME)}</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="person" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -93,7 +96,7 @@ export function HotelBookingForm({
 
       {/* Guest Email */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Email</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.EMAIL)}</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="mail" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -109,7 +112,7 @@ export function HotelBookingForm({
 
       {/* Guest Phone */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Phone Number</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PHONE_NUMBER)}</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="call" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -125,7 +128,7 @@ export function HotelBookingForm({
 
       {/* Payment Method */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Payment Method (optional)</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD)} ({t(TRANSLATION_KEYS.BOOKING.OPTIONAL)})</Text>
         <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <Ionicons name="card" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
           <TextInput
@@ -140,7 +143,7 @@ export function HotelBookingForm({
 
       {/* Special Requests */}
       <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">Special Requests (optional)</Text>
+        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.SPECIAL_REQUESTS)} ({t(TRANSLATION_KEYS.BOOKING.OPTIONAL)})</Text>
         <View className="mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
           <TextInput
             value={specialRequests}
@@ -166,7 +169,7 @@ export function HotelBookingForm({
         }}
       >
         <Text style={{ color: submitting ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : '#ffffff', fontWeight: '600', textAlign: 'center' }}>
-          {submitting ? 'Creating Booking...' : 'Create Booking'}
+          {submitting ? t(TRANSLATION_KEYS.BOOKING.CREATING_BOOKING) : t(TRANSLATION_KEYS.BOOKING.CREATE_BOOKING)}
         </Text>
       </TouchableOpacity>
     </View>

@@ -45,7 +45,8 @@
           "cameraPermission": "Allow CholoBD app to access your camera for QR code scanning."
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-localization"
     ]
   }
 }

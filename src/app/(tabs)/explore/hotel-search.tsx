@@ -12,6 +12,8 @@ import { useExplore } from './_provider';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { ExploreSearchForm } from '../../../components/forms/exploreSearchForm';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 console.log('[HotelSearchPage] Component loaded');
 
@@ -19,6 +21,7 @@ export default function HotelSearchPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const { locations, locationsLoading, fetchHotelsByLocation, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate } = useExplore();
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
@@ -52,8 +55,8 @@ export default function HotelSearchPage() {
             style={{ marginRight: 12 }}
           />
           <View className="flex-1">
-            <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">Book a Hotel</Text>
-            <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Search and book your perfect stay</Text>
+            <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)}</Text>
+            <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.EXPLORE.SEARCH_SUBTITLE)}</Text>
           </View>
         </View>
 
@@ -66,7 +69,7 @@ export default function HotelSearchPage() {
 
           {/* Check-in and Check-out Dates */}
           <View className="mt-4">
-            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">Check-in Date</Text>
+            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.CHECK_IN_DATE)}</Text>
             <View className="flex-row items-center border rounded-lg"
               style={{ borderColor: borderColor, backgroundColor: inputBgColor, borderWidth: 1 }}
             >
@@ -74,7 +77,7 @@ export default function HotelSearchPage() {
               <TextInput
                 value={checkInDate}
                 onChangeText={setCheckInDate}
-                placeholder="YYYY-MM-DD"
+                placeholder={t(TRANSLATION_KEYS.EXPLORE.DATE_FORMAT)}
                 placeholderTextColor={mutedColor}
                 style={{
                   flex: 1,
@@ -87,7 +90,7 @@ export default function HotelSearchPage() {
           </View>
 
           <View className="mt-3">
-            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">Check-out Date</Text>
+            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.CHECK_OUT_DATE)}</Text>
             <View className="flex-row items-center border rounded-lg"
               style={{ borderColor: borderColor, backgroundColor: inputBgColor, borderWidth: 1 }}
             >
@@ -95,7 +98,7 @@ export default function HotelSearchPage() {
               <TextInput
                 value={checkOutDate}
                 onChangeText={setCheckOutDate}
-                placeholder="YYYY-MM-DD"
+                placeholder={t(TRANSLATION_KEYS.EXPLORE.DATE_FORMAT)}
                 placeholderTextColor={mutedColor}
                 style={{
                   flex: 1,

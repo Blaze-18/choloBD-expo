@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { Feather } from '@expo/vector-icons';
 import LocationCard from './LocationCard';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface Location {
   id: string;
@@ -58,6 +61,8 @@ const NEARBY_LOCATIONS: Location[] = [
 export default function NearbyLocationsSection() {
   const router = useRouter();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
 
   const handleLocationPress = (location: Location) => {
     console.log('Selected location:', location.id);
@@ -73,15 +78,15 @@ export default function NearbyLocationsSection() {
   };
 
   return (
-    <View className="bg-white dark:bg-neutral-950 px-4 py-12">
+    <View className="bg-white dark:bg-neutral-950 px-4 pt-4 pb-8">
       {/* Header */}
       <View className="flex-row items-center justify-between mb-6">
         <View className="flex-1">
-          <Text className="text-2xl font-bold text-neutral-900 dark:text-white">
-            Explore Nearby
+          <Text className="text-2xl font-bold text-neutral-900 dark:text-white flex-1">
+            {t(TRANSLATION_KEYS.HOME.NEARBY_LOCATIONS)}
           </Text>
-          <Text className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Top hotels & attractions near you
+          <Text className="text-sm text-neutral-600 dark:text-neutral-400 mt-1 flex-1">
+            {t(TRANSLATION_KEYS.HOME.NEARBY_LOCATIONS_DESC)}
           </Text>
         </View>
         <TouchableOpacity

@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../../hooks/useTheme';
-import { RoomTypeSelectorUI } from '../../../components/ui/roomTypeSelectorUI';
+import RoomTypeSelectorUI from '@/components/ui/roomTypeSelectorUI';
 import { HotelBookingForm } from '../../../components/forms/hotelBookingForm';
 import { useExplore } from './_provider';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 export default function ExploreBooking() {
   const {
@@ -35,6 +37,7 @@ export default function ExploreBooking() {
 
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView
@@ -45,7 +48,7 @@ export default function ExploreBooking() {
         showsVerticalScrollIndicator={false}
       >
         <View className="px-6 pt-4 pb-4">
-          <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">Complete Booking</Text>
+          <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.COMPLETE_BOOKING)}</Text>
           <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{hotelDetail.name}</Text>
         </View>
 
@@ -56,7 +59,7 @@ export default function ExploreBooking() {
 
           {/* Estimated Total */}
           <View className="p-4 mb-4 bg-white border rounded-lg dark:bg-surface-dark border-border dark:border-border-dark">
-            <Text className="font-medium text-text dark:text-text-dark">Estimate</Text>
+            <Text className="font-medium text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}</Text>
             {checkInDate && checkOutDate ? (
               (() => {
                 let nights = 0;
@@ -76,13 +79,13 @@ export default function ExploreBooking() {
 
                 return (
                   <View>
-                    <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Nights: {nights}</Text>
-                    <Text className="mt-1 text-lg font-bold text-text dark:text-text-dark">Estimated Total: ₹{subtotal}</Text>
+                    <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.BOOKING.NIGHTS)}: {nights}</Text>
+                    <Text className="mt-1 text-lg font-bold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}: ₹{subtotal}</Text>
                   </View>
                 );
               })()
             ) : (
-              <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Enter check-in and check-out dates to see estimate</Text>
+              <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.BOOKING.ENTER_DATES)}</Text>
             )}
           </View>
 

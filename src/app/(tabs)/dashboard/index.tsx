@@ -1,12 +1,14 @@
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { useLanguage } from '../../../providers/LanguageProvider';
 import { ServiceAdminDashboard } from '../../../components/interface/ServiceAdminDashboard';
 import { UserDashboard } from '../../../components/interface/UserDashboard';
 import { useDashboardLogic } from '../../../hooks/useDashboardLogic';
 
 export default function DashboardPage() {
   const { auth, bookings, handleLogout, onRefresh, onPressBooking } = useDashboardLogic();
+  const { currentLanguage } = useLanguage();
   const insets = useSafeAreaInsets();
 
   React.useEffect(() => {

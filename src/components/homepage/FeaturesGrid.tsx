@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import FeatureCard from './FeatureCard';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface Feature {
   id: string;
@@ -12,59 +15,65 @@ interface Feature {
   route?: string;
 }
 
-const FEATURES: Feature[] = [
-  {
-    id: 'smart-tours',
-    title: 'Smart Tours',
-    description: 'Auto plan, quick tweaks',
-    icon: 'map',
-    variant: 'primary',
-    route: '/explore',
-  },
-  {
-    id: 'hotel-book',
-    title: 'Hotel Book',
-    description: 'Trusted stays, easy pay',
-    icon: 'home',
-    variant: 'secondary',
-    route: '/explore',
-  },
-  {
-    id: 'ride-tickets',
-    title: 'Ride Tickets',
-    description: 'Bus, train, air',
-    icon: 'truck',
-    variant: 'accent',
-    route: '/explore',
-  },
-  {
-    id: 'find-buddies',
-    title: 'Find Buddies',
-    description: 'Meet travel friends',
-    icon: 'users',
-    variant: 'primary',
-    route: '/explore',
-  },
-  {
-    id: 'wallet-deals',
-    title: 'Wallet & Deals',
-    description: 'Cashback and perks',
-    icon: 'credit-card',
-    variant: 'secondary',
-    route: '/(shop)/wallet',
-  },
-  {
-    id: 'local-guides',
-    title: 'Local Guides',
-    description: 'Tips from pros',
-    icon: 'compass',
-    variant: 'accent',
-    route: '/explore',
-  },
-];
-
 export default function FeaturesGrid() {
   const router = useRouter();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
+
+  // Memoize features array to regenerate when language changes
+  const FEATURES: Feature[] = useMemo(
+    () => [
+      {
+        id: 'smart-tours',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.SMART_TOURS),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.SMART_TOURS_DESC),
+        icon: 'map',
+        variant: 'primary' as const,
+        route: '/explore',
+      },
+      {
+        id: 'hotel-book',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.HOTEL_BOOK),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.HOTEL_BOOK_DESC),
+        icon: 'home',
+        variant: 'secondary' as const,
+        route: '/explore',
+      },
+      {
+        id: 'ride-tickets',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.RIDE_TICKETS),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.RIDE_TICKETS_DESC),
+        icon: 'truck',
+        variant: 'accent' as const,
+        route: '/explore',
+      },
+      {
+        id: 'find-buddies',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.FIND_BUDDIES),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.FIND_BUDDIES_DESC),
+        icon: 'users',
+        variant: 'primary' as const,
+        route: '/explore',
+      },
+      {
+        id: 'wallet-deals',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.WALLET_DEALS),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.WALLET_DEALS_DESC),
+        icon: 'credit-card',
+        variant: 'secondary' as const,
+        route: '/(shop)/wallet',
+      },
+      {
+        id: 'local-guides',
+        title: t(TRANSLATION_KEYS.HOME.FEATURES.LOCAL_GUIDES),
+        description: t(TRANSLATION_KEYS.HOME.FEATURES.LOCAL_GUIDES_DESC),
+        icon: 'compass',
+        variant: 'accent' as const,
+        route: '/explore',
+      },
+    ],
+    [t, currentLanguage]
+  );
 
   const handleFeaturePress = (feature: Feature) => {
     if (feature.route) {
@@ -73,7 +82,7 @@ export default function FeaturesGrid() {
   };
 
   return (
-    <View className="bg-white dark:bg-neutral-950 px-4 py-6">
+    <View className="px-4 py-6 bg-white dark:bg-neutral-950">
       <View className="gap-4">
         {/* Row 1 */}
         <View className="flex-row gap-4">

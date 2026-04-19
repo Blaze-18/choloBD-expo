@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface BookingCardProps {
   booking: any;
@@ -24,6 +26,7 @@ const formatDate = (dateString: string): string => {
 
 export function BookingCard({ booking, onPress }: BookingCardProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const auth = useSelector((s: RootState) => s.auth);
   const muteIconColor = isDark ? '#9ca3af' : '#666';
   
@@ -61,11 +64,11 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
   return (
     <TouchableOpacity onPress={() => onPress && onPress(booking.id)} activeOpacity={0.8}>
-      <View className="p-4 mb-3 bg-white rounded-xl border border-border dark:bg-surface-dark dark:border-border-dark shadow">
+      <View className="p-4 mb-3 bg-white border shadow rounded-xl border-border dark:bg-surface-dark dark:border-border-dark">
         {/* Header: Guest name and status badges */}
-        <View className="flex-row justify-between items-start">
+        <View className="flex-row items-start justify-between">
           <View style={{ flex: 1 }}>
-            <Text className="font-bold text-lg text-text dark:text-text-dark">
+            <Text className="text-lg font-bold text-text dark:text-text-dark">
               {displayName}
             </Text>
             {/* Show guest contact info only for SERVICE_ADMIN, hide for regular users */}
@@ -73,7 +76,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
               <>
                 <View className="flex-row items-center mt-2">
                   <Ionicons name="mail" size={14} color={muteIconColor} style={{ marginRight: 6 }} />
-                  <Text className="text-sm text-muted dark:text-muted-dark flex-1">
+                  <Text className="flex-1 text-sm text-muted dark:text-muted-dark">
                     {booking.guestEmail || 'N/A'}
                   </Text>
                 </View>
@@ -88,7 +91,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
           </View>
 
           {/* Status badges */}
-          <View className="ml-3 items-end">
+          <View className="items-end ml-3">
             <View
               style={{ backgroundColor: `${getStatusColor(booking.status)}20` }}
               className="px-3 py-1.5 rounded-lg mb-2"
@@ -109,7 +112,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         </View>
 
         {/* Divider */}
-        <View className="h-px bg-border dark:bg-border-dark my-3" />
+        <View className="h-px my-3 bg-border dark:bg-border-dark" />
 
         {/* Booking details */}
         <View>
@@ -118,7 +121,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
             <Ionicons name="receipt" size={16} color={theme.colors.primary} style={{ marginRight: 10 }} />
             <View style={{ flex: 1 }}>
               <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
-                Confirmation Code
+                {t(TRANSLATION_KEYS.BOOKING.CONFIRMATION_CODE)}
               </Text>
               <Text className="text-sm font-semibold text-text dark:text-text-dark">
                 {booking.confirmationCode || booking.id?.substring(0, 16) || 'N/A'}
@@ -128,17 +131,17 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
           {/* Check-in and check-out dates */}
           <View className="flex-row justify-between gap-3 mb-3">
-            <View className="flex-1 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-              <Text className="text-xs font-semibold text-blue-600 dark:text-blue-300 mb-1">
-                CHECK-IN
+            <View className="flex-1 p-3 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
+              <Text className="mb-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
+                {t(TRANSLATION_KEYS.BOOKING.CHECK_IN)}
               </Text>
               <Text className="text-base font-bold text-text dark:text-text-dark">
                 {formatDate(booking.checkInDate)}
               </Text>
             </View>
-            <View className="flex-1 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
-              <Text className="text-xs font-semibold text-purple-600 dark:text-purple-300 mb-1">
-                CHECK-OUT
+            <View className="flex-1 p-3 border border-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800">
+              <Text className="mb-1 text-xs font-semibold text-purple-600 dark:text-purple-300">
+                {t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}
               </Text>
               <Text className="text-base font-bold text-text dark:text-text-dark">
                 {formatDate(booking.checkOutDate)}
@@ -152,7 +155,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
               <Ionicons name="cash" size={16} color={theme.colors.primary} style={{ marginRight: 10 }} />
               <View>
                 <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
-                  Total Price
+                  {t(TRANSLATION_KEYS.BOOKING.TOTAL_PRICE)}
                 </Text>
                 <Text className="text-base font-bold text-text dark:text-text-dark">
                   ₹{booking.totalPrice ?? 'N/A'}
@@ -162,7 +165,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
             {booking.bookedAt && (
               <View className="items-end">
                 <Text className="text-xs text-muted dark:text-muted-dark mb-0.5">
-                  Booked On
+                  {t(TRANSLATION_KEYS.BOOKING.BOOKED_ON)}
                 </Text>
                 <Text className="text-sm font-semibold text-text dark:text-text-dark">
                   {formatDate(booking.bookedAt)}
@@ -174,21 +177,21 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
         {/* Room details if available */}
         {booking.roomDetails && booking.roomDetails.length > 0 && (
-          <View className="mt-4 pt-4 border-t border-border dark:border-border-dark">
+          <View className="pt-4 mt-4 border-t border-border dark:border-border-dark">
             <View className="flex-row items-center mb-3">
               <Ionicons name="bed" size={16} color={theme.colors.primary} style={{ marginRight: 8 }} />
               <Text className="text-sm font-bold text-text dark:text-text-dark">
-                Room{booking.roomDetails.length > 1 ? 's' : ''} ({booking.roomDetails.length})
+                {t(TRANSLATION_KEYS.BOOKING.ROOM_NUMBER)}{booking.roomDetails.length > 1 ? 's' : ''} ({booking.roomDetails.length})
               </Text>
             </View>
             {booking.roomDetails.map((room: any, idx: number) => (
-              <View key={idx} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg mb-2">
-                <View className="flex-row justify-between items-center">
+              <View key={idx} className="p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <View className="flex-row items-center justify-between">
                   <Text className="text-base font-semibold text-text dark:text-text-dark">
-                    Room {room.hotelRoom?.roomNumber || '?'}
+                    {t(TRANSLATION_KEYS.BOOKING.ROOM_NUMBER)} {room.hotelRoom?.roomNumber || '?'}
                   </Text>
                   <Text className="text-base font-bold text-green-600 dark:text-green-400">
-                    ₹{room.pricePerNight}/night
+                    ₹{room.pricePerNight}{t(TRANSLATION_KEYS.BOOKING.PRICE_PER_NIGHT)}
                   </Text>
                 </View>
               </View>

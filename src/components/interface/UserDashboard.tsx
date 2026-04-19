@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
 import { BookingHistoryUI } from '../ui/bookingHistoryUI';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface UserDashboardProps {
   userName?: string;
@@ -29,13 +32,15 @@ export function UserDashboard({
   onPressBooking,
 }: UserDashboardProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} refreshControl={undefined}>
         <View className="px-6 pt-8 pb-2">
-          <Text className="text-sm text-muted dark:text-muted-dark">Welcome back,</Text>
-          <Text className="mt-1 text-3xl font-bold font-heading text-text dark:text-text-dark">Dashboard</Text>
+          <Text className="text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.DASHBOARD.WELCOME_BACK)}</Text>
+          <Text className="mt-1 text-3xl font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.DASHBOARD.USER_TITLE)}</Text>
         </View>
 
         <View className="px-6 pb-8">

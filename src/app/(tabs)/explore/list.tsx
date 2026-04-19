@@ -4,11 +4,14 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '../../../hooks/useTheme';
 import { HotelListUI } from '../../../components/ui/hotelListUI';
 import { useExplore } from './_provider';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 export default function ExploreList() {
   const { hotels, hotelsLoading, selectHotel } = useExplore();
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView
@@ -16,7 +19,7 @@ export default function ExploreList() {
     >
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pt-4 pb-2">
-          <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">Available Hotels</Text>
+          <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.TITLE)}</Text>
         </View>
 
         <View className="px-6 pb-6">

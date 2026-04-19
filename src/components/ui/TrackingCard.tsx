@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../providers/LanguageProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface TrackingCardProps {
   title: string; // Hotel name
@@ -26,6 +29,8 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
   isServiceAdmin = false,
 }) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const checkIn = checkInDate ? new Date(checkInDate).toLocaleDateString() : '';
   const checkOut = checkOutDate ? new Date(checkOutDate).toLocaleDateString() : '';
 
@@ -54,7 +59,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
           className="flex-row items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900"
         >
           <Ionicons name="information-circle-outline" size={16} color={theme.colors.primary} style={{ marginRight: 6 }} />
-          <Text className="text-sm font-semibold text-primary">Details</Text>
+          <Text className="text-sm font-semibold text-primary">{t(TRANSLATION_KEYS.TRACKING.VIEW_DETAILS)}</Text>
         </Pressable>
 
         {/* Right Side Buttons */}

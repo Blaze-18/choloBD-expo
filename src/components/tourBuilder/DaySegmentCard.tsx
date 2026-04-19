@@ -8,7 +8,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
   ScrollView,
   Modal,
@@ -20,6 +19,8 @@ import { TourDaySegment, TourDaySegmentInput, TransportServiceType, HotelOptionT
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
 import { getTourSpots, getActivitySpots } from '../../services/api/tourBuilder';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface DaySegmentCardProps {
   segment: TourDaySegment | TourDaySegmentInput;
@@ -49,6 +50,7 @@ export function DaySegmentCard({
   locationId,
 }: DaySegmentCardProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const [isEditMode, setIsEditMode] = useState(false);
   const [editData, setEditData] = useState<EditState>({
     tourSpotId: segment.tourSpotId,
@@ -112,68 +114,6 @@ export function DaySegmentCard({
   const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
   const warningColor = isDark ? theme.colors['warning-dark'] : theme.colors.warning;
   const errorColor = isDark ? theme.colors['error-dark'] : theme.colors.error;
-  const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
-
-  const dynamicStyles = StyleSheet.create({
-    card: {
-      backgroundColor: surfaceColor,
-    },
-    dayLabel: {
-      color: textColor,
-    },
-    editText: {
-      color: primaryColor,
-    },
-    cancelText: {
-      color: mutedColor,
-    },
-    detailLabel: {
-      color: mutedColor,
-    },
-    detailValue: {
-      color: textColor,
-    },
-    transportBadge: {
-      backgroundColor: primaryColor,
-      color: onPrimaryColor,
-    },
-    formLabel: {
-      color: textColor,
-    },
-    input: {
-      borderColor: borderColor,
-      backgroundColor: surfaceColor,
-      color: textColor,
-    },
-    transportButton: {
-      borderColor: borderColor,
-      backgroundColor: surfaceColor,
-    },
-    transportButtonActive: {
-      backgroundColor: primaryColor,
-      borderColor: primaryColor,
-    },
-    transportButtonText: {
-      color: textColor,
-    },
-    hotelButton: {
-      borderColor: borderColor,
-      backgroundColor: surfaceColor,
-    },
-    hotelButtonActive: {
-      backgroundColor: warningColor,
-      borderColor: warningColor,
-    },
-    hotelButtonText: {
-      color: textColor,
-    },
-    saveButton: {
-      backgroundColor: successColor,
-    },
-    deleteButton: {
-      backgroundColor: errorColor,
-    },
-  });
 
   const transportOptions: TransportServiceType[] = ['BUS', 'FLIGHT', 'TRAIN', 'CAR_RENTAL', 'FERRY', 'SELF_MANAGED'];
   const hotelOptions: HotelOptionType[] = ['LUXURY', 'BUDGET', 'BOUTIQUE', 'RESORT', 'HOSTEL', 'GUESTHOUSE', 'APARTMENT'];
@@ -217,8 +157,8 @@ export function DaySegmentCard({
         {/* Edit Mode Header */}
         <View className="flex-row items-center justify-between px-4 pt-4 pb-3 border-b border-border dark:border-border-dark">
           <View>
-            <Text className="text-sm font-bold text-primary dark:text-primary-dark">Day {dayNumber} - Edit</Text>
-            <Text className="mt-1 text-xs text-muted dark:text-muted-dark">Customize this itinerary</Text>
+            <Text className="text-sm font-bold text-primary dark:text-primary-dark">{t(TRANSLATION_KEYS.TOUR_BUILDER.DAY_EDIT, { day: dayNumber })}</Text>
+            <Text className="mt-1 text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TOUR_BUILDER.CUSTOMIZE_ITINERARY)}</Text>
           </View>
           <TouchableOpacity onPress={handleCancel} className="p-1">
             <Ionicons name="close" size={24} color={mutedColor} />
@@ -229,15 +169,22 @@ export function DaySegmentCard({
           {/* Tour Spot Selection */}
           <View>
             <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
-              Tour Spot
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.TOUR_SPOT)}
             </Text>
             <TouchableOpacity
               onPress={() => setTourSpotModalVisible(true)}
-              style={[styles.input, dynamicStyles.input]}
-              className="flex-row items-center justify-between px-4 py-3 border rounded-lg"
+              style={{
+                borderColor,
+                backgroundColor: surfaceColor,
+                borderWidth: 1,
+                borderRadius: 12,
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+              }}
+              className="flex-row items-center justify-between"
             >
               <Text style={{ color: editData.tourSpotId ? textColor : mutedColor }}>
-                {editData.tourSpotId ? getTourSpotName(editData.tourSpotId) : 'Select Tour Spot...'}
+                {editData.tourSpotId ? getTourSpotName(editData.tourSpotId) : t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_TOUR_SPOT)}
               </Text>
               <Ionicons name="chevron-forward" size={18} color={primaryColor} />
             </TouchableOpacity>
@@ -246,15 +193,22 @@ export function DaySegmentCard({
           {/* Activity Spot Selection */}
           <View>
             <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
-              Activity Spot (Optional)
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.ACTIVITY_SPOT)}
             </Text>
             <TouchableOpacity
               onPress={() => setActivitySpotModalVisible(true)}
-              style={[styles.input, dynamicStyles.input]}
-              className="flex-row items-center justify-between px-4 py-3 border rounded-lg"
+              style={{
+                borderColor,
+                backgroundColor: surfaceColor,
+                borderWidth: 1,
+                borderRadius: 12,
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+              }}
+              className="flex-row items-center justify-between"
             >
               <Text style={{ color: editData.activitySpotId ? textColor : mutedColor }}>
-                {editData.activitySpotId ? getActivitySpotName(editData.activitySpotId) : 'Select Activity Spot...'}
+                {editData.activitySpotId ? getActivitySpotName(editData.activitySpotId) : t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_ACTIVITY_SPOT)}
               </Text>
               <Ionicons name="chevron-forward" size={18} color={primaryColor} />
             </TouchableOpacity>
@@ -263,26 +217,28 @@ export function DaySegmentCard({
           {/* Transport Option */}
           <View>
             <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
-              Transport
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.TRANSPORT)}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
               <View style={{ gap: 8, flexDirection: 'row' }}>
                 {transportOptions.map((option) => (
                   <TouchableOpacity
                     key={option}
-                    style={[
-                      styles.transportButton,
-                      dynamicStyles.transportButton,
-                      editData.transportOption === option && dynamicStyles.transportButtonActive,
-                    ]}
+                    style={{
+                      borderColor: editData.transportOption === option ? primaryColor : borderColor,
+                      backgroundColor: editData.transportOption === option ? primaryColor : surfaceColor,
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                    }}
                     onPress={() => setEditData({ ...editData, transportOption: option, transportQuality: undefined })}
                   >
                     <Text
-                      style={[
-                        styles.transportButtonText,
-                        dynamicStyles.transportButtonText,
-                        editData.transportOption === option && styles.transportButtonTextActive,
-                      ]}
+                      style={{
+                        color: editData.transportOption === option ? '#fff' : textColor,
+                        fontWeight: '500',
+                      }}
                       numberOfLines={1}
                     >
                       {option.replace(/_/g, ' ')}
@@ -297,45 +253,49 @@ export function DaySegmentCard({
           {currentTransportQualityOptions !== null && (
             <View>
               <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
-                Transport Quality (Optional)
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.TRANSPORT_QUALITY)}
               </Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
                 <View style={{ gap: 8, flexDirection: 'row' }}>
                   <TouchableOpacity
-                    style={[
-                      styles.transportButton,
-                      dynamicStyles.transportButton,
-                      !editData.transportQuality && dynamicStyles.transportButtonActive,
-                    ]}
+                    style={{
+                      borderColor: !editData.transportQuality ? primaryColor : borderColor,
+                      backgroundColor: !editData.transportQuality ? primaryColor : surfaceColor,
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                    }}
                     onPress={() => setEditData({ ...editData, transportQuality: undefined })}
                   >
                     <Text
-                      style={[
-                        styles.transportButtonText,
-                        dynamicStyles.transportButtonText,
-                        !editData.transportQuality && styles.transportButtonTextActive,
-                      ]}
+                      style={{
+                        color: !editData.transportQuality ? '#fff' : textColor,
+                        fontWeight: '500',
+                      }}
                       numberOfLines={1}
                     >
-                      None
+                      {t(TRANSLATION_KEYS.TOUR_BUILDER.NONE)}
                     </Text>
                   </TouchableOpacity>
                   {currentTransportQualityOptions.map((option) => (
                     <TouchableOpacity
                       key={option}
-                      style={[
-                        styles.transportButton,
-                        dynamicStyles.transportButton,
-                        editData.transportQuality === option && dynamicStyles.transportButtonActive,
-                      ]}
+                      style={{
+                        borderColor: editData.transportQuality === option ? primaryColor : borderColor,
+                        backgroundColor: editData.transportQuality === option ? primaryColor : surfaceColor,
+                        borderWidth: 1,
+                        borderRadius: 12,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                      }}
                       onPress={() => setEditData({ ...editData, transportQuality: option })}
                     >
                       <Text
-                        style={[
-                          styles.transportButtonText,
-                          dynamicStyles.transportButtonText,
-                          editData.transportQuality === option && styles.transportButtonTextActive,
-                        ]}
+                        style={{
+                          color: editData.transportQuality === option ? '#fff' : textColor,
+                          fontWeight: '500',
+                        }}
                         numberOfLines={1}
                       >
                         {option.replace(/_/g, ' ')}
@@ -350,26 +310,28 @@ export function DaySegmentCard({
           {/* Hotel Option */}
           <View>
             <Text className="mb-2 text-xs font-semibold tracking-wider uppercase text-muted dark:text-muted-dark">
-              Hotel Type
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.HOTEL)}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16, paddingHorizontal: 16 }}>
               <View style={{ gap: 8, flexDirection: 'row' }}>
                 {hotelOptions.map((option) => (
                   <TouchableOpacity
                     key={option}
-                    style={[
-                      styles.hotelButton,
-                      dynamicStyles.hotelButton,
-                      editData.hotelOption === option && dynamicStyles.hotelButtonActive,
-                    ]}
+                    style={{
+                      borderColor: editData.hotelOption === option ? warningColor : borderColor,
+                      backgroundColor: editData.hotelOption === option ? warningColor : surfaceColor,
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                    }}
                     onPress={() => setEditData({ ...editData, hotelOption: option })}
                   >
                     <Text
-                      style={[
-                        styles.hotelButtonText,
-                        dynamicStyles.hotelButtonText,
-                        editData.hotelOption === option && styles.hotelButtonTextActive,
-                      ]}
+                      style={{
+                        color: editData.hotelOption === option ? '#fff' : textColor,
+                        fontWeight: '500',
+                      }}
                       numberOfLines={1}
                     >
                       {option}
@@ -403,7 +365,7 @@ export function DaySegmentCard({
                     style={{ color: textColor }}
                     className="text-lg font-semibold"
                   >
-                    Select Tour Spot
+                    {t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_TOUR_SPOT)}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setTourSpotModalVisible(false)}
@@ -416,13 +378,23 @@ export function DaySegmentCard({
                   <View className="items-center justify-center py-8">
                     <ActivityIndicator size="large" color={primaryColor} />
                     <Text style={{ color: mutedColor }} className="mt-2 text-sm">
-                      Loading tour spots...
+                      {t(TRANSLATION_KEYS.COMMON.LOADING)}
                     </Text>
                   </View>
                 ) : (
                   <>
                     <TextInput
-                      style={[styles.input, dynamicStyles.input]}
+                      style={{
+                        borderColor,
+                        backgroundColor: surfaceColor,
+                        color: textColor,
+                        borderWidth: 1,
+                        borderRadius: 12,
+                        paddingHorizontal: 14,
+                        paddingVertical: 12,
+                        fontSize: 14,
+                        minHeight: 44,
+                      }}
                       value={tourSpotSearch}
                       onChangeText={setTourSpotSearch}
                       placeholder="Search tour spots..."
@@ -514,7 +486,7 @@ export function DaySegmentCard({
                     style={{ color: textColor }}
                     className="text-lg font-semibold"
                   >
-                    Select Activity Spot
+                    {t(TRANSLATION_KEYS.TOUR_BUILDER.SELECT_ACTIVITY_SPOT)}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setActivitySpotModalVisible(false)}
@@ -527,13 +499,23 @@ export function DaySegmentCard({
                   <View className="items-center justify-center py-8">
                     <ActivityIndicator size="large" color={primaryColor} />
                     <Text style={{ color: mutedColor }} className="mt-2 text-sm">
-                      Loading activity spots...
+                      {t(TRANSLATION_KEYS.COMMON.LOADING)}
                     </Text>
                   </View>
                 ) : (
                   <>
                     <TextInput
-                      style={[styles.input, dynamicStyles.input]}
+                      style={{
+                        borderColor,
+                        backgroundColor: surfaceColor,
+                        color: textColor,
+                        borderWidth: 1,
+                        borderRadius: 12,
+                        paddingHorizontal: 14,
+                        paddingVertical: 12,
+                        fontSize: 14,
+                        minHeight: 44,
+                      }}
                       value={activitySpotSearch}
                       onChangeText={setActivitySpotSearch}
                       placeholder="Search activity spots..."
@@ -545,13 +527,13 @@ export function DaySegmentCard({
                         setEditData({ ...editData, activitySpotId: undefined });
                         setActivitySpotModalVisible(false);
                       }}
-                      className="px-4 py-3 mb-2 border rounded-lg border-border dark:border-border-dark"
+                      className="px-4 py-3 mb-2 border rounded-lg"
                       style={{
-                        borderColor: borderColor,
+                        borderColor,
                       }}
                     >
                       <Text style={{ color: mutedColor }}>
-                        <Ionicons name="ban" size={16} /> None
+                        <Ionicons name="ban" size={16} /> {t(TRANSLATION_KEYS.TOUR_BUILDER.NONE)}
                       </Text>
                     </TouchableOpacity>
 
@@ -626,13 +608,13 @@ export function DaySegmentCard({
         </Modal>
 
         {/* Action Buttons */}
-        <View className="flex-row gap-2 px-4 py-4 border-t border-border dark:border-border-dark">
-          <TouchableOpacity style={[styles.actionButton, dynamicStyles.saveButton]} onPress={handleSave} className="active:opacity-80">
-            <Text style={styles.actionButtonText}>Save</Text>
+        <View className="flex-row gap-2 px-4 py-4 border-t" style={{ borderColor }}>
+          <TouchableOpacity style={{ flex: 1, backgroundColor: successColor, paddingVertical: 12, borderRadius: 10, alignItems: 'center', justifyContent: 'center', minHeight: 44 }} onPress={handleSave} className="active:opacity-80">
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>{t(TRANSLATION_KEYS.TOUR_BUILDER.SAVE)}</Text>
           </TouchableOpacity>
           {onDelete && (
-            <TouchableOpacity style={[styles.actionButton, dynamicStyles.deleteButton]} onPress={onDelete} className="active:opacity-80">
-              <Text style={styles.actionButtonText}>Delete</Text>
+            <TouchableOpacity style={{ flex: 1, backgroundColor: errorColor, paddingVertical: 12, borderRadius: 10, alignItems: 'center', justifyContent: 'center', minHeight: 44 }} onPress={onDelete} className="active:opacity-80">
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>{t(TRANSLATION_KEYS.TOUR_BUILDER.DELETE)}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -740,59 +722,5 @@ function DetailRow({ icon, label, value, color }: any) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    minHeight: 44,
-  },
-  transportButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    alignItems: 'center',
-    minWidth: 100,
-  },
-  transportButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  transportButtonTextActive: {
-    color: '#fff',
-  },
-  hotelButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    alignItems: 'center',
-    minWidth: 90,
-  },
-  hotelButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  hotelButtonTextActive: {
-    color: '#fff',
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 44,
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 14,
-  },
-});
 
 export default DaySegmentCard;

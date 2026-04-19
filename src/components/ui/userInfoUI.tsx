@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface UserInfoUIProps {
   userName?: string;
@@ -15,6 +17,7 @@ interface UserInfoUIProps {
 
 export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogout }: UserInfoUIProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const avatarUrl = imageUrl || 'https://api.dicebear.com/6.x/initials/svg?seed=' + (userName || email || 'user');
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
@@ -58,7 +61,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
         <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
           <View className="flex-row items-center justify-between">
             <View>
-              <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Role</Text>
+              <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">{t(TRANSLATION_KEYS.DASHBOARD.USER_INFO.ROLE)}</Text>
               <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{role || 'USER'}</Text>
               </View>
             <Ionicons name="person" size={24} color={primaryColor} />
@@ -68,7 +71,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
         <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
           <View className="flex-row items-center justify-between">
             <View>
-              <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">Status</Text>
+              <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">{t(TRANSLATION_KEYS.DASHBOARD.USER_INFO.STATUS)}</Text>
               <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{userStatus || 'ACTIVE'}</Text>
             </View>
             <Ionicons name="checkmark-circle" size={24} color={successColor} />

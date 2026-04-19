@@ -8,6 +8,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 console.log('[TourBuilderCard] Component loaded');
 
@@ -21,6 +23,7 @@ export function TourBuilderCard({
   subtitle = 'Design and publish new tour packages',
 }: TourBuilderCardProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const primaryLight = isDark ? theme.colors['primary-dark'] + '20' : theme.colors.primary + '15';
 
@@ -68,23 +71,23 @@ export function TourBuilderCard({
               >
                 <Ionicons name="hammer" size={24} color="#fff" />
               </View>
-              <Text className="text-xl font-bold text-text dark:text-text-dark">Tour Builder</Text>
+              <Text className="text-xl font-bold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.TOUR_BUILDER.TITLE)}</Text>
             </View>
 
             <Text className="text-sm text-muted dark:text-muted-dark leading-5 mb-4">
-              {subtitle}
+              {subtitle || t(TRANSLATION_KEYS.TOUR_BUILDER.CARD_SUBTITLE)}
             </Text>
 
             {/* Quick Info Tags */}
             <View className="flex-row flex-wrap gap-2">
               <View className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
                 <Text className="text-xs font-semibold text-text dark:text-text-dark">
-                  Easy Setup
+                  {t(TRANSLATION_KEYS.TOUR_BUILDER.EASY_SETUP)}
                 </Text>
               </View>
               <View className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
                 <Text className="text-xs font-semibold text-text dark:text-text-dark">
-                  Fast Deploy
+                  {t(TRANSLATION_KEYS.TOUR_BUILDER.FAST_DEPLOY)}
                 </Text>
               </View>
             </View>

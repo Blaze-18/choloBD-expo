@@ -1,6 +1,7 @@
 import './globals.css';
 import { Stack, useRouter } from 'expo-router';
 import { ThemeProvider } from '../providers/ThemeProvider';
+import { LanguageProvider } from '../providers/LanguageProvider';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
 import { useSelector } from 'react-redux';
@@ -68,9 +69,11 @@ function AppContentLayout() {
 
 function AppContent() {
   return (
-    <ThemeProvider>
-      <AppContentLayout />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <AppContentLayout />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
 
