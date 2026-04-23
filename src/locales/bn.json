@@ -3,6 +3,13 @@
     "tagline": "আপনার সব এক ভ্রমণ পরিকল্পনাকারী",
     "taglineAlt": "CholoBD দিয়ে বাংলাদেশ আবিষ্কার করুন"
   },
+  "tabs": {
+    "homepage": "হোমপেজ",
+    "explore": "অন্বেষণ",
+    "dashboard": "ড্যাশবোর্ড",
+    "tracking": "ট্র্যাকিং",
+    "tripPlanner": "ভ্রমণ পরিকল্পনাকারী"
+  },
   "common": {
     "loading": "লোড হচ্ছে...",
     "error": "ত্রুটি",

@@ -8,6 +8,13 @@ export const TRANSLATION_KEYS = {
     TAGLINE: 'splash.tagline',
     TAGLINE_ALT: 'splash.taglineAlt',
   },
+  TABS: {
+    HOMEPAGE: 'tabs.homepage',
+    EXPLORE: 'tabs.explore',
+    DASHBOARD: 'tabs.dashboard',
+    TRACKING: 'tabs.tracking',
+    TRIP_PLANNER: 'tabs.tripPlanner',
+  },
   COMMON: {
     LOADING: 'common.loading',
     ERROR: 'common.error',

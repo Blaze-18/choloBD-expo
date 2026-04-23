@@ -3,6 +3,13 @@
     "tagline": "Your all in one travel planner",
     "taglineAlt": "Discover Bangladesh with CholoBD"
   },
+  "tabs": {
+    "homepage": "Homepage",
+    "explore": "Explore",
+    "dashboard": "Dashboard",
+    "tracking": "Tracking",
+    "tripPlanner": "Trip Planner"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",
