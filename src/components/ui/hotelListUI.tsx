@@ -107,7 +107,7 @@ export function HotelListUI({
                     </View>
                     {showPrice && getMinPrice(item) && (
                       <Text className="text-sm font-bold text-primary dark:text-primary-dark">
-                        {getMinPrice(item)}/night
+                        {getMinPrice(item)} {t(TRANSLATION_KEYS.BOOKING.PER_NIGHT)}
                       </Text>
                     )}
                   </View>

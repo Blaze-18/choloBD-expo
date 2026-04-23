@@ -63,6 +63,18 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
 
           <Text className="mt-4 text-base leading-6 text-text dark:text-text-dark">{hotel.description}</Text>
 
+          {minPrice > 0 && (
+            <View className="p-4 mt-4 border rounded-xl bg-primary/10 dark:bg-primary-dark/20 border-primary/30 dark:border-primary-dark/40">
+              <Text className="text-xs font-semibold tracking-wide uppercase text-primary dark:text-primary-dark">
+                {t(TRANSLATION_KEYS.BOOKING.STARTING_FROM)}
+              </Text>
+              <View className="flex-row items-baseline mt-1">
+                <Text className="text-2xl font-bold font-heading text-primary dark:text-primary-dark">₹{minPrice}</Text>
+                <Text className="ml-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.BOOKING.PER_NIGHT)}</Text>
+              </View>
+            </View>
+          )}
+
           {(hotel.checkInTime || hotel.checkOutTime) && (
             <View className="p-4 mt-4 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
               <View className="flex-row justify-between">
@@ -111,7 +123,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
 
           {hotel.amenities && hotel.amenities.length > 0 && (
             <View className="mt-6">
-              <Text className="mb-3 text-lg font-bold font-heading text-text dark:text-text-dark">Amenities</Text>
+              <Text className="mb-3 text-lg font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.AMENITIES)}</Text>
               <View className="flex-row flex-wrap gap-2">
                 {hotel.amenities.map((amenity, idx) => (
                   <View
@@ -144,22 +156,23 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
         </View>
       </ScrollView>
 
-      <View className="px-6 pt-4 pb-6 bg-white border-t dark:bg-surface-dark border-border dark:border-border-dark">
+      <View
+        className="px-6 pt-2 pb-2 bg-background dark:bg-background-dark"
+      >
         <TouchableOpacity
           onPress={onBooking}
           disabled={loading}
           style={{
             backgroundColor: loading ? (isDark ? '#4b5563' : '#d1d5db') : primaryColor,
-            borderRadius: 8,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
+            borderRadius: 12,
+            minHeight: 52,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
           <Ionicons name="bed" size={20} color={onPrimaryColor} style={{ marginRight: 8 }} />
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: onPrimaryColor }}>{`${t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)} (from ₹${minPrice})`}</Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: onPrimaryColor }}>{t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)}</Text>
         </TouchableOpacity>
       </View>
     </View>

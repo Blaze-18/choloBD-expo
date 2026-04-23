@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
@@ -16,6 +16,8 @@ interface ExploreSearchFormProps {
   locations: Location[];
   loadingLocations: boolean;
   onSearch: (filters: { locationId: string }) => void;
+  canSearch?: boolean;
+  onPreSearchValidationFail?: () => void;
   searching?: boolean;
 }
 
@@ -23,6 +25,8 @@ export function ExploreSearchForm({
   locations,
   loadingLocations,
   onSearch,
+  canSearch = true,
+  onPreSearchValidationFail,
   searching = false,
 }: ExploreSearchFormProps) {
   const { isDark } = useTheme();
@@ -34,7 +38,17 @@ export function ExploreSearchForm({
 
   const handleSearch = () => {
     if (!selectedLocationId) {
-      alert(t(TRANSLATION_KEYS.COMMON.CANCEL));
+      Alert.alert(
+        t(TRANSLATION_KEYS.COMMON.ERROR),
+        t(TRANSLATION_KEYS.EXPLORE.CHOOSE_LOCATION)
+      );
+      return;
+    }
+
+    if (!canSearch) {
+      if (onPreSearchValidationFail) {
+        onPreSearchValidationFail();
+      }
       return;
     }
 

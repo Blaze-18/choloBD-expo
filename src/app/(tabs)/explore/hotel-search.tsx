@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { Alert, View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -23,10 +23,18 @@ export default function HotelSearchPage() {
   const { locations, locationsLoading, fetchHotelsByLocation, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate } = useExplore();
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const canSearchHotels = Boolean(checkInDate && checkOutDate);
 
   const onSearch = (filters: { locationId: string }) => {
     console.log('[HotelSearchPage] Searching for hotels with filters:', filters);
     fetchHotelsByLocation(filters.locationId);
+  };
+
+  const handlePreSearchValidationFail = () => {
+    Alert.alert(
+      t(TRANSLATION_KEYS.COMMON.ERROR),
+      t(TRANSLATION_KEYS.EXPLORE.SEARCH_REQUIRES_DATES)
+    );
   };
 
   const handleBack = () => {
@@ -59,6 +67,8 @@ export default function HotelSearchPage() {
             locations={locations}
             loadingLocations={locationsLoading}
             onSearch={onSearch}
+            canSearch={canSearchHotels}
+            onPreSearchValidationFail={handlePreSearchValidationFail}
           />
 
           {/* Check-in Date Picker */}

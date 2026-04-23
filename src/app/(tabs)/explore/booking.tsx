@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../../hooks/useTheme';
+import { theme } from '../../../constants/theme';
 import RoomTypeSelectorUI from '@/components/ui/roomTypeSelectorUI';
 import { HotelBookingForm } from '../../../components/forms/hotelBookingForm';
 import { useExplore } from './_provider';
@@ -38,6 +40,7 @@ export default function ExploreBooking() {
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
   const { t } = useTranslation();
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
 
   return (
     <SafeAreaView
@@ -58,8 +61,10 @@ export default function ExploreBooking() {
           </View>
 
           {/* Estimated Total */}
-          <View className="p-4 mb-4 bg-white border rounded-lg dark:bg-surface-dark border-border dark:border-border-dark">
-            <Text className="font-medium text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}</Text>
+          <View className="p-4 mb-4 bg-white border rounded-xl dark:bg-surface-dark border-primary/20 dark:border-primary-dark/40">
+            <Text className="text-xs font-semibold tracking-wide uppercase text-primary dark:text-primary-dark">
+              {t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}
+            </Text>
             {checkInDate && checkOutDate ? (
               (() => {
                 let nights = 0;
@@ -78,9 +83,12 @@ export default function ExploreBooking() {
                 }, 0);
 
                 return (
-                  <View>
-                    <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.BOOKING.NIGHTS)}: {nights}</Text>
-                    <Text className="mt-1 text-lg font-bold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}: ₹{subtotal}</Text>
+                  <View className="mt-2">
+                    <View className="self-start px-3 py-1 rounded-full bg-primary/10 dark:bg-primary-dark/20">
+                      <Text className="text-xs font-semibold text-primary dark:text-primary-dark">{t(TRANSLATION_KEYS.BOOKING.NIGHTS)}: {nights}</Text>
+                    </View>
+                    <Text className="mt-3 text-3xl font-bold font-heading text-text dark:text-text-dark">₹{subtotal}</Text>
+                    <Text className="mt-1 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.BOOKING.ESTIMATED_TOTAL)}</Text>
                   </View>
                 );
               })()
@@ -91,9 +99,7 @@ export default function ExploreBooking() {
 
           <HotelBookingForm
             checkInDate={checkInDate}
-            setCheckInDate={setCheckInDate}
             checkOutDate={checkOutDate}
-            setCheckOutDate={setCheckOutDate}
             guestName={guestName}
             setGuestName={setGuestName}
             guestEmail={guestEmail}
@@ -108,8 +114,14 @@ export default function ExploreBooking() {
             onSubmit={submitBooking}
           />
 
-          <View className="mt-4">
-            <Text onPress={clearAllAndGoToSearch} className="font-semibold text-primary dark:text-primary-dark">Clear Search</Text>
+          <View className="mt-4" style={{ paddingBottom: Math.max(8, insets.bottom) }}>
+            <TouchableOpacity
+              onPress={clearAllAndGoToSearch}
+              className="flex-row items-center justify-center p-3 border rounded-xl border-border dark:border-border-dark bg-surface dark:bg-surface-dark"
+            >
+              <Ionicons name="close-circle-outline" size={18} color={primaryColor} style={{ marginRight: 8 }} />
+              <Text className="font-semibold text-primary dark:text-primary-dark">{t(TRANSLATION_KEYS.BOOKING.CLEAR_SEARCH)}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

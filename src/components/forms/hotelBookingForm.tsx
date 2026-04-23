@@ -59,11 +59,11 @@ export function HotelBookingForm({
         <View className="flex-row items-center gap-2">
           <Ionicons name="calendar" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
           <Text className="text-sm font-semibold text-text dark:text-text-dark">
-            {checkInDate || 'Not set'} → {checkOutDate || 'Not set'}
+            {checkInDate || t(TRANSLATION_KEYS.BOOKING.NOT_SET)} → {checkOutDate || t(TRANSLATION_KEYS.BOOKING.NOT_SET)}
           </Text>
         </View>
         <Text className="text-xs text-muted dark:text-muted-dark mt-2">
-          (Selected during search. Go back to search to change dates)
+          {t(TRANSLATION_KEYS.BOOKING.DATES_SELECTED_DURING_SEARCH)}
         </Text>
       </View>
 
@@ -76,7 +76,7 @@ export function HotelBookingForm({
             <TextInput
               value={guestName}
               onChangeText={setGuestName}
-              placeholder="Jane Doe"
+              placeholder={t(TRANSLATION_KEYS.BOOKING.GUEST_NAME_PLACEHOLDER)}
               placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
               className="flex-1 p-3 text-text dark:text-text-dark"
             />
@@ -93,7 +93,7 @@ export function HotelBookingForm({
             <TextInput
               value={guestEmail}
               onChangeText={setGuestEmail}
-              placeholder="jane@example.com"
+              placeholder={t(TRANSLATION_KEYS.BOOKING.EMAIL_PLACEHOLDER)}
               placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
               keyboardType="email-address"
               className="flex-1 p-3 text-text dark:text-text-dark"
@@ -111,7 +111,7 @@ export function HotelBookingForm({
             <TextInput
               value={guestPhoneNumber}
               onChangeText={setGuestPhoneNumber}
-              placeholder="+8801..."
+              placeholder={t(TRANSLATION_KEYS.BOOKING.PHONE_PLACEHOLDER)}
               placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
               keyboardType="phone-pad"
               className="flex-1 p-3 text-text dark:text-text-dark"
@@ -128,7 +128,7 @@ export function HotelBookingForm({
           <TextInput
             value={paymentMethod}
             onChangeText={setPaymentMethod}
-            placeholder="wallet | sslcommerz | cash"
+            placeholder={t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD_PLACEHOLDER)}
             placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             className="flex-1 p-3 text-text dark:text-text-dark"
           />
@@ -142,7 +142,7 @@ export function HotelBookingForm({
           <TextInput
             value={specialRequests}
             onChangeText={setSpecialRequests}
-            placeholder="Any special requests"
+            placeholder={t(TRANSLATION_KEYS.BOOKING.SPECIAL_REQUESTS_PLACEHOLDER)}
             placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
             multiline
             numberOfLines={3}
@@ -152,7 +152,7 @@ export function HotelBookingForm({
       </View>
 
       {/* Submit Button */}
-      <View className="flex-row gap-3">
+      <View className="flex-row gap-3 mt-4">
         <TouchableOpacity
           onPress={onSubmit}
           disabled={submitting}
@@ -163,8 +163,8 @@ export function HotelBookingForm({
               : isEditing
               ? (isDark ? theme.colors['primary-dark'] : theme.colors.primary)
               : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
-            borderRadius: 8,
-            marginTop: 24,
+            borderRadius: 12,
+            minHeight: 52,
             paddingVertical: 16,
           }}
         >
@@ -187,8 +187,8 @@ export function HotelBookingForm({
             style={{
               flex: 1,
               backgroundColor: isDark ? theme.colors['surface-2-dark'] : '#e5e7eb',
-              borderRadius: 8,
-              marginTop: 24,
+              borderRadius: 12,
+              minHeight: 52,
               paddingVertical: 16,
             }}
           >
