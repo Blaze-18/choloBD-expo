@@ -195,6 +195,16 @@
       "staffInfoDesc": "আপনার কর্মচারীদের পরিচালনা করুন",
       "yourBookingsAdmin": "আপনার বুকিং",
       "yourBookingsAdminDesc": "আপনি মালিক হিসাবে যে বুকিং করেছেন"
+    },
+    "userCards": {
+      "myBookings": "আমার বুকিং",
+      "myBookingsDesc": "আপনার হোটেল রিজারভেশন দেখুন",
+      "exploreHotels": "হোটেল অন্বেষণ",
+      "exploreHotelsDesc": "আপনার পরবর্তী থাকার জায়গা খুঁজুন এবং বুক করুন",
+      "tripPlanner": "ভ্রমণ পরিকল্পনাকারী",
+      "tripPlannerDesc": "আপনার ভ্রমণপথ পরিকল্পনা করুন",
+      "myProfile": "আমার প্রোফাইল",
+      "myProfileDesc": "আপনার অ্যাকাউন্ট সেটিংস পরিচালনা করুন"
     }
   },
   "booking": {

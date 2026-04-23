@@ -195,6 +195,16 @@
       "staffInfoDesc": "Manage your employees",
       "yourBookingsAdmin": "Your Bookings",
       "yourBookingsAdminDesc": "Bookings you made as owner"
+    },
+    "userCards": {
+      "myBookings": "My Bookings",
+      "myBookingsDesc": "View your hotel reservations",
+      "exploreHotels": "Explore Hotels",
+      "exploreHotelsDesc": "Find and book your next stay",
+      "tripPlanner": "Trip Planner",
+      "tripPlannerDesc": "Plan your travel itinerary",
+      "myProfile": "My Profile",
+      "myProfileDesc": "Manage your account settings"
     }
   },
   "booking": {

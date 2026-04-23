@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../providers/LanguageProvider';
 import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
-import { BookingHistoryUI } from '../ui/bookingHistoryUI';
+import { AdminCard } from '../ui/adminCard';
 import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface UserDashboardProps {
@@ -31,6 +32,7 @@ export function UserDashboard({
   onRefresh,
   onPressBooking,
 }: UserDashboardProps) {
+  const router = useRouter();
   const { isDark } = useTheme();
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
@@ -52,7 +54,24 @@ export function UserDashboard({
             userStatus={userStatus}
             onLogout={onLogout}
           />
-          <BookingHistoryUI bookings={bookings} onRefresh={onRefresh} onPress={onPressBooking} />
+
+          <View className="mt-6 space-y-3">
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_BOOKINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_BOOKINGS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/user-bookings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.EXPLORE_HOTELS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.EXPLORE_HOTELS_DESC)}
+              onPress={() => router.push('/(tabs)/explore')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.TRIP_PLANNER)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.TRIP_PLANNER_DESC)}
+              onPress={() => router.push('/(tabs)/trip-planner')}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

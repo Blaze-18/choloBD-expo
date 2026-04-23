@@ -199,6 +199,16 @@ export const TRANSLATION_KEYS = {
       YOUR_BOOKINGS_ADMIN: 'dashboard.adminCards.yourBookingsAdmin',
       YOUR_BOOKINGS_ADMIN_DESC: 'dashboard.adminCards.yourBookingsAdminDesc',
     },
+    USER_CARDS: {
+      MY_BOOKINGS: 'dashboard.userCards.myBookings',
+      MY_BOOKINGS_DESC: 'dashboard.userCards.myBookingsDesc',
+      EXPLORE_HOTELS: 'dashboard.userCards.exploreHotels',
+      EXPLORE_HOTELS_DESC: 'dashboard.userCards.exploreHotelsDesc',
+      TRIP_PLANNER: 'dashboard.userCards.tripPlanner',
+      TRIP_PLANNER_DESC: 'dashboard.userCards.tripPlannerDesc',
+      MY_PROFILE: 'dashboard.userCards.myProfile',
+      MY_PROFILE_DESC: 'dashboard.userCards.myProfileDesc',
+    },
   },
   BOOKING: {
     TITLE: 'booking.title',
