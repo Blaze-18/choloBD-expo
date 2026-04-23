@@ -6,6 +6,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Alert, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { UserSegment } from '../../../types/trips';
@@ -25,6 +27,7 @@ export function DeleteSegmentConfirm({
   onCancel,
   isDeleting,
 }: DeleteSegmentConfirmProps) {
+  const { t } = useTranslation();
   console.log('[DeleteSegmentConfirm] Rendering with visible:', visible, 'segment:', segment?.id);
   const { isDark } = useTheme();
   const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
@@ -80,7 +83,7 @@ export function DeleteSegmentConfirm({
             <Feather name="trash-2" size={24} color={errorColor} />
           </View>
           <Text className="text-xl font-bold text-text dark:text-text-dark text-center">
-            Delete Segment?
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_TITLE)}
           </Text>
         </View>
 
@@ -89,7 +92,7 @@ export function DeleteSegmentConfirm({
           <View className="flex-row items-start mb-3">
             <Feather name="calendar" size={16} color={mutedColor} />
             <Text className="ml-2 text-sm text-muted dark:text-muted-dark">
-              Day {segment.dayNumber}
+              {t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_DAY, { day: segment.dayNumber })}
             </Text>
           </View>
           {segment.customNotes && (
@@ -110,7 +113,7 @@ export function DeleteSegmentConfirm({
 
         {/* Warning Message */}
         <Text className="text-sm text-muted dark:text-muted-dark text-center mb-6">
-          This action cannot be undone. The segment will be permanently removed from this trip.
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_WARNING)}
         </Text>
 
         {/* Buttons */}
@@ -122,7 +125,7 @@ export function DeleteSegmentConfirm({
             style={{ opacity: isDeleting ? 0.6 : 1 }}
           >
             <Text className="text-center font-semibold text-text dark:text-text-dark">
-              Cancel
+              {t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_CANCEL)}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -135,7 +138,7 @@ export function DeleteSegmentConfirm({
             }}
           >
             <Text className="text-center font-semibold text-white">
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_DELETING) : t(TRANSLATION_KEYS.TRIP_PLANNER.DELETE_SEGMENT_DELETE)}
             </Text>
           </TouchableOpacity>
         </View>

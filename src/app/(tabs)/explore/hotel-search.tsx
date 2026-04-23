@@ -4,31 +4,25 @@
  */
 
 import React from 'react';
-import { View, ScrollView, Text, TextInput } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, ScrollView, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useExplore } from './_provider';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { ExploreSearchForm } from '../../../components/forms/exploreSearchForm';
+import { DatePickerInput } from '../../../components/ui/DatePickerInput';
 import { useTranslation } from 'react-i18next';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
-console.log('[HotelSearchPage] Component loaded');
-
 export default function HotelSearchPage() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
   const { t } = useTranslation();
   const { locations, locationsLoading, fetchHotelsByLocation, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate } = useExplore();
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
-  const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
-  const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
-  const borderColor = isDark ? theme.colors['border-dark'] : theme.colors.border;
-  const inputBgColor = isDark ? theme.colors['surface-dark'] : theme.colors.surface;
 
   const onSearch = (filters: { locationId: string }) => {
     console.log('[HotelSearchPage] Searching for hotels with filters:', filters);
@@ -67,48 +61,22 @@ export default function HotelSearchPage() {
             onSearch={onSearch}
           />
 
-          {/* Check-in and Check-out Dates */}
-          <View className="mt-4">
-            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.CHECK_IN_DATE)}</Text>
-            <View className="flex-row items-center border rounded-lg"
-              style={{ borderColor: borderColor, backgroundColor: inputBgColor, borderWidth: 1 }}
-            >
-              <Ionicons name="calendar" size={18} color={mutedColor} style={{ marginLeft: 10 }} />
-              <TextInput
-                value={checkInDate}
-                onChangeText={setCheckInDate}
-                placeholder={t(TRANSLATION_KEYS.EXPLORE.DATE_FORMAT)}
-                placeholderTextColor={mutedColor}
-                style={{
-                  flex: 1,
-                  paddingVertical: 12,
-                  paddingHorizontal: 12,
-                  color: textColor,
-                }}
-              />
-            </View>
-          </View>
+          {/* Check-in Date Picker */}
+          <DatePickerInput
+            label={t(TRANSLATION_KEYS.EXPLORE.CHECK_IN_DATE)}
+            value={checkInDate}
+            onChange={setCheckInDate}
+            placeholder="Select check-in date"
+          />
 
-          <View className="mt-3">
-            <Text className="mb-2 text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.EXPLORE.CHECK_OUT_DATE)}</Text>
-            <View className="flex-row items-center border rounded-lg"
-              style={{ borderColor: borderColor, backgroundColor: inputBgColor, borderWidth: 1 }}
-            >
-              <Ionicons name="calendar" size={18} color={mutedColor} style={{ marginLeft: 10 }} />
-              <TextInput
-                value={checkOutDate}
-                onChangeText={setCheckOutDate}
-                placeholder={t(TRANSLATION_KEYS.EXPLORE.DATE_FORMAT)}
-                placeholderTextColor={mutedColor}
-                style={{
-                  flex: 1,
-                  paddingVertical: 12,
-                  paddingHorizontal: 12,
-                  color: textColor,
-                }}
-              />
-            </View>
-          </View>
+          {/* Check-out Date Picker */}
+          <DatePickerInput
+            label={t(TRANSLATION_KEYS.EXPLORE.CHECK_OUT_DATE)}
+            value={checkOutDate}
+            onChange={setCheckOutDate}
+            placeholder="Select check-out date"
+            minDate={checkInDate || undefined}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

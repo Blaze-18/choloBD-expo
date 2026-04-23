@@ -13,6 +13,17 @@ export interface CreateBookingData {
   specialRequests?: string;
 }
 
+export interface UpdateBookingData {
+  checkInDate?: string;
+  checkOutDate?: string;
+  roomDetails?: Array<{
+    hotelRoomId: string;
+    pricePerNight: number;
+  }>;
+  paymentMethod?: string;
+  specialRequests?: string;
+}
+
 export async function createBooking(data: CreateBookingData): Promise<any> {
   const api = getApiInstance();
   const res = await api.post('/api/bookings/hotel-rooms', data);
@@ -46,5 +57,11 @@ export async function getHotelBookings(
 export async function getBookingById(bookingId: string): Promise<any> {
   const api = getApiInstance();
   const res = await api.get(`/api/bookings/hotel-rooms/${bookingId}`);
+  return res.data?.data ?? null;
+}
+
+export async function updateBooking(bookingId: string, data: UpdateBookingData): Promise<any> {
+  const api = getApiInstance();
+  const res = await api.put(`/api/bookings/hotel-rooms/${bookingId}`, data);
   return res.data?.data ?? null;
 }

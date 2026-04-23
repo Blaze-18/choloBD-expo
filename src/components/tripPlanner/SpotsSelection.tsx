@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 import * as tourBuilder from '../../services/api/tourBuilder';
 
 export interface Spot {
@@ -29,6 +31,7 @@ export function SpotsSelection({
   onSpotsSelected,
   selectedSpots = [],
 }: SpotsSelectionProps) {
+  const { t } = useTranslation();
   const [spots, setSpots] = useState<Spot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,10 +91,10 @@ export function SpotsSelection({
       {/* Header */}
       <View className="px-6 pt-6 pb-4">
         <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">
-          What to explore?
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOTS_TITLE)}
         </Text>
         <Text className="mt-2 text-sm text-muted dark:text-muted-dark">
-          Select spots and activities you want to visit
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOTS_SUBTITLE)}
         </Text>
       </View>
 
@@ -102,7 +105,7 @@ export function SpotsSelection({
           <TextInput
             className="flex-1 ml-3 text-base text-text dark:text-text-dark"
             onChangeText={setSearchQuery}
-            placeholder="Search spots..."
+            placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOTS_SEARCH)}
             placeholderTextColor="#9CA3AF"
           />
         </View>
@@ -115,12 +118,12 @@ export function SpotsSelection({
         </View>
       ) : spots.length === 0 ? (
         <View className="items-center justify-center flex-1 px-6">
-          <Text className="mb-4 text-center text-muted dark:text-muted-dark">No spots available for this location</Text>
+          <Text className="mb-4 text-center text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_NO_SPOTS)}</Text>
           <TouchableOpacity
             onPress={loadSpots}
             className="px-6 py-3 mt-4 rounded-lg bg-primary"
           >
-            <Text className="font-semibold text-onPrimary">Retry</Text>
+            <Text className="font-semibold text-onPrimary">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_RETRY)}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -159,7 +162,7 @@ export function SpotsSelection({
                     <View className="flex-row items-center mt-2">
                       <View className="px-2 py-1 rounded bg-surface-2 dark:bg-surface-2-dark">
                         <Text className="text-xs font-medium text-muted dark:text-muted-dark">
-                          {spot.type === 'TOUR_SPOT' ? '📍 Spot' : '🎯 Activity'}
+                          {spot.type === 'TOUR_SPOT' ? t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOT_BADGE) : t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_ACTIVITY_BADGE)}
                         </Text>
                       </View>
                     </View>
@@ -176,7 +179,7 @@ export function SpotsSelection({
             })
           ) : (
             <View className="items-center py-8">
-              <Text className="text-muted dark:text-muted-dark">No spots found</Text>
+              <Text className="text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOTS_NOT_FOUND)}</Text>
             </View>
           )}
           <View className="h-6" />
@@ -187,7 +190,7 @@ export function SpotsSelection({
       <View className="px-6 pb-6 border-t border-border dark:border-border-dark">
         <View className="mt-4">
           <Text className="mb-2 text-sm text-muted dark:text-muted-dark">
-            Selected: {selected.length}
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SELECTED_COUNT, { count: selected.length })}
           </Text>
           <TouchableOpacity
             onPress={handleContinue}

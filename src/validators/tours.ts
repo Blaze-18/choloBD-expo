@@ -86,6 +86,7 @@ export const UpdateTourPlanSchema = z.object({
   tourType: TourTypeSchema.optional(),
   duration: z.number().int().positive('Duration must be at least 1 day').optional(),
   maxGroupSize: z.number().int().positive('Group size must be positive').optional(),
+  locationId: z.string().min(1, 'Location is required').optional(),
   totalBudget: z.number().nonnegative('Budget cannot be negative').optional(),
   rating: z.number().min(0).max(5, 'Rating must be 0-5').optional(),
   isActive: z.boolean().optional(),
@@ -99,6 +100,30 @@ export const UpdateTourPlanSchema = z.object({
 export function validateCreateTourPlan(data: any): ValidationResult {
   try {
     const result = CreateTourPlanSchema.safeParse(data);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.issues.forEach((err) => {
+        const path = (err.path as (string | number)[]).join('.');
+        errors[path] = err.message;
+      });
+      return { isValid: false, errors };
+    }
+    return { isValid: true, errors: {} };
+  } catch (e) {
+    if (__DEV__) console.error('[tours.ts validators] Unexpected validation error:', e);
+    return {
+      isValid: false,
+      errors: { _error: 'Unexpected validation error' },
+    };
+  }
+}
+
+/**
+ * Validate update tour plan data
+ */
+export function validateUpdateTourPlan(data: any): ValidationResult {
+  try {
+    const result = UpdateTourPlanSchema.safeParse(data);
     if (!result.success) {
       const errors: Record<string, string> = {};
       result.error.issues.forEach((err) => {

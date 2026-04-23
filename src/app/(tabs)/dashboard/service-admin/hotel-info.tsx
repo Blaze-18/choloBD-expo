@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import theme from '../../../../constants/theme';
 import { useServiceAdminLogic } from '../../../../hooks/useServiceAdminLogic';
@@ -25,16 +24,22 @@ export default function HotelInfoPage() {
       setLoading(true);
       try {
         const h = await fetchMyHotel(hotelId);
-        // eslint-disable-next-line no-console
         console.log('[HotelInfoPage] fetchMyHotel result', h);
         setHotel(h ?? null);
+
+        // If roomTypes are included in hotel response (new backend), extract them
+        if (h?.roomTypes) {
+          setRooms(h.roomTypes);
+          setLoading(false);
+          return;
+        }
       } catch (e) {
         console.error('[HotelInfoPage] fetchMyHotel error', e);
       }
 
+      // Fallback: fetch rooms separately (old endpoint for backward compatibility)
       try {
         const rs = await fetchHotelRooms(hotelId);
-        // eslint-disable-next-line no-console
         console.log('[HotelInfoPage] fetchHotelRooms result', rs);
         setRooms(rs ?? []);
       } catch (e) {
@@ -46,57 +51,237 @@ export default function HotelInfoPage() {
     load();
   }, [hotelId, fetchMyHotel, fetchHotelRooms]);
 
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+  const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
+  const warningColor = isDark ? theme.colors['warning-dark'] : theme.colors.warning;
+
+  const totalRooms = hotel?._count?.rooms ?? hotel?.totalRooms ?? 0;
+  const availableRooms = hotel?.availableRooms ?? 0;
+  const rating = hotel?.rating ?? 0;
+
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
-      <View className="p-6">
-        <Pressable onPress={() => router.replace('/(tabs)/dashboard')} style={{ padding: 6 }}>
-          <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
-        </Pressable>
+      {/* Header with Back Button */}
+      <View className="px-6 pt-4 pb-2 bg-white dark:bg-surface-dark border-b border-border dark:border-border-dark">
+        <TouchableOpacity 
+          onPress={() => router.replace('/(tabs)/dashboard/service-admin')} 
+          className="flex-row items-center mb-4"
+        >
+          <Ionicons name="chevron-back" size={24} color={primaryColor} />
+          <Text className="ml-2 font-semibold text-primary dark:text-primary-dark">Back</Text>
+        </TouchableOpacity>
+      </View>
 
-        <Text className="mt-2 text-2xl font-bold text-text dark:text-text-dark">Hotel Information</Text>
-        {loading ? (
-          <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Loading...</Text>
-        ) : hotel ? (
-          <View>
-            <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{hotel.name}</Text>
-
-            <View className="p-4 mt-6 bg-white border rounded-xl border-border dark:bg-surface-dark dark:border-border-dark">
-              <Text className="font-semibold text-text dark:text-text-dark">Overview</Text>
-              <Text className="mt-2 text-sm text-muted dark:text-muted-dark">{hotel.description ?? '—'}</Text>
-
-              <View className="mt-4">
-                <Text className="font-semibold">Location</Text>
-                <Text className="text-sm text-muted">{hotel.location?.city ?? hotel.location?.name ?? '—'}</Text>
-              </View>
-
-              <View className="mt-4">
-                <Text className="font-semibold">Summary</Text>
-                <Text className="text-sm text-muted">Total rooms: {hotel.totalRooms ?? '—'}</Text>
-                <Text className="text-sm text-muted">Available rooms: {hotel.availableRooms ?? '—'}</Text>
-                <Text className="text-sm text-muted">Rating: {hotel.rating ?? '—'}</Text>
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color={primaryColor} />
+          <Text className="mt-3 text-sm text-muted dark:text-muted-dark">Loading hotel details...</Text>
+        </View>
+      ) : hotel ? (
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+          <View className="px-6 py-6 pb-8">
+            
+            {/* Hotel Name & Location */}
+            <View className="mb-6">
+              <Text className="text-3xl font-bold text-text dark:text-text-dark">{hotel.name}</Text>
+              <View className="flex-row items-center mt-3">
+                <Ionicons name="location" size={16} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
+                <Text className="ml-2 text-sm text-muted dark:text-muted-dark">
+                  {hotel.location?.city ?? hotel.location?.name ?? '—'}
+                </Text>
               </View>
             </View>
 
-            <View className="mt-6">
-              <Text className="text-lg font-semibold text-text dark:text-text-dark">Rooms</Text>
-              <FlatList
-                data={rooms}
-                keyExtractor={(i) => i.id}
-                renderItem={({ item }) => (
-                  <View className="p-4 mt-3 bg-white border rounded-xl border-border dark:bg-surface-dark dark:border-border-dark">
-                    <Text className="font-semibold text-text dark:text-text-dark">{item.roomNumber ?? item.hotelRoomType?.roomType ?? item.roomType}</Text>
-                    <Text className="text-sm text-muted dark:text-muted-dark">Status: {item.roomStatus ?? '—'}</Text>
-                    <Text className="text-sm text-muted dark:text-muted-dark">Type: {item.hotelRoomType?.roomType ?? item.roomType ?? '—'}</Text>
+            {/* Rating & Type Cards */}
+            <View className="flex-row gap-3 mb-6">
+              <View className="flex-1 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+                <View className="flex-row items-center justify-between">
+                  <View>
+                    <Text className="text-xs text-muted dark:text-muted-dark mb-1">Rating</Text>
+                    <Text className="text-2xl font-bold text-text dark:text-text-dark">{rating.toFixed(1)}</Text>
                   </View>
-                )}
-                ListEmptyComponent={() => <Text className="mt-3 text-sm text-muted">No rooms found</Text>}
-              />
+                  <Ionicons name="star" size={32} color={warningColor} />
+                </View>
+              </View>
+
+              <View className="flex-1 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+                <View className="flex-row items-center justify-between">
+                  <View>
+                    <Text className="text-xs text-muted dark:text-muted-dark mb-1">Type</Text>
+                    <Text className="text-lg font-bold text-text dark:text-text-dark">{hotel.type ?? 'N/A'}</Text>
+                  </View>
+                  <Ionicons name="building" size={32} color={primaryColor} />
+                </View>
+              </View>
+            </View>
+
+            {/* Overview Card */}
+            {hotel.description && (
+              <View className="p-4 mb-6 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+                <View className="flex-row items-center mb-3">
+                  <Ionicons name="information-circle" size={20} color={primaryColor} />
+                  <Text className="ml-2 font-semibold text-text dark:text-text-dark">Description</Text>
+                </View>
+                <Text className="text-sm leading-6 text-muted dark:text-muted-dark">
+                  {hotel.description}
+                </Text>
+              </View>
+            )}
+
+            {/* Room Statistics */}
+            <View className="mb-6">
+              <View className="flex-row items-center mb-3">
+                <Ionicons name="door-open" size={20} color={primaryColor} />
+                <Text className="ml-2 font-semibold text-lg text-text dark:text-text-dark">Room Statistics</Text>
+              </View>
+
+              <View className="flex-row gap-3">
+                <View className="flex-1 p-4 bg-green-50 dark:bg-green-950 rounded-xl border border-green-200 dark:border-green-800">
+                  <Text className="text-xs text-green-700 dark:text-green-300 mb-1">Available Rooms</Text>
+                  <Text className="text-2xl font-bold text-green-700 dark:text-green-300">{availableRooms}</Text>
+                </View>
+
+                <View className="flex-1 p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <Text className="text-xs text-blue-700 dark:text-blue-300 mb-1">Total Rooms</Text>
+                  <Text className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalRooms}</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Amenities */}
+            {hotel.hotelCategories && hotel.hotelCategories.length > 0 && (
+              <View className="mb-6 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+                <View className="flex-row items-center mb-4">
+                  <Ionicons name="sparkles" size={20} color={primaryColor} />
+                  <Text className="ml-2 font-semibold text-text dark:text-text-dark">Amenities</Text>
+                </View>
+                <View className="flex-row flex-wrap gap-2">
+                  {hotel.hotelCategories.map((hc: any) => (
+                    <View 
+                      key={hc.id} 
+                      className="px-3 py-2 bg-blue-50 dark:bg-blue-950 rounded-full border border-blue-200 dark:border-blue-800"
+                    >
+                      <Text className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                        {hc.category?.name ?? '—'}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Room Types Section */}
+            <View>
+              <View className="flex-row items-center mb-4">
+                <Ionicons name="list" size={20} color={primaryColor} />
+                <Text className="ml-2 font-semibold text-lg text-text dark:text-text-dark">
+                  Room Types ({rooms.length})
+                </Text>
+              </View>
+
+              {rooms.length > 0 ? (
+                <View className="gap-3">
+                  {rooms.map((room, idx) => (
+                    <View 
+                      key={room.id ?? idx}
+                      className="p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark"
+                    >
+                      {/* Room Type Header */}
+                      <View className="flex-row items-start justify-between mb-3">
+                        <View className="flex-1">
+                          <Text className="text-base font-bold text-text dark:text-text-dark">
+                            {room.roomType ?? room.hotelRoomType?.roomType ?? 'Unknown Room'}
+                          </Text>
+                          {room.roomNumber && (
+                            <Text className="text-xs text-muted dark:text-muted-dark mt-1">
+                              Room #{room.roomNumber}
+                            </Text>
+                          )}
+                        </View>
+                        <View className={`px-3 py-1 rounded-full ${
+                          room.roomStatus?.toUpperCase() === 'AVAILABLE'
+                            ? 'bg-green-100 dark:bg-green-950'
+                            : 'bg-yellow-100 dark:bg-yellow-950'
+                        }`}>
+                          <Text className={`text-xs font-semibold ${
+                            room.roomStatus?.toUpperCase() === 'AVAILABLE'
+                              ? 'text-green-700 dark:text-green-300'
+                              : 'text-yellow-700 dark:text-yellow-300'
+                          }`}>
+                            {room.roomStatus ?? 'N/A'}
+                          </Text>
+                        </View>
+                      </View>
+
+                      {/* Room Details Grid */}
+                      <View className="grid gap-2">
+                        {room.pricePerNight && (
+                          <View className="flex-row items-center justify-between py-2 border-t border-border dark:border-border-dark">
+                            <View className="flex-row items-center">
+                              <Ionicons name="cash" size={16} color={successColor} />
+                              <Text className="ml-2 text-sm text-muted dark:text-muted-dark">Price per Night</Text>
+                            </View>
+                            <Text className="font-semibold text-text dark:text-text-dark">₹{room.pricePerNight}</Text>
+                          </View>
+                        )}
+
+                        {room.availableCount !== undefined && (
+                          <View className="flex-row items-center justify-between py-2 border-t border-border dark:border-border-dark">
+                            <View className="flex-row items-center">
+                              <Ionicons name="checkmark-circle" size={16} color={successColor} />
+                              <Text className="ml-2 text-sm text-muted dark:text-muted-dark">Availability</Text>
+                            </View>
+                            <Text className="font-semibold text-text dark:text-text-dark">
+                              {room.availableCount}/{room.totalCount}
+                            </Text>
+                          </View>
+                        )}
+
+                        {room.hotelRoomType?.singleBedCount !== undefined && (
+                          <View className="flex-row items-center justify-between py-2 border-t border-border dark:border-border-dark">
+                            <View className="flex-row items-center">
+                              <Ionicons name="bed" size={16} color={primaryColor} />
+                              <Text className="ml-2 text-sm text-muted dark:text-muted-dark">Single Beds</Text>
+                            </View>
+                            <Text className="font-semibold text-text dark:text-text-dark">
+                              {room.hotelRoomType.singleBedCount}
+                            </Text>
+                          </View>
+                        )}
+
+                        {room.hotelRoomType?.doubleBedCount !== undefined && (
+                          <View className="flex-row items-center justify-between py-2 border-t border-border dark:border-border-dark">
+                            <View className="flex-row items-center">
+                              <Ionicons name="bed" size={16} color={primaryColor} />
+                              <Text className="ml-2 text-sm text-muted dark:text-muted-dark">Double Beds</Text>
+                            </View>
+                            <Text className="font-semibold text-text dark:text-text-dark">
+                              {room.hotelRoomType.doubleBedCount}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <View className="p-6 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark items-center">
+                  <Ionicons name="inbox" size={32} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
+                  <Text className="mt-2 text-sm text-muted dark:text-muted-dark">No room types available</Text>
+                </View>
+              )}
             </View>
           </View>
-        ) : (
-          <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Hotel not found</Text>
-        )}
-      </View>
+        </ScrollView>
+      ) : (
+        <View className="flex-1 items-center justify-center px-6">
+          <Ionicons name="warning" size={48} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
+          <Text className="mt-4 text-lg font-semibold text-text dark:text-text-dark">Hotel not found</Text>
+          <Text className="mt-2 text-sm text-muted dark:text-muted-dark text-center">
+            The hotel information could not be loaded. Please try again.
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

@@ -15,6 +15,7 @@ import { TourFilterBar } from '../../../components/tourBuilder/TourFilterBar';
 import { TourListCard } from '../../../components/tourBuilder/TourListCard';
 import { ErrorAlert } from '../../../components/tourBuilder/ErrorAlert';
 import { useTheme } from '../../../hooks/useTheme';
+import { useAuthWithAdminCheck } from '../../../hooks/useAuthWithAdminCheck';
 import { theme } from '../../../constants/theme';
 
 export default function TourListPage() {
@@ -22,6 +23,7 @@ export default function TourListPage() {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch<AppDispatch>();
   const { isDark } = useTheme();
+  const { isAdmin } = useAuthWithAdminCheck();
   const { list, listLoading, listError, filters } = useSelector((state: RootState) => state.tourBuilder);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -43,12 +45,21 @@ export default function TourListPage() {
     });
   };
 
+  const handleTourEdit = (tourId: string) => {
+    console.log('[TourListPage] Editing tour:', tourId);
+    router.push({
+      pathname: '/explore/tour-edit',
+      params: { tourId },
+    });
+  };
+
   const renderTourCard = ({ item }: any) => (
     <View className="px-4 mb-3">
       <TourListCard
         tour={item}
         onPress={() => handleTourPress(item.id)}
-        showAdminActions={false}
+        showAdminActions={isAdmin}
+        onEdit={handleTourEdit}
       />
     </View>
   );

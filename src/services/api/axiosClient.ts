@@ -19,6 +19,10 @@ export function createApi(baseURL: string) {
       if (tokens?.accessToken && cfg.headers) {
         cfg.headers.Authorization = `Bearer ${tokens.accessToken}`;
       }
+      console.log('[axios.request] 📡', cfg.method?.toUpperCase(), cfg.url, {
+        hasAuth: !!tokens?.accessToken,
+        baseURL: cfg.baseURL || baseURL
+      });
     } catch (e) {
       // ignore
     }
@@ -26,11 +30,17 @@ export function createApi(baseURL: string) {
   });
 
   api.interceptors.response.use(
-    (res) => res,
+    (res) => {
+      console.log('[axios.response] ✅', res.status, res.config.url, {
+        dataKeys: res.data?.data ? Object.keys(res.data.data).slice(0, 5) : 'N/A',
+        isArray: Array.isArray(res.data?.data)
+      });
+      return res;
+    },
     async (error: AxiosError) => {
       // Diagnostic logging for network errors
       try {
-        console.error('[axios] response error:', {
+        console.error('[axios.error] ❌', {
           message: error.message,
           url: error.config?.url,
           method: error.config?.method,

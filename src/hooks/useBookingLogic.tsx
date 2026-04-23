@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { createBooking, getUserBookings, getBookingById } from '../services/api/bookings';
+import { createBooking, updateBooking, getUserBookings, getBookingById } from '../services/api/bookings';
 
 export function useBookingLogic() {
   const auth = useSelector((s: RootState) => s.auth);
@@ -79,10 +79,68 @@ export function useBookingLogic() {
     return result;
   };
 
+  const editBooking = async (
+    bookingId: string,
+    updateData: {
+      checkInDate?: string;
+      checkOutDate?: string;
+      selectedRoomsMap?: Record<string, number>;
+      paymentMethod?: string;
+      specialRequests?: string;
+    },
+    onSuccess?: (data: any) => void
+  ) => {
+    // Validate required dates
+    if (updateData.checkInDate && updateData.checkOutDate) {
+      if (updateData.checkInDate >= updateData.checkOutDate) {
+        Alert.alert('Error', 'Check-out date must be after check-in date');
+        return null;
+      }
+    }
+
+    setSubmitting(true);
+    try {
+      // Transform selectedRoomsMap to roomDetails array if provided
+      const payload: any = {};
+      if (updateData.checkInDate) payload.checkInDate = updateData.checkInDate;
+      if (updateData.checkOutDate) payload.checkOutDate = updateData.checkOutDate;
+      if (updateData.paymentMethod) payload.paymentMethod = updateData.paymentMethod;
+      if (updateData.specialRequests) payload.specialRequests = updateData.specialRequests;
+
+      if (updateData.selectedRoomsMap) {
+        payload.roomDetails = Object.entries(updateData.selectedRoomsMap)
+          .filter(([_, qty]) => qty > 0)
+          .map(([hotelRoomId, _]) => ({
+            hotelRoomId,
+            pricePerNight: 0, // Price will be fetched from hotel details
+          }));
+      }
+
+      const result = await updateBooking(bookingId, payload);
+      Alert.alert('Success', 'Booking updated successfully');
+      if (result && typeof onSuccess === 'function') {
+        try {
+          onSuccess(result);
+        } catch (e) {
+          console.warn('onSuccess callback failed', e);
+        }
+      }
+      return result;
+    } catch (e: any) {
+      if (__DEV__) console.error('[useBookingLogic] editBooking error', e?.response?.data || e.message);
+      const errorMsg = e?.response?.data?.message || 'Failed to update booking';
+      Alert.alert('Error', errorMsg);
+      return null;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return {
     submitting,
     submitBooking,
     handleBooking,
+    editBooking,
     // booking retrieval helpers
     fetchUserBookings: useCallback(async (page = 1, limit = 20) => {
       setLoadingBookings(true);

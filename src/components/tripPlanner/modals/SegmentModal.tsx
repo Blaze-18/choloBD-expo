@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform, Modal, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { HotelTypePreference, TransportTypePreference, UserSegment, CreateSegmentData, UpdateSegmentData } from '../../../types/trips';
@@ -37,6 +39,7 @@ export function SegmentModal({
   onSubmit,
   isSubmitting,
 }: SegmentModalProps) {
+  const { t } = useTranslation();
   const { isDark } = useTheme();
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
@@ -100,18 +103,18 @@ export function SegmentModal({
       const endMins = endH * 60 + endM;
 
       if (endMins <= startMins) {
-        newErrors.time = 'End time must be after start time';
+        newErrors.time = t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_TIME_ERROR);
       }
     }
 
     // Cost validation
     if (cost && isNaN(Number(cost))) {
-      newErrors.cost = 'Cost must be a valid number';
+      newErrors.cost = t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_COST_ERROR);
     }
 
     // Custom activity name length validation
     if (customActivityName && (customActivityName.length < 2 || customActivityName.length > 500)) {
-      newErrors.customActivityName = 'Activity name must be between 2 and 500 characters';
+      newErrors.customActivityName = t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_NAME_ERROR);
     }
 
     setErrors(newErrors);
@@ -121,7 +124,7 @@ export function SegmentModal({
   // ==== SUBMIT ====
   const handleSubmit = async () => {
     if (!validateForm()) {
-      Alert.alert('Validation Error', 'Please fix the errors in the form');
+      Alert.alert(t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_VALIDATION_ERROR), t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_VALIDATION_FAIL));
       return;
     }
 
@@ -198,7 +201,7 @@ export function SegmentModal({
           {/* Header */}
           <View className="flex-row items-center justify-between px-6 pt-6 pb-4 border-b border-border dark:border-border-dark">
             <Text className="text-lg font-bold text-text dark:text-text-dark">
-              {mode === 'add' ? 'Add Segment' : 'Edit Segment'} - Day {dayNumber}
+              {mode === 'add' ? t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ADD_TITLE) : t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_EDIT_TITLE)} - Day {dayNumber}
             </Text>
             <TouchableOpacity onPress={onClose} disabled={isSubmitting}>
               <Feather name="x" size={24} color={textColor} />
@@ -208,7 +211,7 @@ export function SegmentModal({
           <View className="p-6">
             {/* START TIME */}
             <View className="mb-5">
-              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">Start Time</Text>
+              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_START_TIME)}</Text>
               <TouchableOpacity
                 onPress={() => setShowStartTimePicker(true)}
                 className="flex-row items-center border rounded-lg px-4 py-3"
@@ -217,7 +220,7 @@ export function SegmentModal({
                 <Feather name="clock" size={16} color={primaryColor} />
                 <TextInput
                   value={startTime}
-                  placeholder="HH:MM (optional)"
+                  placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_START_TIME_PLACEHOLDER)}
                   placeholderTextColor={mutedColor}
                   editable={false}
                   className="flex-1 ml-3 text-text dark:text-text-dark"
@@ -237,17 +240,17 @@ export function SegmentModal({
             <View className="mb-5">
               <View className="flex-row items-center mb-2">
                 <Feather name="map-pin" size={14} color={primaryColor} />
-                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">Activity Spot</Text>
+                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_SPOT)}</Text>
               </View>
               
               {isLoadingSpots ? (
                 <View className="flex-row items-center justify-center py-4">
                   <ActivityIndicator size="small" color={primaryColor} />
-                  <Text className="ml-2 text-xs text-muted dark:text-muted-dark">Loading activity spots...</Text>
+                  <Text className="ml-2 text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_LOADING)}</Text>
                 </View>
               ) : activitySpots.length === 0 ? (
                 <View className="py-4 px-4 rounded-lg" style={{ backgroundColor: surfaceColor }}>
-                  <Text className="text-xs text-muted dark:text-muted-dark">No activity spots available for this location</Text>
+                  <Text className="text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_NONE)}</Text>
                 </View>
               ) : (
                 <View>
@@ -279,7 +282,7 @@ export function SegmentModal({
                   >
                     <View className="flex-1">
                       <Text className="text-sm text-text dark:text-text-dark">
-                        {selectedActivitySpot ? 'Change activity' : 'Choose activity spot'}
+                        {selectedActivitySpot ? t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_CHANGE) : t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_CHOOSE)}
                       </Text>
                     </View>
                     <Feather name={showActivitySpotsList ? 'chevron-up' : 'chevron-down'} size={20} color={primaryColor} />
@@ -333,7 +336,7 @@ export function SegmentModal({
                   {/* OR divider */}
                   <View className="flex-row items-center my-3">
                     <View className="flex-1 h-px bg-border dark:bg-border-dark" />
-                    <Text className="mx-3 text-xs text-muted dark:text-muted-dark">OR</Text>
+                    <Text className="mx-3 text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_OR)}</Text>
                     <View className="flex-1 h-px bg-border dark:bg-border-dark" />
                   </View>
 
@@ -344,7 +347,7 @@ export function SegmentModal({
                       setCustomActivityName(text);
                       if (text.trim()) setSelectedActivitySpot(undefined); // clear spot when typing custom
                     }}
-                    placeholder="Type a custom activity name..."
+                    placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_PLACEHOLDER)}
                     placeholderTextColor={mutedColor}
                     className="border rounded-lg px-4 py-3 text-text dark:text-text-dark"
                     style={{ borderColor: errors.customActivityName ? theme.colors.error : borderColor, backgroundColor: surfaceColor, borderWidth: 1 }}
@@ -361,7 +364,7 @@ export function SegmentModal({
                   <TextInput
                     value={customActivityName}
                     onChangeText={setCustomActivityName}
-                    placeholder="e.g. Coral Reef Snorkeling, Beach Walk..."
+                    placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ACTIVITY_PLACEHOLDER_EMPTY)}
                     placeholderTextColor={mutedColor}
                     className="border rounded-lg px-4 py-3 text-text dark:text-text-dark"
                     style={{ borderColor: errors.customActivityName ? theme.colors.error : borderColor, backgroundColor: surfaceColor, borderWidth: 1 }}
@@ -376,7 +379,7 @@ export function SegmentModal({
 
             {/* END TIME */}
             <View className="mb-5">
-              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">End Time</Text>
+              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_END_TIME)}</Text>
               <TouchableOpacity
                 onPress={() => setShowEndTimePicker(true)}
                 className="flex-row items-center border rounded-lg px-4 py-3"
@@ -385,7 +388,7 @@ export function SegmentModal({
                 <Feather name="clock" size={16} color={primaryColor} />
                 <TextInput
                   value={endTime}
-                  placeholder="HH:MM (optional)"
+                  placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_END_TIME_PLACEHOLDER)}
                   placeholderTextColor={mutedColor}
                   editable={false}
                   className="flex-1 ml-3 text-text dark:text-text-dark"
@@ -406,11 +409,11 @@ export function SegmentModal({
 
             {/* NOTES */}
             <View className="mb-5">
-              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">Notes</Text>
+              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_CUSTOM_NOTES)}</Text>
               <TextInput
                 value={notes}
                 onChangeText={setNotes}
-                placeholder="Activity description, location, etc."
+                placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_NOTES_PLACEHOLDER)}
                 placeholderTextColor={mutedColor}
                 multiline
                 numberOfLines={3}
@@ -421,13 +424,13 @@ export function SegmentModal({
 
             {/* COST */}
             <View className="mb-5">
-              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">Estimated Cost (₹)</Text>
+              <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ESTIMATED_COST)}</Text>
               <View className="flex-row items-center border rounded-lg px-4 py-3" style={{ borderColor, backgroundColor: surfaceColor, borderWidth: 1 }}>
                 <Feather name="dollar-sign" size={16} color={primaryColor} />
                 <TextInput
                   value={cost}
                   onChangeText={setCost}
-                  placeholder="0 (optional)"
+                  placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_COST_PLACEHOLDER)}
                   placeholderTextColor={mutedColor}
                   keyboardType="decimal-pad"
                   className="flex-1 ml-3 text-text dark:text-text-dark"
@@ -440,7 +443,7 @@ export function SegmentModal({
             <View className="mb-5">
               <View className="flex-row items-center mb-2">
                 <Feather name="home" size={14} color={primaryColor} />
-                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">Hotel Preference</Text>
+                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_HOTEL_PREFERENCE)}</Text>
               </View>
               <View className="flex-row flex-wrap">
                 {HOTEL_TYPES.map((type) => (
@@ -470,7 +473,7 @@ export function SegmentModal({
             <View className="mb-8">
               <View className="flex-row items-center mb-2">
                 <Feather name="truck" size={14} color={primaryColor} />
-                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">Transport Preference</Text>
+                <Text className="text-sm font-semibold text-text dark:text-text-dark ml-2">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_TRANSPORT_TYPE)}</Text>
               </View>
               <View className="flex-row flex-wrap">
                 {TRANSPORT_TYPES.map((type) => (
@@ -504,7 +507,7 @@ export function SegmentModal({
                 className="flex-1 py-3 rounded-lg border mr-3"
                 style={{ borderColor, backgroundColor: surfaceColor, borderWidth: 1 }}
               >
-                <Text className="text-center font-semibold text-text dark:text-text-dark">Cancel</Text>
+                <Text className="text-center font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_CANCEL_BTN)}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSubmit}
@@ -513,7 +516,7 @@ export function SegmentModal({
                 style={{ opacity: isSubmitting ? 0.6 : 1 }}
               >
                 <Text className="text-center font-semibold text-white">
-                  {isSubmitting ? 'Saving...' : mode === 'add' ? 'Add Segment' : 'Save Changes'}
+                  {isSubmitting ? t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_SAVING_BTN) : mode === 'add' ? t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_ADD_BTN) : t(TRANSLATION_KEYS.TRIP_PLANNER.SEGMENT_SAVE_BTN)}
                 </Text>
               </TouchableOpacity>
             </View>

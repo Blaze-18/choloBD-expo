@@ -6,9 +6,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { TourPackage } from '../../types/tours';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 console.log('[TourListCard] Component loaded');
 
@@ -28,6 +30,7 @@ export function TourListCard({
   showAdminActions = false,
 }: TourListCardProps) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
   const errorColor = isDark ? theme.colors['error-dark'] : theme.colors.error;
@@ -59,12 +62,12 @@ export function TourListCard({
         <View className="flex-row gap-2 ml-2">
           {tour.isPopular && (
             <View style={{ backgroundColor: theme.colors.warning }} className="px-2 py-1 rounded-full">
-              <Text className="text-xs font-semibold text-white">Popular</Text>
+              <Text className="text-xs font-semibold text-white">{t(TRANSLATION_KEYS.TOUR_BUILDER.POPULAR_BADGE)}</Text>
             </View>
           )}
           {!tour.isActive && (
             <View className="px-2 py-1 bg-gray-400 rounded-full">
-              <Text className="text-xs font-semibold text-white">Inactive</Text>
+              <Text className="text-xs font-semibold text-white">{t(TRANSLATION_KEYS.TOUR_BUILDER.INACTIVE_BADGE)}</Text>
             </View>
           )}
         </View>
@@ -74,21 +77,21 @@ export function TourListCard({
       <View className="flex-row gap-2 px-4 py-3">
         <StatItem 
           icon="calendar" 
-          label="Duration" 
+          label={t(TRANSLATION_KEYS.TOUR_BUILDER.DURATION_STAT)}
           value={`${tour.duration}d`} 
           color={primaryColor}
           isDark={isDark}
         />
         <StatItem 
           icon="pricetag" 
-          label="Budget" 
+          label={t(TRANSLATION_KEYS.TOUR_BUILDER.BUDGET_STAT)}
           value={`৳${(tour.totalBudget / 1000).toFixed(0)}K`} 
           color={successColor}
           isDark={isDark}
         />
         <StatItem 
           icon="map" 
-          label="Stops" 
+          label={t(TRANSLATION_KEYS.TOUR_BUILDER.STOPS_STAT)}
           value={tour.daySegments?.length || 0} 
           color={primaryColor}
           isDark={isDark}
@@ -96,7 +99,7 @@ export function TourListCard({
         {tour.rating !== undefined && (
           <StatItem 
             icon="star" 
-            label="Rating" 
+            label={t(TRANSLATION_KEYS.TOUR_BUILDER.RATING_STAT)}
             value={tour.rating.toFixed(1)} 
             color={theme.colors.warning}
             isDark={isDark}
@@ -131,7 +134,7 @@ export function TourListCard({
             style={{ backgroundColor: primaryColor }}
             className="flex-1 py-2 rounded-lg active:opacity-80"
           >
-            <Text className="text-sm font-semibold text-center text-white">Edit</Text>
+            <Text className="text-sm font-semibold text-center text-white">{t(TRANSLATION_KEYS.TOUR_BUILDER.EDIT_BTN)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -141,7 +144,7 @@ export function TourListCard({
             style={{ backgroundColor: errorColor }}
             className="flex-1 py-2 rounded-lg active:opacity-80"
           >
-            <Text className="text-sm font-semibold text-center text-white">Delete</Text>
+            <Text className="text-sm font-semibold text-center text-white">{t(TRANSLATION_KEYS.TOUR_BUILDER.DELETE_BTN)}</Text>
           </TouchableOpacity>
         </View>
       )}

@@ -5,7 +5,9 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { TourFilters } from '../../types/tours';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 console.log('[TourFilterBar] Component loaded');
 
@@ -16,6 +18,7 @@ interface TourFilterBarProps {
 }
 
 export function TourFilterBar({ locations = [], onFilterChange, onReset }: TourFilterBarProps) {
+  const { t } = useTranslation();
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<TourFilters>({});
 

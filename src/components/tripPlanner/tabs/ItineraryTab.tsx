@@ -7,6 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { TripPlan } from '../../../types/trips';
@@ -22,6 +24,7 @@ const MAX_CHARS = 5000;
 const CHAR_THRESHOLD = 4000; // 80% of max
 
 export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
+  const { t } = useTranslation();
   const { isDark } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -47,18 +50,18 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
     const trimmedNote = newNote.trim();
     
     if (!trimmedNote) {
-      setError('Note cannot be empty');
+      setError(t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTE_EMPTY_ERROR));
       return;
     }
 
     if (trimmedNote.length > 500) {
-      setError('Individual note cannot exceed 500 characters');
+      setError(t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTE_LENGTH_ERROR));
       return;
     }
 
     const newTotal = totalCharCount + trimmedNote.length;
     if (newTotal > MAX_CHARS) {
-      setError(`Adding this note would exceed 5000 character limit (current: ${totalCharCount}, new total would be: ${newTotal})`);
+      setError(t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHAR_LIMIT_ERROR, { current: totalCharCount, total: newTotal }));
       return;
     }
 
@@ -74,12 +77,12 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
 
   const validateNotes = (): boolean => {
     if (totalCharCount > MAX_CHARS) {
-      setError(`Total notes exceed maximum length (${totalCharCount}/${MAX_CHARS})`);
+      setError(t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHAR_LIMIT_ERROR, { current: totalCharCount, total: totalCharCount }));
       return false;
     }
     
     if (notesList.some(note => !note || note.trim().length === 0)) {
-      setError('Notes cannot be empty');
+      setError(t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTE_EMPTY_ERROR));
       return false;
     }
 
@@ -108,7 +111,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           onTripUpdate(updatedTrip);
         }
 
-        Alert.alert('Success', `${notesList.length} note(s) saved successfully`);
+        Alert.alert('Success', t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTES_SAVED, { count: notesList.length }));
       } else {
         throw new Error('Failed to save notes');
       }
@@ -124,12 +127,12 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
 
   const handleClear = () => {
     Alert.alert(
-      'Clear All Notes',
-      'Are you sure you want to delete all notes? This cannot be undone.',
+      t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CLEAR_ALL_CONFIRM),
+      t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CLEAR_ALL_WARNING),
       [
-        { text: 'Cancel', onPress: () => {} },
+        { text: t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CANCEL_BTN), onPress: () => {} },
         {
-          text: 'Clear All',
+          text: t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CLEAR_ALL_BTN),
           onPress: () => {
             setNotesList([]);
             setNewNote('');
@@ -144,12 +147,12 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
   const handleCancel = () => {
     if (hasUnsavedChanges) {
       Alert.alert(
-        'Discard Changes',
-        'You have unsaved changes. Do you want to discard them?',
+        t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_DISCARD_CHANGES),
+        t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_DISCARD_WARNING),
         [
-          { text: 'Keep Editing', onPress: () => {} },
+          { text: t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_KEEP_EDITING), onPress: () => {} },
           {
-            text: 'Discard',
+            text: t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_DISCARD),
             onPress: () => {
               console.log('[ItineraryTab] Discarding changes');
               setNotesList(trip.generalNotes || []);
@@ -172,10 +175,10 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       <View className="items-center justify-center flex-1 px-4 py-12">
         <Feather name="edit-3" size={48} color={mutedColor} />
         <Text className="mt-4 text-lg font-bold text-text dark:text-text-dark">
-          No Trip Notes Yet
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_EMPTY_TITLE)}
         </Text>
         <Text className="mt-2 mb-6 text-sm text-center text-muted dark:text-muted-dark">
-          Add packing lists, reminders, and travel notes for your trip
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_EMPTY_SUBTITLE)}
         </Text>
         <TouchableOpacity
           onPress={() => {
@@ -184,7 +187,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           className="flex-row items-center px-6 py-3 rounded-lg bg-primary"
         >
           <Feather name="plus" size={18} color="white" />
-          <Text className="ml-2 font-semibold text-white">Add Notes</Text>
+          <Text className="ml-2 font-semibold text-white">{t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_ADD_NOTES_BTN)}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -201,7 +204,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         {/* Header */}
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-lg font-bold text-text dark:text-text-dark">
-            Trip Notes ({notesList.length})
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTES_TITLE)} ({notesList.length})
           </Text>
           <TouchableOpacity onPress={handleCancel} disabled={isSaving}>
             <Feather name="x" size={24} color={textColor} />
@@ -220,7 +223,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           <TextInput
             value={newNote}
             onChangeText={setNewNote}
-            placeholder="Type a note and press Add..."
+            placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTE_PLACEHOLDER)}
             placeholderTextColor={mutedColor}
             maxLength={500}
             className="flex-1 px-3 py-2 border rounded-lg bg-surface dark:bg-surface-dark border-border dark:border-border-dark text-text dark:text-text-dark"
@@ -242,7 +245,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         <View className="flex-1 mb-4 border rounded-lg bg-surface dark:bg-surface-dark border-border dark:border-border-dark p-3">
           {notesList.length === 0 ? (
             <Text className="text-sm text-center text-muted dark:text-muted-dark py-8">
-              No notes yet. Add one to get started.
+              {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_EMPTY_NOTES_MSG)}
             </Text>
           ) : (
             <FlatList
@@ -253,7 +256,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
                   <View className="flex-1">
                     <Text className="text-sm text-text dark:text-text-dark">{item}</Text>
                     <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                      {item.length} characters
+                      {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHAR_COUNT, { current: item.length })}
                     </Text>
                   </View>
                   <TouchableOpacity
@@ -287,7 +290,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
             </Text>
             {isNearLimit && (
               <Text className="text-xs text-red-600 dark:text-red-400">
-                {MAX_CHARS - totalCharCount} characters remaining
+                {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHARS_REMAINING, { remaining: MAX_CHARS - totalCharCount })}
               </Text>
             )}
           </View>
@@ -301,7 +304,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
             className="items-center flex-1 py-3 bg-gray-200 rounded-lg dark:bg-gray-700"
           >
             <Text className="font-semibold text-text dark:text-text-dark">
-              {hasUnsavedChanges ? 'Cancel' : 'Done'}
+              {hasUnsavedChanges ? t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CANCEL_BTN) : t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_DONE_BTN)}
             </Text>
           </TouchableOpacity>
 
@@ -313,7 +316,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
             }`}
           >
             <Text className={`font-semibold ${isSaving || notesList.length === 0 ? 'text-muted dark:text-muted-dark' : 'text-red-600 dark:text-red-400'}`}>
-              Clear All
+              {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CLEAR_ALL_BTN)}
             </Text>
           </TouchableOpacity>
 
@@ -328,7 +331,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           >
             {isSaving && <Feather name="loader" size={16} color="white" />}
             <Text className={`font-semibold ${isSaving || !hasUnsavedChanges ? 'text-muted dark:text-muted-dark' : 'text-white'}`}>
-              {isSaving ? ' Saving...' : 'Save'}
+              {isSaving ? t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_SAVING_BTN) : t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_SAVE_BTN)}
             </Text>
           </TouchableOpacity>
         </View>
@@ -342,7 +345,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       {/* Header */}
       <View className="flex-row items-center justify-between mb-4">
         <Text className="text-lg font-bold text-text dark:text-text-dark">
-          Trip Notes ({notesList.length})
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_NOTES_TITLE)} ({notesList.length})
         </Text>
         <TouchableOpacity
           onPress={() => {
@@ -365,14 +368,14 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
             <View className="flex-1">
               <Text className="text-sm text-text dark:text-text-dark leading-5">{item}</Text>
               <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                {item.length} characters
+                {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHAR_COUNT, { current: item.length })}
               </Text>
             </View>
           </View>
         )}
         ListEmptyComponent={
           <Text className="text-sm text-center text-muted dark:text-muted-dark py-8">
-            No notes yet
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_EMPTY_NOTES_MSG)}
           </Text>
         }
         scrollEnabled={false}
@@ -383,7 +386,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         <View className="flex-row items-flex-start">
           <Feather name="info" size={16} color={isDark ? '#60A5FA' : '#3B82F6'} />
           <Text className="flex-1 ml-2 text-xs text-blue-700 dark:text-blue-200">
-            {totalCharCount} characters used ({MAX_CHARS - totalCharCount} remaining)
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_INFO_FOOTER, { current: totalCharCount, remaining: MAX_CHARS - totalCharCount })}
           </Text>
         </View>
       </View>

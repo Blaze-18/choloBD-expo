@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 import { Location } from '../../types/locations';
 import { useFetchLocations } from '../../hooks/useFetchLocations';
 
@@ -18,6 +20,7 @@ export interface LocationSelectionProps {
  * LocationSelection Component
  */
 export function LocationSelection({ onLocationSelected, selectedLocation }: LocationSelectionProps) {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const { locations, loading: isLoading, refetch } = useFetchLocations();
 
@@ -30,10 +33,10 @@ export function LocationSelection({ onLocationSelected, selectedLocation }: Loca
       {/* Header */}
       <View className="px-6 pt-6 pb-4">
         <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">
-          Where to?
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_TITLE)}
         </Text>
         <Text className="mt-2 text-sm text-muted dark:text-muted-dark">
-          Select your destination location
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_SUBTITLE)}
         </Text>
       </View>
 
@@ -44,7 +47,7 @@ export function LocationSelection({ onLocationSelected, selectedLocation }: Loca
           <TextInput
             className="flex-1 ml-3 text-base text-text dark:text-text-dark"
             onChangeText={setSearchQuery}
-            placeholder="Search locations..."
+            placeholder={t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_SEARCH)}
             placeholderTextColor="#9CA3AF"
           />
         </View>
@@ -57,12 +60,12 @@ export function LocationSelection({ onLocationSelected, selectedLocation }: Loca
         </View>
       ) : locations.length === 0 ? (
         <View className="flex-1 justify-center items-center px-6">
-          <Text className="text-center text-muted dark:text-muted-dark mb-4">No locations available</Text>
+          <Text className="text-center text-muted dark:text-muted-dark mb-4">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_NO_LOCATIONS)}</Text>
           <TouchableOpacity
             onPress={refetch}
             className="px-6 py-3 bg-primary rounded-lg"
           >
-            <Text className="text-onPrimary font-semibold">Retry</Text>
+            <Text className="text-onPrimary font-semibold">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_RETRY)}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -100,7 +103,7 @@ export function LocationSelection({ onLocationSelected, selectedLocation }: Loca
           ) : (
             <View className="py-8 items-center">
               <Text className="text-muted dark:text-muted-dark">
-                No locations found
+                {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_NOT_FOUND)}
               </Text>
             </View>
           )}

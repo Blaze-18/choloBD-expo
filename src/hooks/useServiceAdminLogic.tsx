@@ -7,9 +7,12 @@ export function useServiceAdminLogic() {
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
-      return await getUserProfile();
+      console.log('[useServiceAdminLogic.fetchProfile] 🔄 Calling getUserProfile...');
+      const result = await getUserProfile();
+      console.log('[useServiceAdminLogic.fetchProfile] ✅ Success:', result);
+      return result;
     } catch (e) {
-      if (__DEV__) console.error('[useServiceAdminLogic] fetchProfile error', e);
+      console.error('[useServiceAdminLogic.fetchProfile] ❌ Error:', e);
       throw e;
     } finally {
       setLoading(false);
@@ -19,9 +22,17 @@ export function useServiceAdminLogic() {
   const fetchMyHotel = useCallback(async (hotelId?: string) => {
     try {
       setLoading(true);
-      return await getMyHotel(hotelId);
+      console.log('[useServiceAdminLogic.fetchMyHotel] 🔄 Calling getMyHotel...', { hotelId });
+      const result = await getMyHotel(hotelId);
+      console.log('[useServiceAdminLogic.fetchMyHotel] ✅ Success:', { isArray: Array.isArray(result), result });
+      return result;
     } catch (e: any) {
-      if (__DEV__) console.error('[useServiceAdminLogic] fetchMyHotel error', e?.response?.status, e?.response?.data ?? e.message);
+      console.error('[useServiceAdminLogic.fetchMyHotel] ❌ Error:', {
+        message: e?.message,
+        status: e?.response?.status,
+        data: e?.response?.data,
+        fullError: e
+      });
       throw e;
     } finally {
       setLoading(false);
@@ -31,9 +42,16 @@ export function useServiceAdminLogic() {
   const fetchHotelRooms = useCallback(async (hotelId: string) => {
     try {
       setLoading(true);
-      return await getHotelRooms(hotelId);
+      console.log('[useServiceAdminLogic.fetchHotelRooms] 🔄 Calling getHotelRooms...', { hotelId });
+      const result = await getHotelRooms(hotelId);
+      console.log('[useServiceAdminLogic.fetchHotelRooms] ✅ Success:', result);
+      return result;
     } catch (e: any) {
-      if (__DEV__) console.error('[useServiceAdminLogic] fetchHotelRooms error', e?.response?.status, e?.response?.data ?? e.message);
+      console.error('[useServiceAdminLogic.fetchHotelRooms] ❌ Error:', {
+        message: e?.message,
+        status: e?.response?.status,
+        data: e?.response?.data
+      });
       throw e;
     } finally {
       setLoading(false);

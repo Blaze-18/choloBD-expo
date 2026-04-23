@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { TripPlan, UserSegment } from '../../../types/trips';
 import { useTripPlannerLogic } from '../../../hooks/useTripPlannerLogic';
 import { useTheme } from '../../../hooks/useTheme';
@@ -18,6 +20,7 @@ interface DayPlanTabProps {
 }
 
 export function DayPlanTab({ trip }: DayPlanTabProps) {
+  const { t } = useTranslation();
   console.log('[DayPlanTab] Rendered, trip:', trip.name, 'segments:', trip.userSegments?.length);
   const { isDark } = useTheme();
   const { updateSegment, deleteSegment, isFormSubmitting, addSegment } = useTripPlannerLogic();
@@ -92,9 +95,9 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
     return (
       <View className="items-center justify-center py-8">
         <Feather name="map" size={40} color={mutedColor} />
-        <Text className="text-muted dark:text-muted-dark mt-3">No day plan created yet</Text>
+        <Text className="text-muted dark:text-muted-dark mt-3">{t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_EMPTY_TITLE)}</Text>
         <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-          Create daily segments for your trip
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_EMPTY_SUBTITLE)}
         </Text>
       </View>
     );
@@ -118,7 +121,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                   <Text className="font-bold text-white text-sm">{dayNum}</Text>
                 </View>
                 <Text className="ml-3 text-lg font-bold text-text dark:text-text-dark">
-                  Day {dayNum}
+                  {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_DAY, { day: dayNum })}
                 </Text>
               </View>
             </View>

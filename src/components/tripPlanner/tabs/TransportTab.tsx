@@ -6,6 +6,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { TripPlan } from '../../../types/trips';
 
 interface TransportTabProps {
@@ -13,31 +15,32 @@ interface TransportTabProps {
 }
 
 export function TransportTab({ trip }: TransportTabProps) {
+  const { t } = useTranslation();
   const transportCount = trip.userSegments?.filter((s) => s.transportBookingId).length || 0;
 
   return (
     <View>
       {transportCount > 0 ? (
         <View>
-          <Text className="text-sm font-semibold text-text dark:text-text-dark mb-4">
-            {transportCount} Transport Booking{transportCount !== 1 ? 's' : ''}
+          <Text className="mb-4 text-sm font-semibold text-text dark:text-text-dark">
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.TRANSPORT_BOOKING_COUNT, { count: transportCount, plural: transportCount !== 1 ? 's' : '' })}
           </Text>
           {trip.userSegments
             ?.filter((s) => s.transportDetails)
             .map((segment) => (
               <View
                 key={segment.id}
-                className="bg-surface dark:bg-surface-dark rounded-lg p-4 mb-3 border border-border dark:border-border-dark"
+                className="p-4 mb-3 border rounded-lg bg-surface dark:bg-surface-dark border-border dark:border-border-dark"
               >
                 <View className="flex-row items-start justify-between">
                   <View className="flex-1">
                     <View className="flex-row items-center mb-1">
                       <Feather name="truck" size={14} color="#0066FF" />
-                      <Text className="font-semibold text-text dark:text-text-dark ml-2">
+                      <Text className="ml-2 font-semibold text-text dark:text-text-dark">
                         {segment.transportDetails?.name || 'Transport'}
                       </Text>
                     </View>
-                    <Text className="text-xs text-muted dark:text-muted-dark mt-1">
+                    <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
                       Day {segment.dayNumber}
                     </Text>
                   </View>
@@ -46,7 +49,7 @@ export function TransportTab({ trip }: TransportTabProps) {
                       ₹{segment.transportDetails?.cost || 0}
                     </Text>
                     <View
-                      className="mt-1 px-2 py-1 rounded"
+                      className="px-2 py-1 mt-1 rounded"
                       style={{
                         backgroundColor:
                           segment.transportDetails?.bookingStatus === 'CONFIRMED'
@@ -74,9 +77,9 @@ export function TransportTab({ trip }: TransportTabProps) {
       ) : (
         <View className="items-center justify-center py-8">
           <Feather name="truck" size={40} color="#D1D5DB" />
-          <Text className="text-muted dark:text-muted-dark mt-3">No transport booked yet</Text>
-          <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-            Add transport for your journey
+          <Text className="mt-3 text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.TRANSPORT_EMPTY_TITLE)}</Text>
+          <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.TRANSPORT_EMPTY_SUBTITLE)}
           </Text>
         </View>
       )}

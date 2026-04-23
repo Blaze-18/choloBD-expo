@@ -12,8 +12,6 @@ interface HotelBookingFormProps {
   guestName: string;
   guestEmail: string;
   guestPhoneNumber: string;
-  setCheckInDate: (text: string) => void;
-  setCheckOutDate: (text: string) => void;
   setGuestName: (text: string) => void;
   setGuestEmail: (text: string) => void;
   setGuestPhoneNumber: (text: string) => void;
@@ -23,6 +21,8 @@ interface HotelBookingFormProps {
   setSpecialRequests?: (text: string) => void;
   onSubmit: () => void;
   submitting: boolean;
+  isEditing?: boolean;
+  onCancel?: () => void;
 }
 
 export function HotelBookingForm({
@@ -31,8 +31,6 @@ export function HotelBookingForm({
   guestName,
   guestEmail,
   guestPhoneNumber,
-  setCheckInDate,
-  setCheckOutDate,
   setGuestName,
   setGuestEmail,
   setGuestPhoneNumber,
@@ -42,89 +40,85 @@ export function HotelBookingForm({
   setSpecialRequests,
   onSubmit,
   submitting,
+  isEditing = false,
+  onCancel,
 }: HotelBookingFormProps) {
   const { isDark } = useTheme();
   const { t } = useTranslation();
   return (
     <View className="mt-6 space-y-4">
-      <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.BOOKING_DETAILS)}</Text>
+      <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">
+        {isEditing ? t(TRANSLATION_KEYS.BOOKING.EDIT_BOOKING) : t(TRANSLATION_KEYS.BOOKING.BOOKING_DETAILS)}
+      </Text>
 
-      {/* Check-in Date */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.CHECK_IN)}</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={checkInDate}
-            onChangeText={setCheckInDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
+      {/* Dates Display (Read-only - selected during search) */}
+      <View className="p-4 rounded-lg bg-primary/5 dark:bg-primary-dark/10 border border-primary/20 dark:border-primary-dark/30">
+        <Text className="text-xs font-semibold text-primary dark:text-primary-dark mb-2 uppercase">
+          {t(TRANSLATION_KEYS.BOOKING.CHECK_IN)} - {t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}
+        </Text>
+        <View className="flex-row items-center gap-2">
+          <Ionicons name="calendar" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
+          <Text className="text-sm font-semibold text-text dark:text-text-dark">
+            {checkInDate || 'Not set'} → {checkOutDate || 'Not set'}
+          </Text>
         </View>
-      </View>
-
-      {/* Check-out Date */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="calendar" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={checkOutDate}
-            onChangeText={setCheckOutDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
-        </View>
+        <Text className="text-xs text-muted dark:text-muted-dark mt-2">
+          (Selected during search. Go back to search to change dates)
+        </Text>
       </View>
 
       {/* Guest Name */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.GUEST_NAME)}</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="person" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={guestName}
-            onChangeText={setGuestName}
-            placeholder="Jane Doe"
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
+      {!isEditing && (
+        <View>
+          <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.GUEST_NAME)}</Text>
+          <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
+            <Ionicons name="person" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
+            <TextInput
+              value={guestName}
+              onChangeText={setGuestName}
+              placeholder="Jane Doe"
+              placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
+              className="flex-1 p-3 text-text dark:text-text-dark"
+            />
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Guest Email */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.EMAIL)}</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="mail" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={guestEmail}
-            onChangeText={setGuestEmail}
-            placeholder="jane@example.com"
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            keyboardType="email-address"
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
+      {!isEditing && (
+        <View>
+          <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.EMAIL)}</Text>
+          <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
+            <Ionicons name="mail" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
+            <TextInput
+              value={guestEmail}
+              onChangeText={setGuestEmail}
+              placeholder="jane@example.com"
+              placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
+              keyboardType="email-address"
+              className="flex-1 p-3 text-text dark:text-text-dark"
+            />
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Guest Phone */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PHONE_NUMBER)}</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="call" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={guestPhoneNumber}
-            onChangeText={setGuestPhoneNumber}
-            placeholder="+8801..."
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            keyboardType="phone-pad"
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
+      {!isEditing && (
+        <View>
+          <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PHONE_NUMBER)}</Text>
+          <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
+            <Ionicons name="call" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
+            <TextInput
+              value={guestPhoneNumber}
+              onChangeText={setGuestPhoneNumber}
+              placeholder="+8801..."
+              placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
+              keyboardType="phone-pad"
+              className="flex-1 p-3 text-text dark:text-text-dark"
+            />
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Payment Method */}
       <View>
@@ -158,20 +152,56 @@ export function HotelBookingForm({
       </View>
 
       {/* Submit Button */}
-      <TouchableOpacity
-        onPress={onSubmit}
-        disabled={submitting}
-        style={{
-          backgroundColor: submitting ? (isDark ? theme.colors['surface-2-dark'] : '#e5e7eb') : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
-          borderRadius: 8,
-          marginTop: 24,
-          paddingVertical: 16,
-        }}
-      >
-        <Text style={{ color: submitting ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : '#ffffff', fontWeight: '600', textAlign: 'center' }}>
-          {submitting ? t(TRANSLATION_KEYS.BOOKING.CREATING_BOOKING) : t(TRANSLATION_KEYS.BOOKING.CREATE_BOOKING)}
-        </Text>
-      </TouchableOpacity>
+      <View className="flex-row gap-3">
+        <TouchableOpacity
+          onPress={onSubmit}
+          disabled={submitting}
+          style={{
+            flex: 1,
+            backgroundColor: submitting 
+              ? (isDark ? theme.colors['surface-2-dark'] : '#e5e7eb')
+              : isEditing
+              ? (isDark ? theme.colors['primary-dark'] : theme.colors.primary)
+              : (isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']),
+            borderRadius: 8,
+            marginTop: 24,
+            paddingVertical: 16,
+          }}
+        >
+          <Text style={{ 
+            color: submitting ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : '#ffffff', 
+            fontWeight: '600', 
+            textAlign: 'center' 
+          }}>
+            {submitting 
+              ? (isEditing ? t(TRANSLATION_KEYS.BOOKING.SAVING_BOOKING) : t(TRANSLATION_KEYS.BOOKING.CREATING_BOOKING))
+              : (isEditing ? t(TRANSLATION_KEYS.BOOKING.SAVE_CHANGES) : t(TRANSLATION_KEYS.BOOKING.CREATE_BOOKING))
+            }
+          </Text>
+        </TouchableOpacity>
+
+        {isEditing && onCancel && (
+          <TouchableOpacity
+            onPress={onCancel}
+            disabled={submitting}
+            style={{
+              flex: 1,
+              backgroundColor: isDark ? theme.colors['surface-2-dark'] : '#e5e7eb',
+              borderRadius: 8,
+              marginTop: 24,
+              paddingVertical: 16,
+            }}
+          >
+            <Text style={{ 
+              color: isDark ? theme.colors['text-dark'] : theme.colors.text, 
+              fontWeight: '600', 
+              textAlign: 'center' 
+            }}>
+              {t(TRANSLATION_KEYS.BOOKING.CANCEL_EDIT)}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }

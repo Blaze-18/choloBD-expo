@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export interface DateRangeSelectionProps {
@@ -22,6 +24,7 @@ export function DateRangeSelection({
   selectedStartDate,
   selectedEndDate,
 }: DateRangeSelectionProps) {
+  const { t } = useTranslation();
   const [startDate, setStartDate] = useState<Date>(selectedStartDate || new Date());
   const [endDate, setEndDate] = useState<Date>(
     selectedEndDate || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
@@ -72,10 +75,10 @@ export function DateRangeSelection({
       {/* Header */}
       <View className="px-6 pt-6 pb-4">
         <Text className="text-2xl font-bold font-heading text-text dark:text-text-dark">
-          When are you going?
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_DATE_TITLE)}
         </Text>
         <Text className="mt-2 text-sm text-muted dark:text-muted-dark">
-          Select your travel dates
+          {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_DATE_SUBTITLE)}
         </Text>
       </View>
 
@@ -84,14 +87,14 @@ export function DateRangeSelection({
         {/* Start Date */}
         <View className="mt-4 mb-4">
           <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">
-            Start Date
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_START_DATE)}
           </Text>
           <TouchableOpacity
             onPress={() => setShowStartPicker(true)}
             className="bg-surface dark:bg-surface-dark border border-border dark:border-border-dark rounded-lg p-4 flex-row items-center justify-between"
           >
             <View>
-              <Text className="text-xs text-muted dark:text-muted-dark">From</Text>
+              <Text className="text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_START_DATE_LABEL)}</Text>
               <Text className="text-lg font-semibold text-text dark:text-text-dark mt-1">
                 {formatDate(startDate)}
               </Text>
@@ -113,14 +116,14 @@ export function DateRangeSelection({
         {/* End Date */}
         <View className="mb-6">
           <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">
-            End Date
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_END_DATE)}
           </Text>
           <TouchableOpacity
             onPress={() => setShowEndPicker(true)}
             className="bg-surface dark:bg-surface-dark border border-border dark:border-border-dark rounded-lg p-4 flex-row items-center justify-between"
           >
             <View>
-              <Text className="text-xs text-muted dark:text-muted-dark">To</Text>
+              <Text className="text-xs text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_END_DATE_LABEL)}</Text>
               <Text className="text-lg font-semibold text-text dark:text-text-dark mt-1">
                 {formatDate(endDate)}
               </Text>
@@ -144,7 +147,7 @@ export function DateRangeSelection({
           <View className="flex-row items-center">
             <Feather name="info" size={20} color="#0066FF" />
             <Text className="ml-3 text-primary dark:text-primary-dark font-semibold">
-              {calculateDays()} days trip
+              {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_TRIP_DURATION, { days: calculateDays() })}
             </Text>
           </View>
         </View>
@@ -158,7 +161,7 @@ export function DateRangeSelection({
           onPress={handleContinue}
           className="bg-primary rounded-lg py-4 items-center"
         >
-          <Text className="text-onPrimary font-bold text-lg">Continue</Text>
+          <Text className="text-onPrimary font-bold text-lg">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_CONTINUE)}</Text>
         </TouchableOpacity>
       </View>
     </View>

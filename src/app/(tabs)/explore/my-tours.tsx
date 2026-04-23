@@ -9,16 +9,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchTourPlansByAdmin } from '../../../store/slices/tourBuilderSlice';
 import { TourListCard } from '../../../components/tourBuilder/TourListCard';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 export default function MyToursPage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const { list, listLoading, listError } = useSelector((state: RootState) => state.tourBuilder);
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
@@ -59,10 +62,10 @@ export default function MyToursPage() {
 
         <View className="px-6 pb-4">
           <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
-            My Tours
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.MY_TOURS_TITLE)}
           </Text>
           <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
-            {list?.length || 0} tour packages created
+            {t(TRANSLATION_KEYS.TOUR_BUILDER.MY_TOURS_SUBTITLE, { count: list?.length || 0 })}
           </Text>
         </View>
 
@@ -71,7 +74,7 @@ export default function MyToursPage() {
           <View className="items-center justify-center py-12">
             <ActivityIndicator size="large" color={primaryColor} />
             <Text className="mt-4 text-sm text-muted dark:text-muted-dark">
-              Loading your tours...
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.LOADING_TOURS)}
             </Text>
           </View>
         )}
@@ -98,10 +101,10 @@ export default function MyToursPage() {
               <Ionicons name="map" size={32} color={primaryColor} />
             </View>
             <Text className="text-lg font-bold text-text dark:text-text-dark text-center mb-2">
-              No Tours Yet
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.NO_TOURS_TITLE)}
             </Text>
             <Text className="text-sm text-muted dark:text-muted-dark text-center mb-6">
-              You haven't created any tour packages yet. Start by creating your first tour!
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.NO_TOURS_DESC)}
             </Text>
             <TouchableOpacity
               className="py-3 px-6 rounded-lg active:opacity-80"
@@ -110,7 +113,7 @@ export default function MyToursPage() {
             >
               <View className="flex-row items-center gap-2">
                 <Ionicons name="add" size={18} color="#fff" />
-                <Text className="text-white font-bold text-base">Create Tour</Text>
+                <Text className="text-white font-bold text-base">{t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_TOUR_BTN)}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -139,7 +142,7 @@ export default function MyToursPage() {
               onPress={handleCreateNew}
             >
               <Ionicons name="add-circle" size={20} color="#fff" />
-              <Text className="text-white font-bold text-base">Create New Tour</Text>
+              <Text className="text-white font-bold text-base">{t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_NEW_TOUR_BTN)}</Text>
             </TouchableOpacity>
           </View>
         )}

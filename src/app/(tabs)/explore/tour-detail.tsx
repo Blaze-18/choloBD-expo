@@ -9,12 +9,15 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchTourPlanDetail } from '../../../store/slices/tourBuilderSlice';
 import { DaySegmentCard } from '../../../components/tourBuilder/DaySegmentCard';
 import { ErrorAlert } from '../../../components/tourBuilder/ErrorAlert';
 import { useTheme } from '../../../hooks/useTheme';
+import { useAuthWithAdminCheck } from '../../../hooks/useAuthWithAdminCheck';
 import { theme } from '../../../constants/theme';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 console.log('[TourDetailPage] Component loaded');
 
@@ -23,7 +26,9 @@ export default function TourDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const { isAdmin } = useAuthWithAdminCheck();
   const { detail, detailLoading, detailError } = useSelector((state: RootState) => state.tourBuilder);
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
@@ -46,12 +51,21 @@ export default function TourDetailPage() {
     router.back();
   };
 
+  const handleEdit = () => {
+    if (!id) return;
+    console.log('[TourDetailPage] Navigating to edit tour:', id);
+    router.push({
+      pathname: '/explore/tour-edit',
+      params: { tourId: id },
+    });
+  };
+
   if (detailLoading) {
     return (
       <SafeAreaView className="flex-1 bg-background dark:bg-background-dark items-center justify-center">
         <ActivityIndicator size="large" color={primaryColor} />
         <Text className="mt-4 text-sm text-muted dark:text-muted-dark">
-          Loading tour details...
+          {t(TRANSLATION_KEYS.TOUR_BUILDER.LOADING_DETAILS)}
         </Text>
       </SafeAreaView>
     );
@@ -83,17 +97,30 @@ export default function TourDetailPage() {
     >
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View className="px-6 pb-4 flex-row items-center">
-          <Ionicons
-            name="chevron-back"
-            size={24}
-            color={primaryColor}
-            onPress={handleBack}
-            style={{ marginRight: 12 }}
-          />
-          <Text className="text-2xl font-bold text-text dark:text-text-dark flex-1">
-            Tour Details
-          </Text>
+        <View className="px-6 pb-4 flex-row items-center justify-between">
+          <View className="flex-row items-center">
+            <Ionicons
+              name="chevron-back"
+              size={24}
+              color={primaryColor}
+              onPress={handleBack}
+              style={{ marginRight: 12 }}
+            />
+            <Text className="text-2xl font-bold text-text dark:text-text-dark flex-1">
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.TOUR_DETAILS_TITLE)}
+            </Text>
+          </View>
+          {isAdmin && !detailLoading && detail && (
+            <View className="pr-2">
+              <TouchableOpacity onPress={handleEdit}>
+                <Ionicons
+                  name="create"
+                  size={24}
+                  color={primaryColor}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         {/* Tour Info */}
@@ -113,14 +140,14 @@ export default function TourDetailPage() {
             {detail.isPopular && (
               <View style={{ backgroundColor: isDark ? '#3f2c1e' : '#FFF3E0', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999 }}>
                 <Text style={{ fontSize: 12, fontWeight: '600', color: warningColor }}>
-                  Popular
+                  {t(TRANSLATION_KEYS.TOUR_BUILDER.POPULAR_BADGE)}
                 </Text>
               </View>
             )}
             {!detail.isActive && (
               <View style={{ backgroundColor: isDark ? '#3f1e1e' : '#FFEBEE', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999 }}>
                 <Text style={{ fontSize: 12, fontWeight: '600', color: errorColor }}>
-                  Inactive
+                  {t(TRANSLATION_KEYS.TOUR_BUILDER.INACTIVE_BADGE)}
                 </Text>
               </View>
             )}
@@ -139,16 +166,16 @@ export default function TourDetailPage() {
           <View className="flex-row gap-4">
             <View style={{ flex: 1, backgroundColor: isDark ? '#1e3a5f' : '#E3F2FD', padding: 12, borderRadius: 8 }}>
               <Text style={{ fontSize: 12, color: mutedColor, fontWeight: '600' }}>
-                Duration
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.DURATION_STAT)}
               </Text>
               <Text style={{ fontSize: 18, fontWeight: '700', color: textColor, marginTop: 4 }}>
-                {detail.duration} {detail.duration === 1 ? 'Day' : 'Days'}
+                {detail.duration} {detail.duration === 1 ? t(TRANSLATION_KEYS.TOUR_BUILDER.DAY_SINGULAR) : t(TRANSLATION_KEYS.TOUR_BUILDER.DAYS_PLURAL)}
               </Text>
             </View>
 
             <View style={{ flex: 1, backgroundColor: isDark ? '#1e3f2c' : '#E8F5E9', padding: 12, borderRadius: 8 }}>
               <Text style={{ fontSize: 12, color: mutedColor, fontWeight: '600' }}>
-                Budget
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.BUDGET_STAT)}
               </Text>
               <Text style={{ fontSize: 18, fontWeight: '700', color: textColor, marginTop: 4 }}>
                 ৳{detail.totalBudget?.toLocaleString() || '0'}
@@ -157,7 +184,7 @@ export default function TourDetailPage() {
 
             <View style={{ flex: 1, backgroundColor: isDark ? '#312e58' : '#F3E5F5', padding: 12, borderRadius: 8 }}>
               <Text style={{ fontSize: 12, color: mutedColor, fontWeight: '600' }}>
-                Group Size
+                {t(TRANSLATION_KEYS.TOUR_BUILDER.GROUP_SIZE_STAT)}
               </Text>
               <Text style={{ fontSize: 18, fontWeight: '700', color: textColor, marginTop: 4 }}>
                 {detail.maxGroupSize || 'N/A'}
@@ -192,7 +219,7 @@ export default function TourDetailPage() {
         {detail.daySegments && detail.daySegments.length > 0 && (
           <View className="px-6 mb-6">
             <Text className="text-lg font-bold text-text dark:text-text-dark mb-3">
-              Itinerary
+              {t(TRANSLATION_KEYS.TOUR_BUILDER.ITINERARY)}
             </Text>
             {detail.daySegments.map((segment, index) => (
               <View key={index} className="mb-3">
