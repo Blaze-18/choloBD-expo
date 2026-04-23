@@ -5,6 +5,7 @@ const ACCESS_KEY = 'accessToken';
 const REFRESH_KEY = 'refreshToken';
 const USER_ID_KEY = 'userId';
 const USER_ROLE_KEY = 'userRole';
+const USER_DATA_KEY = 'userData';
 
 async function safeSetItem(key: string, value: string): Promise<void> {
   // Prefer modern API
@@ -68,4 +69,23 @@ export async function getUserIdAndRole(): Promise<{ userId: string; role: string
 export async function clearUserIdAndRole(): Promise<void> {
   await safeDeleteItem(USER_ID_KEY);
   await safeDeleteItem(USER_ROLE_KEY);
+}
+
+export async function saveUser(user: any): Promise<void> {
+  await safeSetItem(USER_DATA_KEY, JSON.stringify(user));
+}
+
+export async function getUser(): Promise<any | null> {
+  const userData = await safeGetItem(USER_DATA_KEY);
+  if (!userData) return null;
+  try {
+    return JSON.parse(userData);
+  } catch (e) {
+    console.error('[secureStore] Failed to parse user data:', e);
+    return null;
+  }
+}
+
+export async function clearUser(): Promise<void> {
+  await safeDeleteItem(USER_DATA_KEY);
 }

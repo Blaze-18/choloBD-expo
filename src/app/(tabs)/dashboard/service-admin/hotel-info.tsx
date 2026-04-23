@@ -62,7 +62,7 @@ export default function HotelInfoPage() {
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-background dark:bg-background-dark">
       {/* Header with Back Button */}
-      <View className="px-6 pt-4 pb-2 bg-white dark:bg-surface-dark border-b border-border dark:border-border-dark">
+      <View className="px-6 pt-4 pb-2 bg-white border-b dark:bg-surface-dark border-border dark:border-border-dark">
         <TouchableOpacity 
           onPress={() => router.replace('/(tabs)/dashboard/service-admin')} 
           className="flex-row items-center mb-4"
@@ -73,7 +73,7 @@ export default function HotelInfoPage() {
       </View>
 
       {loading ? (
-        <View className="flex-1 items-center justify-center">
+        <View className="items-center justify-center flex-1">
           <ActivityIndicator size="large" color={primaryColor} />
           <Text className="mt-3 text-sm text-muted dark:text-muted-dark">Loading hotel details...</Text>
         </View>
@@ -94,20 +94,20 @@ export default function HotelInfoPage() {
 
             {/* Rating & Type Cards */}
             <View className="flex-row gap-3 mb-6">
-              <View className="flex-1 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+              <View className="flex-1 p-4 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
                 <View className="flex-row items-center justify-between">
                   <View>
-                    <Text className="text-xs text-muted dark:text-muted-dark mb-1">Rating</Text>
+                    <Text className="mb-1 text-xs text-muted dark:text-muted-dark">Rating</Text>
                     <Text className="text-2xl font-bold text-text dark:text-text-dark">{rating.toFixed(1)}</Text>
                   </View>
                   <Ionicons name="star" size={32} color={warningColor} />
                 </View>
               </View>
 
-              <View className="flex-1 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+              <View className="flex-1 p-4 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
                 <View className="flex-row items-center justify-between">
                   <View>
-                    <Text className="text-xs text-muted dark:text-muted-dark mb-1">Type</Text>
+                    <Text className="mb-1 text-xs text-muted dark:text-muted-dark">Type</Text>
                     <Text className="text-lg font-bold text-text dark:text-text-dark">{hotel.type ?? 'N/A'}</Text>
                   </View>
                   <Ionicons name="building" size={32} color={primaryColor} />
@@ -117,7 +117,7 @@ export default function HotelInfoPage() {
 
             {/* Overview Card */}
             {hotel.description && (
-              <View className="p-4 mb-6 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+              <View className="p-4 mb-6 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
                 <View className="flex-row items-center mb-3">
                   <Ionicons name="information-circle" size={20} color={primaryColor} />
                   <Text className="ml-2 font-semibold text-text dark:text-text-dark">Description</Text>
@@ -132,17 +132,17 @@ export default function HotelInfoPage() {
             <View className="mb-6">
               <View className="flex-row items-center mb-3">
                 <Ionicons name="door-open" size={20} color={primaryColor} />
-                <Text className="ml-2 font-semibold text-lg text-text dark:text-text-dark">Room Statistics</Text>
+                <Text className="ml-2 text-lg font-semibold text-text dark:text-text-dark">Room Statistics</Text>
               </View>
 
               <View className="flex-row gap-3">
-                <View className="flex-1 p-4 bg-green-50 dark:bg-green-950 rounded-xl border border-green-200 dark:border-green-800">
-                  <Text className="text-xs text-green-700 dark:text-green-300 mb-1">Available Rooms</Text>
+                <View className="flex-1 p-4 border border-green-200 bg-green-50 dark:bg-green-950 rounded-xl dark:border-green-800">
+                  <Text className="mb-1 text-xs text-green-700 dark:text-green-300">Available Rooms</Text>
                   <Text className="text-2xl font-bold text-green-700 dark:text-green-300">{availableRooms}</Text>
                 </View>
 
-                <View className="flex-1 p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <Text className="text-xs text-blue-700 dark:text-blue-300 mb-1">Total Rooms</Text>
+                <View className="flex-1 p-4 border border-blue-200 bg-blue-50 dark:bg-blue-950 rounded-xl dark:border-blue-800">
+                  <Text className="mb-1 text-xs text-blue-700 dark:text-blue-300">Total Rooms</Text>
                   <Text className="text-2xl font-bold text-blue-700 dark:text-blue-300">{totalRooms}</Text>
                 </View>
               </View>
@@ -150,7 +150,7 @@ export default function HotelInfoPage() {
 
             {/* Amenities */}
             {hotel.hotelCategories && hotel.hotelCategories.length > 0 && (
-              <View className="mb-6 p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark">
+              <View className="p-4 mb-6 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
                 <View className="flex-row items-center mb-4">
                   <Ionicons name="sparkles" size={20} color={primaryColor} />
                   <Text className="ml-2 font-semibold text-text dark:text-text-dark">Amenities</Text>
@@ -159,7 +159,7 @@ export default function HotelInfoPage() {
                   {hotel.hotelCategories.map((hc: any) => (
                     <View 
                       key={hc.id} 
-                      className="px-3 py-2 bg-blue-50 dark:bg-blue-950 rounded-full border border-blue-200 dark:border-blue-800"
+                      className="px-3 py-2 border border-blue-200 rounded-full bg-blue-50 dark:bg-blue-950 dark:border-blue-800"
                     >
                       <Text className="text-xs font-medium text-blue-700 dark:text-blue-300">
                         {hc.category?.name ?? '—'}
@@ -174,7 +174,7 @@ export default function HotelInfoPage() {
             <View>
               <View className="flex-row items-center mb-4">
                 <Ionicons name="list" size={20} color={primaryColor} />
-                <Text className="ml-2 font-semibold text-lg text-text dark:text-text-dark">
+                <Text className="ml-2 text-lg font-semibold text-text dark:text-text-dark">
                   Room Types ({rooms.length})
                 </Text>
               </View>
@@ -184,7 +184,7 @@ export default function HotelInfoPage() {
                   {rooms.map((room, idx) => (
                     <View 
                       key={room.id ?? idx}
-                      className="p-4 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark"
+                      className="p-4 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark"
                     >
                       {/* Room Type Header */}
                       <View className="flex-row items-start justify-between mb-3">
@@ -193,7 +193,7 @@ export default function HotelInfoPage() {
                             {room.roomType ?? room.hotelRoomType?.roomType ?? 'Unknown Room'}
                           </Text>
                           {room.roomNumber && (
-                            <Text className="text-xs text-muted dark:text-muted-dark mt-1">
+                            <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
                               Room #{room.roomNumber}
                             </Text>
                           )}
@@ -265,7 +265,7 @@ export default function HotelInfoPage() {
                   ))}
                 </View>
               ) : (
-                <View className="p-6 bg-white dark:bg-surface-dark rounded-xl border border-border dark:border-border-dark items-center">
+                <View className="items-center p-6 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
                   <Ionicons name="inbox" size={32} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
                   <Text className="mt-2 text-sm text-muted dark:text-muted-dark">No room types available</Text>
                 </View>
@@ -274,10 +274,10 @@ export default function HotelInfoPage() {
           </View>
         </ScrollView>
       ) : (
-        <View className="flex-1 items-center justify-center px-6">
+        <View className="items-center justify-center flex-1 px-6">
           <Ionicons name="warning" size={48} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
           <Text className="mt-4 text-lg font-semibold text-text dark:text-text-dark">Hotel not found</Text>
-          <Text className="mt-2 text-sm text-muted dark:text-muted-dark text-center">
+          <Text className="mt-2 text-sm text-center text-muted dark:text-muted-dark">
             The hotel information could not be loaded. Please try again.
           </Text>
         </View>

@@ -165,6 +165,21 @@
       "role": "ভূমিকা",
       "status": "অবস্থা"
     },
+    "roles": {
+      "USER": "ব্যবহারকারী",
+      "SERVICE_ADMIN": "সেবা প্রশাসক",
+      "MASTER_ADMIN": "মাস্টার প্রশাসক",
+      "EMPLOYEE": "কর্মচারী",
+      "ADMIN": "প্রশাসক"
+    },
+    "statuses": {
+      "ACTIVE": "সক্রিয়",
+      "SUSPENDED": "স্থগিত",
+      "BANNED": "নিষিদ্ধ",
+      "PENDING": "অপেক্ষমাণ",
+      "UNVERIFIED": "যাচাইবিহীন",
+      "INACTIVE": "নিষ্ক্রিয়"
+    },
     "adminCards": {
       "myHotel": "আমার হোটেল",
       "myHotelDesc": "হোটেল তথ্য দেখুন",

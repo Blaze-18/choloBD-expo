@@ -168,6 +168,21 @@ export const TRANSLATION_KEYS = {
       ROLE: 'dashboard.userInfo.role',
       STATUS: 'dashboard.userInfo.status',
     },
+    ROLES: {
+      USER: 'dashboard.roles.USER',
+      SERVICE_ADMIN: 'dashboard.roles.SERVICE_ADMIN',
+      MASTER_ADMIN: 'dashboard.roles.MASTER_ADMIN',
+      EMPLOYEE: 'dashboard.roles.EMPLOYEE',
+      ADMIN: 'dashboard.roles.ADMIN',
+    },
+    STATUSES: {
+      ACTIVE: 'dashboard.statuses.ACTIVE',
+      SUSPENDED: 'dashboard.statuses.SUSPENDED',
+      BANNED: 'dashboard.statuses.BANNED',
+      PENDING: 'dashboard.statuses.PENDING',
+      UNVERIFIED: 'dashboard.statuses.UNVERIFIED',
+      INACTIVE: 'dashboard.statuses.INACTIVE',
+    },
     ADMIN_CARDS: {
       MY_HOTEL: 'dashboard.adminCards.myHotel',
       MY_HOTEL_DESC: 'dashboard.adminCards.myHotelDesc',

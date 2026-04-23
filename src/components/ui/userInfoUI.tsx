@@ -23,6 +23,44 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
   const onPrimaryColor = isDark ? theme.colors['onPrimary-dark'] : theme.colors['onPrimary'];
   const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
 
+  // Status color mapping
+  const getStatusColor = (status?: string) => {
+    switch (status?.toUpperCase()) {
+      case 'ACTIVE':
+        return 'bg-green-500';
+      case 'SUSPENDED':
+      case 'BANNED':
+        return 'bg-red-500';
+      case 'PENDING':
+      case 'UNVERIFIED':
+        return 'bg-yellow-500';
+      case 'INACTIVE':
+        return 'bg-gray-500';
+      default:
+        return 'bg-green-500';
+    }
+  };
+
+  // Get translated role
+  const getTranslatedRole = (roleValue?: string) => {
+    if (!roleValue) return t(TRANSLATION_KEYS.DASHBOARD.ROLES.USER);
+    const roleKey = `DASHBOARD.ROLES.${roleValue.toUpperCase()}` as any;
+    const translationKey = TRANSLATION_KEYS.DASHBOARD.ROLES[roleValue.toUpperCase() as keyof typeof TRANSLATION_KEYS.DASHBOARD.ROLES];
+    return translationKey ? t(translationKey) : roleValue;
+  };
+
+  // Get translated status
+  const getTranslatedStatus = (statusValue?: string) => {
+    if (!statusValue) return t(TRANSLATION_KEYS.DASHBOARD.STATUSES.ACTIVE);
+    const statusKey = statusValue.toUpperCase() as keyof typeof TRANSLATION_KEYS.DASHBOARD.STATUSES;
+    const translationKey = TRANSLATION_KEYS.DASHBOARD.STATUSES[statusKey];
+    return translationKey ? t(translationKey) : statusValue;
+  };
+
+  const statusColor = getStatusColor(userStatus);
+  const translatedRole = getTranslatedRole(role);
+  const translatedStatus = getTranslatedStatus(userStatus);
+
   return (
     <View className="mb-6">
       {/* Profile Header Card with gradient-like appearance */}
@@ -31,7 +69,13 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
           <View className="flex-row items-center flex-1">
             {/* Avatar */}
             <View className="rounded-2xl bg-primary dark:bg-primary-dark p-1">
-              <Image source={{ uri: avatarUrl }} style={{ width: 72, height: 72, borderRadius: 16 }} />
+              <Image 
+                source={{ uri: avatarUrl }} 
+                style={{ width: 72, height: 72, borderRadius: 16 }} 
+                accessible={true}
+                accessibilityRole="image"
+                accessibilityLabel={`${userName || 'User'}'s profile picture`}
+              />
             </View>
             
             {/* User Info */}
@@ -43,15 +87,22 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
               
               {/* Quick Status */}
               <View className="flex-row items-center mt-2">
-                <View className="w-2 h-2 rounded-full bg-green-500" />
-                <Text className="ml-1 text-xs text-text dark:text-text-dark">{userStatus || 'ACTIVE'}</Text>
+                <View className={`w-2 h-2 rounded-full ${statusColor}`} />
+                <Text className="ml-1 text-xs text-text dark:text-text-dark">{translatedStatus}</Text>
               </View>
             </View>
           </View>
           
           {/* Logout Button */}
-          <TouchableOpacity onPress={onLogout} className="p-3 rounded-lg bg-danger" style={{ elevation: 2 }}>
-            <Ionicons name="log-out" size={20} color={onPrimaryColor} />
+          <TouchableOpacity 
+            onPress={onLogout} 
+            className="p-3 rounded-lg bg-danger" 
+            style={{ elevation: 2, minWidth: 44, minHeight: 44 }}
+            accessibilityRole="button"
+            accessibilityLabel="Logout"
+            accessibilityHint="Double tap to log out of your account"
+          >
+            <Ionicons name="log-out" size={20} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -62,19 +113,9 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">{t(TRANSLATION_KEYS.DASHBOARD.USER_INFO.ROLE)}</Text>
-              <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{role || 'USER'}</Text>
+              <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{translatedRole}</Text>
               </View>
             <Ionicons name="person" size={24} color={primaryColor} />
-          </View>
-        </View>
-        
-        <View className="flex-1 p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark" style={theme.elevation.sm}>
-          <View className="flex-row items-center justify-between">
-            <View>
-              <Text className="text-xs text-muted dark:text-muted-dark uppercase tracking-wider">{t(TRANSLATION_KEYS.DASHBOARD.USER_INFO.STATUS)}</Text>
-              <Text className="mt-2 text-lg font-bold text-text dark:text-text-dark">{userStatus || 'ACTIVE'}</Text>
-            </View>
-            <Ionicons name="checkmark-circle" size={24} color={successColor} />
           </View>
         </View>
       </View>

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState, AuthUser, AuthTokens, ApiResponse } from '../../types/auth';
 import axios from 'axios';
 import { createApi, getApiInstance, setLogoutCallback } from '../../services/api/axiosClient';
-import { saveTokens, clearTokens, saveUserIdAndRole, clearUserIdAndRole, getUserIdAndRole } from '../../lib/secureStore';
+import { saveTokens, clearTokens, saveUserIdAndRole, clearUserIdAndRole, getUserIdAndRole, saveUser, getUser, clearUser } from '../../lib/secureStore';
 import { API_BASE_URL } from '../../constants/api';
 
 // We'll export a function to initialize the API base URL from the app bootstrap
@@ -23,10 +23,10 @@ export const initializeAuth = createAsyncThunk('auth/initialize', async (_, { re
   try {
     console.log('[initializeAuth] Reading tokens from SecureStore...');
     const tokensRes = await (await import('../../lib/secureStore')).getTokens();
-    const userInfo = await getUserIdAndRole();
-    if (tokensRes && userInfo) {
-      console.log('[initializeAuth] Found existing tokens, restoring auth state');
-      return { tokens: tokensRes, user: { id: userInfo.userId, email: '', userName: '', role: userInfo.role } } as any;
+    const userData = await getUser();
+    if (tokensRes && userData) {
+      console.log('[initializeAuth] Found existing tokens and user, restoring auth state');
+      return { tokens: tokensRes, user: userData } as any;
     }
     console.log('[initializeAuth] No existing tokens found');
     return null;
@@ -46,6 +46,7 @@ export const loginUser = createAsyncThunk('auth/login', async (payload: { email:
     const data = res.data as ApiResponse<{ accessToken: string; refreshToken: string; user: AuthUser }>;
     await saveTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
     await saveUserIdAndRole(data.data.user.id, data.data.user.role);
+    await saveUser(data.data.user);
     console.log('[loginUser] Success');
     return { tokens: { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }, user: data.data.user };
   } catch (e: any) {
@@ -64,6 +65,7 @@ export const registerUser = createAsyncThunk('auth/register', async (payload: { 
     const data = res.data as ApiResponse<{ accessToken: string; refreshToken: string; user: AuthUser }>;
     await saveTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
     await saveUserIdAndRole(data.data.user.id, data.data.user.role);
+    await saveUser(data.data.user);
     console.log('[registerUser] Success');
     return { tokens: { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }, user: data.data.user };
   } catch (e: any) {
@@ -83,21 +85,24 @@ export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWith
     }
     await clearTokens();
     await clearUserIdAndRole();
+    await clearUser();
     return true;
   } catch (e: any) {
     // still clear local tokens
     await clearTokens();
     await clearUserIdAndRole();
+    await clearUser();
     return rejectWithValue(e?.response?.data || e.message);
   }
 });
 
-export const loginWithOAuth = createAsyncThunk('auth/oauth', async (payload: { accessToken: string; refreshToken: string; userId: string; role: string }, { rejectWithValue }) => {
+export const loginWithOAuth = createAsyncThunk('auth/oauth', async (payload: { accessToken: string; refreshToken: string; userId: string; role: string; user?: AuthUser }, { rejectWithValue }) => {
   try {
     await saveTokens({ accessToken: payload.accessToken, refreshToken: payload.refreshToken });
     await saveUserIdAndRole(payload.userId, payload.role);
-    // user details will be fetched later if needed
-    return { tokens: { accessToken: payload.accessToken, refreshToken: payload.refreshToken }, user: { id: payload.userId, email: '', userName: '', role: payload.role } as AuthUser };
+    const user = payload.user || { id: payload.userId, email: '', userName: '', role: payload.role } as AuthUser;
+    await saveUser(user);
+    return { tokens: { accessToken: payload.accessToken, refreshToken: payload.refreshToken }, user };
   } catch (e: any) {
     return rejectWithValue(e.message);
   }

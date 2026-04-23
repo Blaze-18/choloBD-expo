@@ -165,6 +165,21 @@
       "role": "Role",
       "status": "Status"
     },
+    "roles": {
+      "USER": "User",
+      "SERVICE_ADMIN": "Service Admin",
+      "MASTER_ADMIN": "Master Admin",
+      "EMPLOYEE": "Employee",
+      "ADMIN": "Admin"
+    },
+    "statuses": {
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "BANNED": "Banned",
+      "PENDING": "Pending",
+      "UNVERIFIED": "Unverified",
+      "INACTIVE": "Inactive"
+    },
     "adminCards": {
       "myHotel": "My Hotel",
       "myHotelDesc": "View hotel information",
