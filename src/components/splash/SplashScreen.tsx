@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Image, Animated, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 
 interface SplashScreenProps {
   onComplete?: () => void;
@@ -14,6 +16,7 @@ interface SplashScreenProps {
  */
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, delay = 2000 }) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
   React.useEffect(() => {
@@ -54,7 +57,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, delay = 
 
       {/* Optional branding text or tagline */}
       <View style={styles.bottomSection}>
-        <Text style={styles.tagline}>Your all in one travel planner</Text>
+        <Text 
+          style={[
+            styles.tagline,
+            { 
+              color: isDark ? theme.colors['text-dark'] : theme.colors.text,
+              textShadowColor: isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)',
+            }
+          ]}
+        >
+          {t(TRANSLATION_KEYS.SPLASH.TAGLINE)}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -87,12 +100,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   tagline: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
     fontStyle: 'italic',
     textAlign: 'center',
     letterSpacing: 0.5,
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+    paddingHorizontal: 16,
+    lineHeight: 24,
   },
 });
 

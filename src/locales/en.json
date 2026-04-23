@@ -1,4 +1,8 @@
 {
+  "splash": {
+    "tagline": "Your all in one travel planner",
+    "taglineAlt": "Discover Bangladesh with CholoBD"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",

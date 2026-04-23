@@ -4,6 +4,10 @@
  */
 
 export const TRANSLATION_KEYS = {
+  SPLASH: {
+    TAGLINE: 'splash.tagline',
+    TAGLINE_ALT: 'splash.taglineAlt',
+  },
   COMMON: {
     LOADING: 'common.loading',
     ERROR: 'common.error',
