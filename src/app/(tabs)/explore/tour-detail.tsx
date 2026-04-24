@@ -60,6 +60,15 @@ export default function TourDetailPage() {
     });
   };
 
+  const handleBookTour = () => {
+    if (!id) return;
+    console.log('[TourDetailPage] Navigating to book tour:', id);
+    router.push({
+      pathname: '/(tabs)/explore/tour-booking',
+      params: { packageId: id },
+    });
+  };
+
   if (detailLoading) {
     return (
       <SafeAreaView className="flex-1 bg-background dark:bg-background-dark items-center justify-center">
@@ -234,9 +243,34 @@ export default function TourDetailPage() {
           </View>
         )}
 
-        {/* Spacer */}
-        <View className="h-6" />
+        {/* Spacer for bottom button */}
+        {!isAdmin && detail.isActive && <View className="h-24" />}
       </ScrollView>
+
+      {/* Book Tour Button (Fixed at bottom for non-admin users) */}
+      {!isAdmin && detail.isActive && (
+        <View
+          className="px-6 pb-4 pt-3"
+          style={{
+            backgroundColor: isDark ? theme.colors['surface-dark'] : theme.colors.surface,
+            borderTopWidth: 1,
+            borderTopColor: isDark ? theme.colors['border-dark'] : theme.colors.border,
+            paddingBottom: Math.max(16, insets.bottom),
+          }}
+        >
+          <TouchableOpacity
+            onPress={handleBookTour}
+            className="flex-row items-center justify-center p-4 rounded-xl"
+            style={{ backgroundColor: successColor }}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="calendar" size={24} color="#fff" style={{ marginRight: 8 }} />
+            <Text className="text-base font-bold text-white">
+              {t(TRANSLATION_KEYS.PACKAGE_BOOKING.BOOK_THIS_TOUR)}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

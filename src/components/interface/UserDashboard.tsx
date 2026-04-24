@@ -62,6 +62,11 @@ export function UserDashboard({
               onPress={() => router.push('/(tabs)/dashboard/user-bookings')}
             />
             <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_PACKAGE_BOOKINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_PACKAGE_BOOKINGS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/package-bookings')}
+            />
+            <AdminCard
               title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.EXPLORE_HOTELS)}
               subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.EXPLORE_HOTELS_DESC)}
               onPress={() => router.push('/(tabs)/explore')}

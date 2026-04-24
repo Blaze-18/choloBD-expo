@@ -36,6 +36,8 @@ export const TRANSLATION_KEYS = {
     LANGUAGE: 'common.language',
     BENGALI: 'common.bengali',
     ENGLISH: 'common.english',
+    VIEW_DETAILS: 'common.viewDetails',
+    CONFIRM: 'common.confirm',
   },
   AUTH: {
     LOGIN: {
@@ -169,6 +171,18 @@ export const TRANSLATION_KEYS = {
     NO_GUEST_BOOKINGS: 'tracking.noGuestBookings',
     NO_ACTIVE_BOOKINGS: 'tracking.noActiveBookings',
     VIEW_DETAILS: 'tracking.viewDetails',
+    CURRENT_BOOKINGS: 'tracking.currentBookings',
+    CURRENT_BOOKINGS_DESC: 'tracking.currentBookingsDesc',
+    PACKAGE_BOOKINGS: 'tracking.packageBookings',
+    PACKAGE_BOOKINGS_DESC: 'tracking.packageBookingsDesc',
+    HOTEL_BOOKINGS_SUBTITLE: 'tracking.hotelBookingsSubtitle',
+    PACKAGE_BOOKINGS_SUBTITLE: 'tracking.packageBookingsSubtitle',
+    BOOKINGS: 'tracking.bookings',
+    VIEW_BOOKINGS: 'tracking.viewBookings',
+    NO_PACKAGES_FOUND: 'tracking.noPackagesFound',
+    NO_PACKAGES_DESC: 'tracking.noPackagesDesc',
+    PACKAGE_BOOKING_LIST: 'tracking.packageBookingList',
+    NO_BOOKINGS_FOR_PACKAGE: 'tracking.noBookingsForPackage',
   },
   DASHBOARD: {
     WELCOME_BACK: 'dashboard.welcomeBack',
@@ -211,6 +225,8 @@ export const TRANSLATION_KEYS = {
     USER_CARDS: {
       MY_BOOKINGS: 'dashboard.userCards.myBookings',
       MY_BOOKINGS_DESC: 'dashboard.userCards.myBookingsDesc',
+      MY_PACKAGE_BOOKINGS: 'dashboard.userCards.myPackageBookings',
+      MY_PACKAGE_BOOKINGS_DESC: 'dashboard.userCards.myPackageBookingsDesc',
       EXPLORE_HOTELS: 'dashboard.userCards.exploreHotels',
       EXPLORE_HOTELS_DESC: 'dashboard.userCards.exploreHotelsDesc',
       TRIP_PLANNER: 'dashboard.userCards.tripPlanner',
@@ -365,6 +381,66 @@ export const TRANSLATION_KEYS = {
     SAVE_CHANGES: 'tourBuilder.saveChanges',
     SAVING_CHANGES: 'tourBuilder.savingChanges',
     CANCEL_EDIT: 'tourBuilder.cancelEdit',
+  },
+  PACKAGE_BOOKING: {
+    // Page Titles
+    BOOK_TOUR: 'packageBooking.bookTour',
+    MY_BOOKINGS: 'packageBooking.myBookings',
+    MY_BOOKINGS_DESC: 'packageBooking.myBookingsDesc',
+    BOOKING_DETAILS: 'packageBooking.bookingDetails',
+    COMPLETE_BOOKING: 'packageBooking.completeBooking',
+    
+    // Form Labels
+    PACKAGE_NAME: 'packageBooking.packageName',
+    PRICE_PER_PERSON: 'packageBooking.pricePerPerson',
+    QUANTITY: 'packageBooking.quantity',
+    MAX_GROUP_SIZE: 'packageBooking.maxGroupSize',
+    SPECIAL_REQUESTS: 'packageBooking.specialRequests',
+    SPECIAL_REQUESTS_PLACEHOLDER: 'packageBooking.specialRequestsPlaceholder',
+    NOTES: 'packageBooking.notes',
+    NOTES_PLACEHOLDER: 'packageBooking.notesPlaceholder',
+    TOTAL_PRICE: 'packageBooking.totalPrice',
+    
+    // Actions
+    BOOK_THIS_TOUR: 'packageBooking.bookThisTour',
+    CONFIRM_PURCHASE: 'packageBooking.confirmPurchase',
+    PROCESSING: 'packageBooking.processing',
+    CANCEL_BOOKING: 'packageBooking.cancelBooking',
+    VIEW_MY_BOOKINGS: 'packageBooking.viewMyBookings',
+    BROWSE_TOURS: 'packageBooking.browseTours',
+    
+    // Success/Error States
+    BOOKING_SUCCESS: 'packageBooking.bookingSuccess',
+    BOOKING_SUCCESS_DESC: 'packageBooking.bookingSuccessDesc',
+    PAYMENT_COMING_SOON: 'packageBooking.paymentComingSoon',
+    PACKAGE_INACTIVE: 'packageBooking.packageInactive',
+    PACKAGE_INACTIVE_DESC: 'packageBooking.packageInactiveDesc',
+    BOOKING_NOT_FOUND: 'packageBooking.bookingNotFound',
+    NO_BOOKINGS: 'packageBooking.noBookings',
+    NO_BOOKINGS_DESC: 'packageBooking.noBookingsDesc',
+    
+    // Booking Info
+    CONFIRMATION_CODE: 'packageBooking.confirmationCode',
+    CODE: 'packageBooking.code',
+    BOOKED_ON: 'packageBooking.bookedOn',
+    TOTAL: 'packageBooking.total',
+    PACKAGE_INFO: 'packageBooking.packageInfo',
+    BOOKING_INFO: 'packageBooking.bookingInfo',
+    
+    // Filters
+    FILTER_BY_STATUS: 'packageBooking.filterByStatus',
+    FILTER_BY_PAYMENT: 'packageBooking.filterByPayment',
+    
+    // Cancellation
+    CANCEL_CONFIRMATION: 'packageBooking.cancelConfirmation',
+    CANCEL_REASON: 'packageBooking.cancelReason',
+    CANCEL_REASON_PLACEHOLDER: 'packageBooking.cancelReasonPlaceholder',
+    ADDITIONAL_NOTES: 'packageBooking.additionalNotes',
+    CANCELLATION_INFO: 'packageBooking.cancellationInfo',
+    CANCELLED_ON: 'packageBooking.cancelledOn',
+    REASON: 'packageBooking.reason',
+    CANNOT_CANCEL: 'packageBooking.cannotCancel',
+    CANNOT_CANCEL_DESC: 'packageBooking.cannotCancelDesc',
   },
   TRIP_PLANNER: {
     // Wizard - Location Selection
