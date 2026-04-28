@@ -59,13 +59,13 @@ export default function PackageBookingsPage() {
         activeOpacity={0.7}
         className="mb-3"
       >
-        <View className="p-4 rounded-xl bg-white dark:bg-surface-dark border border-border dark:border-border-dark">
+        <View className="p-4 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
           <View className="flex-row items-start justify-between">
             <View className="flex-1 mr-3">
               <Text className="text-lg font-semibold text-text dark:text-text-dark">
                 {item.packageName}
               </Text>
-              <Text className="text-sm text-muted dark:text-muted-dark mt-1">
+              <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
                 {item.location?.name || 'Location'}
               </Text>
               
@@ -75,7 +75,7 @@ export default function PackageBookingsPage() {
                   size={14}
                   color={isDark ? theme.colors['muted-dark'] : theme.colors.muted}
                 />
-                <Text className="text-xs text-muted dark:text-muted-dark ml-1">
+                <Text className="ml-1 text-xs text-muted dark:text-muted-dark">
                   {item.durationDays} {item.durationDays === 1 ? 'day' : 'days'}
                 </Text>
                 <Text className="mx-2 text-muted dark:text-muted-dark">•</Text>
@@ -84,7 +84,7 @@ export default function PackageBookingsPage() {
                   size={14}
                   color={isDark ? theme.colors['muted-dark'] : theme.colors.muted}
                 />
-                <Text className="text-xs text-muted dark:text-muted-dark ml-1">
+                <Text className="ml-1 text-xs text-muted dark:text-muted-dark">
                   Max {item.maxGroupSize}
                 </Text>
               </View>
@@ -96,14 +96,14 @@ export default function PackageBookingsPage() {
                   {bookingCount}
                 </Text>
               </View>
-              <Text className="text-xs text-muted dark:text-muted-dark mt-1">
+              <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
                 {t(TRANSLATION_KEYS.TRACKING.BOOKINGS)}
               </Text>
             </View>
           </View>
 
           {!item.isActive && (
-            <View className="mt-2 px-2 py-1 rounded bg-muted/10 dark:bg-muted-dark/10">
+            <View className="px-2 py-1 mt-2 rounded bg-muted/10 dark:bg-muted-dark/10">
               <Text className="text-xs text-muted dark:text-muted-dark">
                 {t(TRANSLATION_KEYS.TOUR_BUILDER.INACTIVE_BADGE)}
               </Text>
@@ -111,7 +111,7 @@ export default function PackageBookingsPage() {
           )}
 
           <View className="flex-row items-center justify-end mt-2">
-            <Text className="text-sm text-primary dark:text-primary-dark mr-1">
+            <Text className="mr-1 text-sm text-primary dark:text-primary-dark">
               {t(TRANSLATION_KEYS.TRACKING.VIEW_BOOKINGS)}
             </Text>
             <Ionicons
@@ -174,16 +174,16 @@ export default function PackageBookingsPage() {
           />
         </View>
       ) : (
-        <View className="px-6 py-12 items-center">
+        <View className="items-center px-6 py-12">
           <Ionicons
             name="briefcase-outline"
             size={64}
             color={isDark ? theme.colors['muted-dark'] : theme.colors.muted}
           />
-          <Text className="text-lg font-semibold text-text dark:text-text-dark mb-2 mt-4">
+          <Text className="mt-4 mb-2 text-lg font-semibold text-text dark:text-text-dark">
             {t(TRANSLATION_KEYS.TRACKING.NO_PACKAGES_FOUND)}
           </Text>
-          <Text className="text-sm text-muted dark:text-muted-dark text-center">
+          <Text className="text-sm text-center text-muted dark:text-muted-dark">
             {t(TRANSLATION_KEYS.TRACKING.NO_PACKAGES_DESC)}
           </Text>
         </View>

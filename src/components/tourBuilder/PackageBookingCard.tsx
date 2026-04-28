@@ -15,9 +15,10 @@ import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 interface PackageBookingCardProps {
   booking: PackageBooking;
   onPress?: (bookingId: string) => void;
+  hideViewDetails?: boolean;
 }
 
-export function PackageBookingCard({ booking, onPress }: PackageBookingCardProps) {
+export function PackageBookingCard({ booking, onPress, hideViewDetails = false }: PackageBookingCardProps) {
   const { isDark } = useTheme();
   const { t } = useTranslation();
 
@@ -157,12 +158,14 @@ export function PackageBookingCard({ booking, onPress }: PackageBookingCardProps
         </View>
 
         {/* View Details Arrow */}
-        <View className="flex-row items-center justify-end mt-3">
-          <Text className="mr-1 text-sm text-primary dark:text-primary-dark">
-            {t(TRANSLATION_KEYS.COMMON.VIEW_DETAILS)}
-          </Text>
-          <Ionicons name="chevron-forward" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
-        </View>
+        {!hideViewDetails && (
+          <View className="flex-row items-center justify-end mt-3">
+            <Text className="mr-1 text-sm text-primary dark:text-primary-dark">
+              {t(TRANSLATION_KEYS.COMMON.VIEW_DETAILS)}
+            </Text>
+            <Ionicons name="chevron-forward" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );

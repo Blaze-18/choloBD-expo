@@ -36,9 +36,6 @@ export default function PackageBookingDetailsPage() {
     }
   };
 
-  const handleBookingPress = (bookingId: string) => {
-    router.push(`/(tabs)/dashboard/package-bookings/${bookingId}`);
-  };
 
   const filteredBookings = statusFilter === 'ALL'
     ? bookings
@@ -122,7 +119,7 @@ export default function PackageBookingDetailsPage() {
             data={filteredBookings}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <PackageBookingCard booking={item} onPress={handleBookingPress} />
+              <PackageBookingCard booking={item} hideViewDetails />
             )}
             scrollEnabled={false}
           />

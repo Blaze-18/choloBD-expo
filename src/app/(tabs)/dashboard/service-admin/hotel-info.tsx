@@ -3,9 +3,65 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import i18next from 'i18next';
 import theme from '../../../../constants/theme';
 import { useServiceAdminLogic } from '../../../../hooks/useServiceAdminLogic';
+import {
+  translateDescriptionIfNeeded,
+  translateDisplayStringListIfNeeded,
+} from '../../../../services/api/translation';
 import { useTheme } from '../../../../hooks/useTheme';
+
+async function translateHotelDisplayFields(hotelData: any): Promise<any> {
+  if (!hotelData || typeof hotelData !== 'object') {
+    return hotelData;
+  }
+
+  const description = hotelData.description;
+  const categoryNames = Array.isArray(hotelData.hotelCategories)
+    ? hotelData.hotelCategories.map((hc: any) => hc?.category?.name)
+    : [];
+
+  const translatedDescription = await translateDescriptionIfNeeded(
+    typeof description === 'string' ? description : '',
+    i18next.language
+  );
+  const translatedCategoryNames = await translateDisplayStringListIfNeeded(
+    categoryNames,
+    i18next.language
+  );
+
+  const translatedHotelCategories = Array.isArray(hotelData.hotelCategories)
+    ? hotelData.hotelCategories.map((hc: any, idx: number) => {
+        const translatedName = translatedCategoryNames[idx];
+        if (!translatedName || !hc?.category) {
+          return hc;
+        }
+        return {
+          ...hc,
+          category: {
+            ...hc.category,
+            name: translatedName,
+          },
+        };
+      })
+    : hotelData.hotelCategories;
+
+  const didDescriptionChange =
+    typeof description === 'string' && translatedDescription !== description;
+  const didCategoriesChange =
+    translatedHotelCategories !== hotelData.hotelCategories;
+
+  if (!didDescriptionChange && !didCategoriesChange) {
+    return hotelData;
+  }
+
+  return {
+    ...hotelData,
+    description: didDescriptionChange ? translatedDescription : description,
+    hotelCategories: translatedHotelCategories,
+  };
+}
 
 export default function HotelInfoPage() {
   const params = useLocalSearchParams();
@@ -25,11 +81,12 @@ export default function HotelInfoPage() {
       try {
         const h = await fetchMyHotel(hotelId);
         console.log('[HotelInfoPage] fetchMyHotel result', h);
-        setHotel(h ?? null);
+        const nextHotel = await translateHotelDisplayFields(h);
+        setHotel(nextHotel ?? null);
 
         // If roomTypes are included in hotel response (new backend), extract them
-        if (h?.roomTypes) {
-          setRooms(h.roomTypes);
+        if (nextHotel?.roomTypes) {
+          setRooms(nextHotel.roomTypes);
           setLoading(false);
           return;
         }
