@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useTripPlannerLogic } from '../../../hooks/useTripPlannerLogic';
@@ -13,7 +13,7 @@ console.log('[TripPlannerList] Screen loaded');
 
 export default function TripPlannerList() {
   const router = useRouter();
-  const { trips, isTripsLoading, tripsError, loadTrips } = useTripPlannerLogic();
+  const { trips, isTripsLoading, tripsError, loadTrips, deleteTrip } = useTripPlannerLogic();
 
   useEffect(() => {
     loadTrips();
@@ -29,10 +29,25 @@ export default function TripPlannerList() {
     router.push(`/(tabs)/trip-planner/${tripId}`);
   };
 
+  const handleDeleteTrip = (tripId: string, tripName: string) => {
+    Alert.alert(
+      'Delete Trip',
+      `Are you sure you want to delete "${tripName}"? This cannot be undone.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteTrip(tripId),
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
       {/* Header */}
-      <View className="px-6 pt-6 pb-4 flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between px-6 pt-6 pb-4">
         <View>
           <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
             My Trips
@@ -43,7 +58,7 @@ export default function TripPlannerList() {
         </View>
         <TouchableOpacity
           onPress={handleCreateNew}
-          className="bg-primary rounded-full p-3"
+          className="p-3 rounded-full bg-primary"
         >
           <Feather name="plus" size={24} color="white" />
         </TouchableOpacity>
@@ -51,23 +66,23 @@ export default function TripPlannerList() {
 
       {/* Content */}
       {isTripsLoading ? (
-        <View className="flex-1 justify-center items-center">
+        <View className="items-center justify-center flex-1">
           <ActivityIndicator size="large" color="#0066FF" />
         </View>
       ) : tripsError ? (
-        <View className="flex-1 justify-center items-center px-6">
-          <Text className="text-center text-error dark:text-error-dark mb-4">
+        <View className="items-center justify-center flex-1 px-6">
+          <Text className="mb-4 text-center text-error dark:text-error-dark">
             {tripsError.message}
           </Text>
           <TouchableOpacity
             onPress={() => loadTrips()}
-            className="px-6 py-3 bg-primary rounded-lg"
+            className="px-6 py-3 rounded-lg bg-primary"
           >
-            <Text className="text-onPrimary font-semibold">Retry</Text>
+            <Text className="font-semibold text-onPrimary">Retry</Text>
           </TouchableOpacity>
         </View>
       ) : trips.length === 0 ? (
-        <View className="flex-1 justify-center items-center px-6">
+        <View className="items-center justify-center flex-1 px-6">
           <Feather name="map" size={48} color="#9CA3AF" />
           <Text className="mt-4 text-lg font-semibold text-text dark:text-text-dark">
             No trips yet
@@ -77,38 +92,48 @@ export default function TripPlannerList() {
           </Text>
           <TouchableOpacity
             onPress={handleCreateNew}
-            className="mt-6 px-8 py-3 bg-primary rounded-lg"
+            className="px-8 py-3 mt-6 rounded-lg bg-primary"
           >
-            <Text className="text-onPrimary font-semibold">Create Trip</Text>
+            <Text className="font-semibold text-onPrimary">Create Trip</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <ScrollView className="flex-1 px-6 pb-6" showsVerticalScrollIndicator={false}>
           {trips.map((trip) => (
-            <TouchableOpacity
+            <View
               key={trip.id}
-              onPress={() => handleTripPress(trip.id)}
-              className="bg-surface dark:bg-surface-dark border border-border dark:border-border-dark rounded-lg p-4 mb-4"
+              className="flex-row items-stretch mb-4 overflow-hidden border rounded-lg bg-surface dark:bg-surface-dark border-border dark:border-border-dark"
             >
-              <View className="flex-row items-start justify-between">
-                <View className="flex-1">
-                  <Text className="text-lg font-bold text-text dark:text-text-dark">
-                    {trip.name}
-                  </Text>
-                  <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                    {trip.primaryLocation.name}
-                  </Text>
-                  <View className="mt-3 flex-row items-center">
-                    <View className="bg-primary/10 dark:bg-primary-dark/10 px-3 py-1 rounded">
-                      <Text className="text-xs font-semibold text-primary dark:text-primary-dark">
-                        {trip.status}
-                      </Text>
-                    </View>
+              {/* Tappable main area */}
+              <TouchableOpacity
+                onPress={() => handleTripPress(trip.id)}
+                activeOpacity={0.7}
+                className="flex-1 p-4"
+              >
+                <Text className="text-lg font-bold text-text dark:text-text-dark">
+                  {trip.name}
+                </Text>
+                <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
+                  {trip.primaryLocation.name}
+                </Text>
+                <View className="flex-row items-center mt-3">
+                  <View className="px-3 py-1 rounded bg-primary/10 dark:bg-primary-dark/10">
+                    <Text className="text-xs font-semibold text-primary dark:text-primary-dark">
+                      {trip.status}
+                    </Text>
                   </View>
                 </View>
-                <Feather name="chevron-right" size={24} color="#9CA3AF" />
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+
+              {/* Delete button — separate, no nesting */}
+              <TouchableOpacity
+                onPress={() => handleDeleteTrip(trip.id, trip.name)}
+                activeOpacity={0.7}
+                className="items-center justify-center px-4 border-l border-border dark:border-border-dark"
+              >
+                <Feather name="trash-2" size={20} color="#EF4444" />
+              </TouchableOpacity>
+            </View>
           ))}
         </ScrollView>
       )}

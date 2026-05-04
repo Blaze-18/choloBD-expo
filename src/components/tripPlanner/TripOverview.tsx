@@ -6,6 +6,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 import { TripPlan } from '../../types/trips';
 import { useTheme } from '../../hooks/useTheme';
 import { theme } from '../../constants/theme';
@@ -15,6 +17,7 @@ interface TripOverviewProps {
 }
 
 export function TripOverview({ trip }: TripOverviewProps) {
+  const { t } = useTranslation();
   const { isDark } = useTheme();
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const successColor = isDark ? theme.colors['success-dark'] : theme.colors.success;
@@ -52,7 +55,7 @@ export function TripOverview({ trip }: TripOverviewProps) {
     <View className="px-6">
       {/* Trip Title and Location */}
       <View className="mb-4">
-        <Text className="text-sm text-muted dark:text-muted-dark">Location</Text>
+        <Text className="text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_LOCATION)}</Text>
         <Text className="text-lg font-semibold text-text dark:text-text-dark mt-1">
           {trip.primaryLocation?.name || 'Unknown'}
         </Text>
@@ -64,10 +67,10 @@ export function TripOverview({ trip }: TripOverviewProps) {
         <View className="flex-1 bg-surface dark:bg-surface-dark rounded-lg p-3">
           <View className="flex-row items-center mb-1">
             <Feather name="calendar" size={14} color={primaryColor} />
-            <Text className="text-xs text-muted dark:text-muted-dark ml-1">Duration</Text>
+            <Text className="text-xs text-muted dark:text-muted-dark ml-1">{t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_DURATION)}</Text>
           </View>
           <Text className="text-lg font-bold text-text dark:text-text-dark">
-            {duration} {duration === 1 ? 'Day' : 'Days'}
+            {duration} {duration === 1 ? t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_DAY_SINGULAR) : t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_DAY_PLURAL)}
           </Text>
         </View>
 
@@ -75,7 +78,7 @@ export function TripOverview({ trip }: TripOverviewProps) {
         <View className="flex-1 bg-surface dark:bg-surface-dark rounded-lg p-3">
           <View className="flex-row items-center mb-1">
             <Feather name="users" size={14} color={successColor} />
-            <Text className="text-xs text-muted dark:text-muted-dark ml-1">Participants</Text>
+            <Text className="text-xs text-muted dark:text-muted-dark ml-1">{t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_PARTICIPANTS)}</Text>
           </View>
           <Text className="text-lg font-bold text-text dark:text-text-dark">
             {trip.participantCount}
@@ -87,7 +90,7 @@ export function TripOverview({ trip }: TripOverviewProps) {
       <View className="bg-surface dark:bg-surface-dark rounded-lg p-3 mb-4">
         <View className="flex-row items-center mb-1">
           <Feather name="clock" size={14} color={primaryColor} />
-          <Text className="text-xs text-muted dark:text-muted-dark ml-1">Travel Dates</Text>
+            <Text className="text-xs text-muted dark:text-muted-dark ml-1">{t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_TRAVEL_DATES)}</Text>
         </View>
         <Text className="text-sm font-semibold text-text dark:text-text-dark">
           {startDateStr} - {endDateStr}
@@ -100,10 +103,10 @@ export function TripOverview({ trip }: TripOverviewProps) {
         <View className="flex-1 bg-surface dark:bg-surface-dark rounded-lg p-3">
           <View className="flex-row items-center mb-1">
             <Feather name="dollar-sign" size={14} color={primaryColor} />
-            <Text className="text-xs text-muted dark:text-muted-dark ml-1">Est. Budget</Text>
+            <Text className="text-xs text-muted dark:text-muted-dark ml-1">{t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_EST_BUDGET)}</Text>
           </View>
           <Text className="text-lg font-bold text-text dark:text-text-dark">
-            {trip.estimatedBudget ? `₹${trip.estimatedBudget}` : 'Not set'}
+            {trip.estimatedBudget ? `₹${trip.estimatedBudget}` : t(TRANSLATION_KEYS.TRIP_PLANNER.OVERVIEW_BUDGET_NOT_SET)}
           </Text>
         </View>
 

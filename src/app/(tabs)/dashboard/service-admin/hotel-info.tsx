@@ -22,14 +22,13 @@ async function translateHotelDisplayFields(hotelData: any): Promise<any> {
     ? hotelData.hotelCategories.map((hc: any) => hc?.category?.name)
     : [];
 
-  const translatedDescription = await translateDescriptionIfNeeded(
-    typeof description === 'string' ? description : '',
-    i18next.language
-  );
-  const translatedCategoryNames = await translateDisplayStringListIfNeeded(
-    categoryNames,
-    i18next.language
-  );
+  const [translatedDescription, translatedCategoryNames] = await Promise.all([
+    translateDescriptionIfNeeded(
+      typeof description === 'string' ? description : '',
+      i18next.language
+    ),
+    translateDisplayStringListIfNeeded(categoryNames, i18next.language),
+  ]);
 
   const translatedHotelCategories = Array.isArray(hotelData.hotelCategories)
     ? hotelData.hotelCategories.map((hc: any, idx: number) => {
@@ -78,31 +77,41 @@ export default function HotelInfoPage() {
     const load = async () => {
       if (!hotelId) return;
       setLoading(true);
+      let roomsAlreadySet = false;
       try {
         const h = await fetchMyHotel(hotelId);
         console.log('[HotelInfoPage] fetchMyHotel result', h);
-        const nextHotel = await translateHotelDisplayFields(h);
-        setHotel(nextHotel ?? null);
 
-        // If roomTypes are included in hotel response (new backend), extract them
-        if (nextHotel?.roomTypes) {
-          setRooms(nextHotel.roomTypes);
-          setLoading(false);
-          return;
+        // Show data immediately — optimistic render
+        setHotel(h ?? null);
+
+        // If roomTypes are included in hotel response (new backend), use them directly
+        if (h?.roomTypes) {
+          setRooms(h.roomTypes);
+          roomsAlreadySet = true;
+        }
+
+        setLoading(false);
+
+        // Translate in the background — silent swap when ready
+        const nextHotel = await translateHotelDisplayFields(h);
+        if (nextHotel !== h) {
+          setHotel(nextHotel ?? null);
         }
       } catch (e) {
         console.error('[HotelInfoPage] fetchMyHotel error', e);
+        setLoading(false);
       }
 
-      // Fallback: fetch rooms separately (old endpoint for backward compatibility)
-      try {
-        const rs = await fetchHotelRooms(hotelId);
-        console.log('[HotelInfoPage] fetchHotelRooms result', rs);
-        setRooms(rs ?? []);
-      } catch (e) {
-        console.error('[HotelInfoPage] fetchHotelRooms error', e);
-      } finally {
-        setLoading(false);
+      // Fallback: fetch rooms separately only if not already provided by hotel response
+      if (!roomsAlreadySet) {
+        try {
+          const rs = await fetchHotelRooms(hotelId);
+          console.log('[HotelInfoPage] fetchHotelRooms result', rs);
+          setRooms(rs ?? []);
+        } catch (e) {
+          console.error('[HotelInfoPage] fetchHotelRooms error', e);
+        }
       }
     };
     load();

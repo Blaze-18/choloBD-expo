@@ -15,10 +15,11 @@ import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 interface PackageBookingCardProps {
   booking: PackageBooking;
   onPress?: (bookingId: string) => void;
+  onCancel?: (bookingId: string) => void;
   hideViewDetails?: boolean;
 }
 
-export function PackageBookingCard({ booking, onPress, hideViewDetails = false }: PackageBookingCardProps) {
+export function PackageBookingCard({ booking, onPress, onCancel, hideViewDetails = false }: PackageBookingCardProps) {
   const { isDark } = useTheme();
   const { t } = useTranslation();
 
@@ -165,6 +166,20 @@ export function PackageBookingCard({ booking, onPress, hideViewDetails = false }
             </Text>
             <Ionicons name="chevron-forward" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
           </View>
+        )}
+
+        {/* Cancel Button — only for PENDING bookings */}
+        {booking.status === 'PENDING' && onCancel && (
+          <TouchableOpacity
+            onPress={() => onCancel(booking.id)}
+            activeOpacity={0.8}
+            className="mt-3 py-2 px-4 rounded-lg items-center"
+            style={{ backgroundColor: isDark ? theme.colors['error-dark'] + '20' : '#FEE2E2' }}
+          >
+            <Text style={{ color: isDark ? theme.colors['error-dark'] : theme.colors.error }} className="text-sm font-semibold">
+              Cancel Booking
+            </Text>
+          </TouchableOpacity>
         )}
       </View>
     </TouchableOpacity>

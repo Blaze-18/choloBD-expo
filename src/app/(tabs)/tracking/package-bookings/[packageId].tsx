@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import theme from '../../../../constants/theme';
 import { RootState, AppDispatch } from '../../../../store/store';
 import { fetchPackageBookingsByPackageId } from '../../../../store/slices/packageBookingSlice';
 import { PackageBookingCard } from '../../../../components/tourBuilder/PackageBookingCard';
+import { usePackageBookingLogic } from '../../../../hooks/usePackageBookingLogic';
 import { TRANSLATION_KEYS } from '../../../../constants/translationKeys';
 
 export default function PackageBookingDetailsPage() {
@@ -19,6 +20,7 @@ export default function PackageBookingDetailsPage() {
   const { t } = useTranslation();
 
   const { bookings, bookingsLoading } = useSelector((s: RootState) => s.packageBooking);
+  const { handleCancelBooking } = usePackageBookingLogic();
   const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
@@ -36,10 +38,30 @@ export default function PackageBookingDetailsPage() {
     }
   };
 
+  const handleCancel = (bookingId: string) => {
+    Alert.alert(
+      'Cancel Booking',
+      'Are you sure you want to cancel this booking?',
+      [
+        { text: 'No', style: 'cancel' },
+        {
+          text: 'Yes, Cancel',
+          style: 'destructive',
+          onPress: () =>
+            handleCancelBooking(bookingId, {}, () => {
+              if (packageId) {
+                dispatch(fetchPackageBookingsByPackageId({ tourPackageId: packageId }));
+              }
+            }),
+        },
+      ]
+    );
+  };
+
 
   const filteredBookings = statusFilter === 'ALL'
     ? bookings
-    : bookings.filter(b => b.bookingStatus === statusFilter);
+    : bookings.filter(b => b.status === statusFilter);
 
   const statusOptions = ['ALL', 'PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
 
@@ -119,7 +141,7 @@ export default function PackageBookingDetailsPage() {
             data={filteredBookings}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <PackageBookingCard booking={item} hideViewDetails />
+              <PackageBookingCard booking={item} hideViewDetails onCancel={handleCancel} />
             )}
             scrollEnabled={false}
           />

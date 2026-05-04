@@ -28,6 +28,7 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
   const navigationHandlers = useMemo(
     () => ({
       handleBookHotel: () => router.push('/(tabs)/explore/hotel-search'),
+      handleBrowseAttractions: () => router.push('/(tabs)/explore/tour-spots-list'),
       handleBrowseTours: () => router.push('/(tabs)/explore/tour-list'),
       handleCreateTripPlan: () => router.push('/(tabs)/trip-planner'),
       handleCreateTours: () => router.push('/(tabs)/explore/tour-create'),
@@ -62,6 +63,15 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
             iconName="bed"
             colorKey="primary"
             onPress={navigationHandlers.handleBookHotel}
+          />
+
+          {/* Browse Attractions Card */}
+          <ExploreMainCard
+            title={t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_TOUR_SPOTS)}
+            description={t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_TOUR_SPOTS_DESC)}
+            iconName="location"
+            colorKey="accent"
+            onPress={navigationHandlers.handleBrowseAttractions}
           />
 
           {/* Browse Tours Card */}
@@ -101,7 +111,7 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
               title={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP)}
               description={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP_DESC)}
               iconName="compass"
-              colorKey="accent"
+              colorKey="warning"
               onPress={navigationHandlers.handleCreateTripPlan}
             />
           )}

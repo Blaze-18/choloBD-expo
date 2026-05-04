@@ -9,6 +9,8 @@ import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 import { useTripPlannerLogic } from '../../../hooks/useTripPlannerLogic';
 import { SlidingWindow } from '../../../components/tripPlanner/SlidingWindow';
 import { LocationSelection } from '../../../components/tripPlanner/LocationSelection';
@@ -21,6 +23,7 @@ console.log('[TripPlannerWizard] Screen loaded');
 
 export default function TripPlannerWizard() {
   const router = useRouter();
+  const { t } = useTranslation();
   const {
     createTrip,
     isFormSubmitting,
@@ -86,17 +89,21 @@ export default function TripPlannerWizard() {
 
       // Reset wizard and show success alert
       resetWizardAction();
-      Alert.alert('Success', 'Trip plan created! Redirecting...', [
-        {
-          text: 'OK',
-          onPress: () => {
-            router.replace(`/(tabs)/trip-planner/${createdTrip.id}`);
+      Alert.alert(
+        t(TRANSLATION_KEYS.COMMON.SUCCESS),
+        'Trip plan created! Redirecting...',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.replace(`/(tabs)/trip-planner/${createdTrip.id}`);
+            },
           },
-        },
-      ]);
+        ]
+      );
     } catch (error) {
       console.error('[TripPlannerWizard] Error creating trip:', error);
-      Alert.alert('Error', formError?.message || 'Failed to create trip plan');
+      Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), formError?.message || 'Failed to create trip plan');
     }
   };
 
@@ -112,11 +119,15 @@ export default function TripPlannerWizard() {
     }
   };
 
-  const stepTitles = ['Choose Location', 'Select Dates', 'Pick Spots'];
+  const stepTitles = [
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_STEP_TITLE_LOCATION),
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_STEP_TITLE_DATES),
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_STEP_TITLE_SPOTS),
+  ];
   const stepDescriptions = [
-    'Where would you like to go?',
-    'When do you plan to travel?',
-    'What do you want to see?',
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_LOCATION_SUBTITLE),
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_DATE_SUBTITLE),
+    t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_SPOTS_SUBTITLE),
   ];
 
   return (
@@ -128,7 +139,7 @@ export default function TripPlannerWizard() {
             {stepTitles[wizardCurrentStep]}
           </Text>
           <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-            Step {wizardCurrentStep + 1} of 3
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_STEP_OF, { step: wizardCurrentStep + 1, total: 3 })}
           </Text>
         </View>
         <TouchableOpacity onPress={handleGoBack} className="p-2">
@@ -173,7 +184,7 @@ export default function TripPlannerWizard() {
         <View className="absolute inset-0 bg-black/40 items-center justify-center">
           <View className="bg-surface dark:bg-surface-dark rounded-lg p-6 items-center">
             <ActivityIndicator size="large" color="#0066FF" />
-            <Text className="mt-4 text-text dark:text-text-dark font-semibold">Creating trip...</Text>
+            <Text className="mt-4 text-text dark:text-text-dark font-semibold">{t(TRANSLATION_KEYS.TRIP_PLANNER.WIZARD_CREATING_TRIP)}</Text>
           </View>
         </View>
       )}

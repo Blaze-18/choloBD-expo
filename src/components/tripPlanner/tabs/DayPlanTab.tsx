@@ -65,7 +65,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
       await addSegment(trip.id, data);
       setAddModalVisible(false);
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to add segment');
+      Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), error?.message || 'Failed to add segment');
     }
   };
 
@@ -76,7 +76,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
         setEditModalVisible(false);
       }
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to update segment');
+      Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), error?.message || 'Failed to update segment');
     }
   };
 
@@ -87,7 +87,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
         setDeleteModalVisible(false);
       }
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to delete segment');
+      Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), error?.message || 'Failed to delete segment');
     }
   };
 
@@ -177,14 +177,14 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                             <Feather name="map-pin" size={16} color={primaryColor} />
                             <View className="flex-1 ml-3">
                               <Text className="text-xs font-semibold text-muted dark:text-muted-dark uppercase">
-                                Activity
+                                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ACTIVITY_LABEL)}
                               </Text>
                               <Text className="text-sm font-semibold text-text dark:text-text-dark mt-1">
-                                {segment.activityDetails?.name || segment.customActivitySpotName || 'Activity Spot'}
+                                {segment.activityDetails?.name || segment.customActivitySpotName || t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ACTIVITY_FALLBACK)}
                               </Text>
                               {segment.activityDetails?.cost && (
                                 <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                                  Cost: ₹{segment.activityDetails.cost}
+                                  {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ACTIVITY_COST, { cost: segment.activityDetails.cost })}
                                 </Text>
                               )}
                             </View>
@@ -199,7 +199,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                             <Feather name="home" size={16} color={primaryColor} />
                             <View className="flex-1 ml-3">
                               <Text className="text-xs font-semibold text-muted dark:text-muted-dark uppercase">
-                                Hotel
+                                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_HOTEL_LABEL)}
                               </Text>
                               {segment.hotelDetails?.name && (
                                 <Text className="text-sm font-semibold text-text dark:text-text-dark mt-1">
@@ -213,7 +213,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                               )}
                               {segment.hotelDetails?.cost && (
                                 <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                                  Cost: ₹{segment.hotelDetails.cost}
+                                  {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ACTIVITY_COST, { cost: segment.hotelDetails.cost })}
                                 </Text>
                               )}
                             </View>
@@ -228,7 +228,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                             <Feather name="truck" size={16} color={primaryColor} />
                             <View className="flex-1 ml-3">
                               <Text className="text-xs font-semibold text-muted dark:text-muted-dark uppercase">
-                                Transport
+                                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_TRANSPORT_LABEL)}
                               </Text>
                               {segment.transportDetails?.name && (
                                 <Text className="text-sm font-semibold text-text dark:text-text-dark mt-1">
@@ -242,7 +242,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                               )}
                               {segment.transportDetails?.cost && (
                                 <Text className="text-xs text-muted dark:text-muted-dark mt-1">
-                                  Cost: ₹{segment.transportDetails.cost}
+                                  {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ACTIVITY_COST, { cost: segment.transportDetails.cost })}
                                 </Text>
                               )}
                             </View>
@@ -257,7 +257,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                             <Feather name="edit-3" size={16} color={primaryColor} />
                             <View className="flex-1 ml-3">
                               <Text className="text-xs font-semibold text-muted dark:text-muted-dark uppercase">
-                                Notes
+                                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_NOTES_LABEL)}
                               </Text>
                               <Text className="text-sm text-text dark:text-text-dark mt-1 leading-5">
                                 {segment.customNotes}
@@ -273,8 +273,8 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                           <Feather name="dollar-sign" size={16} color={successColor} />
                           <View className="ml-3">
                             <Text className="text-xs font-semibold text-muted dark:text-muted-dark uppercase">
-                              Estimated Cost
-                            </Text>
+                                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_EST_COST_LABEL)}
+                              </Text>
                             <Text className="text-lg font-bold text-text dark:text-text-dark mt-1">
                               ₹{segment.estimatedCost || 0}
                             </Text>
@@ -286,7 +286,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
                           <View className="flex-row items-center gap-1 px-2 py-1 rounded-full bg-green-50 dark:bg-green-900">
                             <Feather name="check-circle" size={12} color={successColor} />
                             <Text className="text-xs font-semibold text-green-600 dark:text-green-300 ml-1">
-                              Booked
+                              {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_BOOKED_BADGE)}
                             </Text>
                           </View>
                         )}
@@ -298,7 +298,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
             ) : (
               <View className="bg-surface dark:bg-surface-dark rounded-lg p-4 mb-4 items-center">
                 <Text className="text-sm text-muted dark:text-muted-dark">
-                  No segments planned for Day {dayNum}
+                  {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_NO_SEGMENTS, { day: dayNum })}
                 </Text>
               </View>
             )}
@@ -314,7 +314,7 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
             >
               <Feather name="plus" size={18} color={primaryColor} />
               <Text className="ml-2 font-semibold" style={{ color: primaryColor }}>
-                Add Activity
+                {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_ADD_ACTIVITY)}
               </Text>
             </TouchableOpacity>
           </View>

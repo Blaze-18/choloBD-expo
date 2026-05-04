@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { AppDispatch, RootState } from '../../../store/store';
 import { fetchTourPlansByAdmin } from '../../../store/slices/tourBuilderSlice';
 import { TourListCard } from '../../../components/tourBuilder/TourListCard';
+import { useTourBuilderLogic } from '../../../hooks/useTourBuilderLogic';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
@@ -23,6 +24,7 @@ export default function MyToursPage() {
   const { isDark } = useTheme();
   const { t } = useTranslation();
   const { list, listLoading, listError } = useSelector((state: RootState) => state.tourBuilder);
+  const { deleteTour } = useTourBuilderLogic();
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
@@ -38,6 +40,32 @@ export default function MyToursPage() {
 
   const handlePressTour = (tourId: string) => {
     router.push(`/(tabs)/explore/tour-detail?id=${tourId}`);
+  };
+
+  const handleEditTour = (tourId: string) => {
+    router.push(`/(tabs)/explore/tour-edit?tourId=${tourId}`);
+  };
+
+  const handleDeleteTour = (tourId: string) => {
+    Alert.alert(
+      'Delete Tour',
+      'Are you sure you want to delete this tour package? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteTour(tourId);
+              Alert.alert('Deleted', 'Tour package deleted successfully.');
+            } catch {
+              Alert.alert('Error', 'Failed to delete tour. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleCreateNew = () => {
@@ -127,7 +155,9 @@ export default function MyToursPage() {
                 key={tour.id}
                 tour={tour}
                 onPress={handlePressTour}
-                showAdminActions={false}
+                onEdit={handleEditTour}
+                onDelete={handleDeleteTour}
+                showAdminActions={true}
               />
             ))}
           </View>

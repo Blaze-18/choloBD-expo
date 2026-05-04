@@ -22,28 +22,29 @@ export function useFetchHotelDetail() {
         return null;
       }
 
-      const translatedDescription = await translateDescriptionIfNeeded(
-        data.description,
-        i18next.language
-      );
+      // Show English content immediately — user sees the screen right away
+      setHotel(data);
+      setLoading(false);
 
-      const translatedAmenities = await translateDisplayStringListIfNeeded(
-        data.amenities,
-        i18next.language
-      );
+      // Translate in the background — silent swap when ready
+      const [translatedDescription, translatedAmenities] = await Promise.all([
+        translateDescriptionIfNeeded(data.description, i18next.language),
+        translateDisplayStringListIfNeeded(data.amenities, i18next.language),
+      ]);
 
       const nextAmenities =
         translatedAmenities.length > 0 || (data.amenities && data.amenities.length > 0)
           ? translatedAmenities
           : data.amenities;
 
-      const nextData: HotelDetail =
-        translatedDescription === data.description && nextAmenities === data.amenities
-          ? data
-          : { ...data, description: translatedDescription, amenities: nextAmenities };
+      const isUnchanged =
+        translatedDescription === data.description && nextAmenities === data.amenities;
 
-      setHotel(nextData);
-      return nextData;
+      if (!isUnchanged) {
+        setHotel({ ...data, description: translatedDescription, amenities: nextAmenities });
+      }
+
+      return data;
     } catch (e: any) {
       if (__DEV__) console.error('[useFetchHotelDetail] error', e?.response?.data || e.message);
       Alert.alert('Error', 'Failed to load hotel details');

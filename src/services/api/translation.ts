@@ -1,9 +1,62 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const DEFAULT_LINGVA_INSTANCES = [
   'https://translate.igna.wtf',
   'https://translate.plausibility.cloud',
   'https://lingva.lunar.icu',
   'https://translate.projectsegfau.lt',
 ];
+
+// ─── Translation Cache ────────────────────────────────────────────────────────
+const CACHE_STORAGE_KEY = '@cholobd_translation_cache';
+
+// In-memory store: "target|text" → translatedText
+const memoryCache = new Map<string, string>();
+let cacheLoaded = false;
+
+async function ensureCacheLoaded(): Promise<void> {
+  if (cacheLoaded) return;
+  cacheLoaded = true; // set early to prevent concurrent loads
+  try {
+    const raw = await AsyncStorage.getItem(CACHE_STORAGE_KEY);
+    if (raw) {
+      const stored = JSON.parse(raw) as Record<string, string>;
+      for (const [key, value] of Object.entries(stored)) {
+        memoryCache.set(key, value);
+      }
+    }
+  } catch {
+    // Non-fatal: proceed with empty cache
+  }
+}
+
+function cacheKey(target: string, text: string): string {
+  return `${target}|${text}`;
+}
+
+function getCached(target: string, text: string): string | undefined {
+  return memoryCache.get(cacheKey(target, text));
+}
+
+function setCached(target: string, text: string, translated: string): void {
+  const key = cacheKey(target, text);
+  memoryCache.set(key, translated);
+  // Persist in the background — do not await
+  persistCache();
+}
+
+async function persistCache(): Promise<void> {
+  try {
+    const obj: Record<string, string> = {};
+    memoryCache.forEach((value, key) => {
+      obj[key] = value;
+    });
+    await AsyncStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(obj));
+  } catch {
+    // Non-fatal
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export type LingvaInfo = {
   pronunciation?: {
@@ -68,6 +121,19 @@ export async function translateTextWithLingva(
   const timeoutMs = options.timeoutMs ?? 10000;
   const instances = normalizeInstances(options.instances);
 
+  // Check cache before hitting the network
+  await ensureCacheLoaded();
+  const cached = getCached(target, text);
+  if (cached !== undefined) {
+    return {
+      translatedText: cached,
+      instanceUsed: 'cache',
+      source,
+      target,
+      raw: { translation: cached },
+    };
+  }
+
   let lastError: string | null = null;
 
   for (const instance of instances) {
@@ -96,6 +162,9 @@ export async function translateTextWithLingva(
         continue;
       }
 
+      // Store in cache before returning
+      setCached(target, text, body.translation);
+
       return {
         translatedText: body.translation,
         instanceUsed: instance,
@@ -117,23 +186,23 @@ export async function translateArrayFields<T extends Record<string, unknown>>(
   fields: Array<keyof T>,
   options: TranslateTextOptions = {}
 ): Promise<T[]> {
-  const output: T[] = [];
+  return Promise.all(
+    items.map(async (item) => {
+      const translated = { ...item };
 
-  for (const item of items) {
-    const translated = { ...item };
+      await Promise.all(
+        fields.map(async (field) => {
+          const value = translated[field];
+          if (typeof value === 'string' && value.trim()) {
+            const result = await translateTextWithLingva(value, options);
+            translated[field] = result.translatedText as T[keyof T];
+          }
+        })
+      );
 
-    for (const field of fields) {
-      const value = translated[field];
-      if (typeof value === 'string' && value.trim()) {
-        const result = await translateTextWithLingva(value, options);
-        translated[field] = result.translatedText as T[keyof T];
-      }
-    }
-
-    output.push(translated);
-  }
-
-  return output;
+      return translated;
+    })
+  );
 }
 
 function normalizeLanguageCode(language: string): string {

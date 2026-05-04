@@ -82,16 +82,16 @@ export function HotelsTab({ trip }: HotelsTabProps) {
         await updateSegment(trip.id, targetSegment.id, {
           hotelRoomBookingId: selectedBookingForLink.id,
         });
-        Alert.alert('Success', `Hotel linked to Day ${dayNumber}`);
+        Alert.alert(t(TRANSLATION_KEYS.COMMON.SUCCESS), t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_LINKED_TO_DAY, { day: dayNumber }));
       } else {
-        Alert.alert('Error', `No segment found for Day ${dayNumber}. Please add an activity first.`);
+        Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_LINK_ERROR, { day: dayNumber }));
       }
 
       setLinkModalVisible(false);
       setSelectedBookingForLink(null);
     } catch (error: any) {
       console.error('[HotelsTab] Error linking booking:', error);
-      Alert.alert('Error', error?.message || 'Failed to link hotel booking');
+      Alert.alert(t(TRANSLATION_KEYS.COMMON.ERROR), error?.message || 'Failed to link hotel booking');
     } finally {
       setIsLinking(false);
     }
@@ -127,7 +127,7 @@ export function HotelsTab({ trip }: HotelsTabProps) {
                     <View className="flex-row items-center mb-1">
                       <Feather name="calendar" size={12} color={mutedColor} />
                       <Text className="ml-2 text-xs text-muted dark:text-muted-dark">
-                        Day {segment.dayNumber}
+                        {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_DAY, { day: segment.dayNumber })}
                       </Text>
                     </View>
                   </View>
@@ -185,7 +185,7 @@ export function HotelsTab({ trip }: HotelsTabProps) {
       {bookings.length > 0 && (
         <View className="mb-6">
           <Text className="text-lg font-bold text-text dark:text-text-dark mb-4">
-            <Feather name="inbox" size={16} color={primaryColor} /> Your Existing Bookings
+            <Feather name="inbox" size={16} color={primaryColor} /> {t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_EXISTING_BOOKINGS)}
           </Text>
 
           {bookingsLoading ? (
@@ -251,7 +251,7 @@ export function HotelsTab({ trip }: HotelsTabProps) {
                       style={{ backgroundColor: primaryColor }}
                     >
                       <Feather name="link" size={14} color="white" />
-                      <Text className="ml-2 text-sm font-semibold text-white">Link</Text>
+                      <Text className="ml-2 text-sm font-semibold text-white">{t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_LINK_BTN)}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -332,10 +332,10 @@ export function HotelsTab({ trip }: HotelsTabProps) {
         <View className="items-center justify-center py-8">
           <Feather name="home" size={40} color={mutedColor} />
           <Text className="text-muted dark:text-muted-dark mt-3 font-semibold">
-            No hotels available yet
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_NO_AVAILABLE_TITLE)}
           </Text>
           <Text className="text-xs text-muted dark:text-muted-dark mt-1 text-center">
-            Tap "Complete Booking" to browse and book hotels in {trip.primaryLocation?.name}
+            {t(TRANSLATION_KEYS.TRIP_PLANNER.HOTELS_NO_AVAILABLE_SUBTITLE, { location: trip.primaryLocation?.name })}
           </Text>
         </View>
       )}

@@ -37,11 +37,11 @@ export function TransportTab({ trip }: TransportTabProps) {
                     <View className="flex-row items-center mb-1">
                       <Feather name="truck" size={14} color="#0066FF" />
                       <Text className="ml-2 font-semibold text-text dark:text-text-dark">
-                        {segment.transportDetails?.name || 'Transport'}
+                        {segment.transportDetails?.name || t(TRANSLATION_KEYS.TRIP_PLANNER.TRANSPORT_FALLBACK)}
                       </Text>
                     </View>
                     <Text className="mt-1 text-xs text-muted dark:text-muted-dark">
-                      Day {segment.dayNumber}
+                      {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_DAY, { day: segment.dayNumber })}
                     </Text>
                   </View>
                   <View className="items-end">
