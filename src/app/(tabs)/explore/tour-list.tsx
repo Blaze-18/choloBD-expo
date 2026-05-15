@@ -46,9 +46,8 @@ export default function TourListPage() {
   };
 
   const handleTourEdit = (tourId: string) => {
-    console.log('[TourListPage] Editing tour:', tourId);
     router.push({
-      pathname: '/explore/tour-edit',
+      pathname: '/(tabs)/explore/tour-edit',
       params: { tourId },
     });
   };

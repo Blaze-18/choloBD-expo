@@ -45,6 +45,7 @@ export function HotelBookingForm({
 }: HotelBookingFormProps) {
   const { isDark } = useTheme();
   const { t } = useTranslation();
+
   return (
     <View className="mt-6 space-y-4">
       <Text className="text-lg font-bold font-heading text-text dark:text-text-dark">
@@ -52,8 +53,8 @@ export function HotelBookingForm({
       </Text>
 
       {/* Dates Display (Read-only - selected during search) */}
-      <View className="p-4 rounded-lg bg-primary/5 dark:bg-primary-dark/10 border border-primary/20 dark:border-primary-dark/30">
-        <Text className="text-xs font-semibold text-primary dark:text-primary-dark mb-2 uppercase">
+      <View className="p-4 border rounded-lg bg-primary/5 dark:bg-primary-dark/10 border-primary/20 dark:border-primary-dark/30">
+        <Text className="mb-2 text-xs font-semibold uppercase text-primary dark:text-primary-dark">
           {t(TRANSLATION_KEYS.BOOKING.CHECK_IN)} - {t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}
         </Text>
         <View className="flex-row items-center gap-2">
@@ -62,7 +63,7 @@ export function HotelBookingForm({
             {checkInDate || t(TRANSLATION_KEYS.BOOKING.NOT_SET)} → {checkOutDate || t(TRANSLATION_KEYS.BOOKING.NOT_SET)}
           </Text>
         </View>
-        <Text className="text-xs text-muted dark:text-muted-dark mt-2">
+        <Text className="mt-2 text-xs text-muted dark:text-muted-dark">
           {t(TRANSLATION_KEYS.BOOKING.DATES_SELECTED_DURING_SEARCH)}
         </Text>
       </View>

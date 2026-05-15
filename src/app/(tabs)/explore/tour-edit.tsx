@@ -21,8 +21,6 @@ import { theme } from '../../../constants/theme';
 import { useTranslation } from 'react-i18next';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
-console.log('[TourEditPage] Component loaded');
-
 export default function TourEditPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -44,13 +42,11 @@ export default function TourEditPage() {
 
   useEffect(() => {
     if (tourId) {
-      console.log('[TourEditPage] Mounting, fetching tour:', tourId);
       dispatch(fetchTourPlanDetail(tourId));
     }
   }, [tourId, dispatch]);
 
   const handleBack = () => {
-    console.log('[TourEditPage] Going back');
     router.back();
   };
 
@@ -60,21 +56,12 @@ export default function TourEditPage() {
       return;
     }
 
-    console.log('[TourEditPage] ========== UPDATE TOUR HANDLER CALLED ==========');
-    console.log('[TourEditPage] Tour ID:', tourId);
-    console.log('[TourEditPage] Updated fields:', data);
-
     try {
-      console.log('[TourEditPage] Calling updateTour...');
       await updateTour(tourId, data, () => {
-        console.log('[TourEditPage] ✅ Tour updated successfully!');
-        // Navigate back on success
-        console.log('[TourEditPage] Navigating back...');
         router.back();
       });
     } catch (error) {
-      console.error('[TourEditPage] ❌ Error updating tour:', error);
-      console.error('[TourEditPage] Error details:', JSON.stringify(error, null, 2));
+      if (__DEV__) console.error('[TourEditPage] Error updating tour:', error);
       // Error is stored in Redux state and shown via ErrorAlert
     }
   };

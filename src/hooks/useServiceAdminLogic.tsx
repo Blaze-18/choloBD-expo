@@ -7,9 +7,9 @@ export function useServiceAdminLogic() {
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('[useServiceAdminLogic.fetchProfile] 🔄 Calling getUserProfile...');
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchProfile] Calling getUserProfile...');
       const result = await getUserProfile();
-      console.log('[useServiceAdminLogic.fetchProfile] ✅ Success:', result);
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchProfile] Success:', result);
       return result;
     } catch (e) {
       console.error('[useServiceAdminLogic.fetchProfile] ❌ Error:', e);
@@ -22,9 +22,9 @@ export function useServiceAdminLogic() {
   const fetchMyHotel = useCallback(async (hotelId?: string) => {
     try {
       setLoading(true);
-      console.log('[useServiceAdminLogic.fetchMyHotel] 🔄 Calling getMyHotel...', { hotelId });
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchMyHotel] Calling getMyHotel...', { hotelId });
       const result = await getMyHotel(hotelId);
-      console.log('[useServiceAdminLogic.fetchMyHotel] ✅ Success:', { isArray: Array.isArray(result), result });
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchMyHotel] Success:', { isArray: Array.isArray(result), result });
       return result;
     } catch (e: any) {
       console.error('[useServiceAdminLogic.fetchMyHotel] ❌ Error:', {
@@ -42,9 +42,9 @@ export function useServiceAdminLogic() {
   const fetchHotelRooms = useCallback(async (hotelId: string) => {
     try {
       setLoading(true);
-      console.log('[useServiceAdminLogic.fetchHotelRooms] 🔄 Calling getHotelRooms...', { hotelId });
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchHotelRooms] Calling getHotelRooms...', { hotelId });
       const result = await getHotelRooms(hotelId);
-      console.log('[useServiceAdminLogic.fetchHotelRooms] ✅ Success:', result);
+      if (__DEV__) console.log('[useServiceAdminLogic.fetchHotelRooms] Success:', result);
       return result;
     } catch (e: any) {
       console.error('[useServiceAdminLogic.fetchHotelRooms] ❌ Error:', {

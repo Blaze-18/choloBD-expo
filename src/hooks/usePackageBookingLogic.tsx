@@ -43,7 +43,7 @@ export function usePackageBookingLogic() {
       try {
         const result = await dispatch(purchasePackageAsync({ tourPackageId, data })).unwrap();
         
-        console.log('[usePackageBookingLogic] Purchase successful:', result.confirmationCode);
+        if (__DEV__) console.log('[usePackageBookingLogic] Purchase successful:', result.confirmationCode);
         
         if (onSuccess) {
           onSuccess(result);
@@ -107,7 +107,7 @@ export function usePackageBookingLogic() {
       try {
         await dispatch(cancelPackageBookingAsync({ bookingId, data })).unwrap();
         
-        console.log('[usePackageBookingLogic] Cancellation successful');
+        if (__DEV__) console.log('[usePackageBookingLogic] Cancellation successful');
         Alert.alert('Success', 'Booking cancelled successfully');
         
         if (onSuccess) {

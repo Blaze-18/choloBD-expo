@@ -20,8 +20,6 @@ import { theme } from '../../../constants/theme';
 import { useTranslation } from 'react-i18next';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
-console.log('[TourCreatePage] Component loaded');
-
 export default function TourCreatePage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -34,30 +32,15 @@ export default function TourCreatePage() {
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
 
   const handleBack = () => {
-    console.log('[TourCreatePage] Going back to explore');
     router.back();
   };
 
   const handleCreateTour = async (data: CreateTourPlanData | any) => {
-    console.log('[TourCreatePage] ========== CREATE TOUR HANDLER CALLED ==========');
-    console.log('[TourCreatePage] Package Name:', data.packageName);
-    console.log('[TourCreatePage] Tour Type:', data.tourType);
-    console.log('[TourCreatePage] Duration:', data.duration);
-    console.log('[TourCreatePage] Full payload:', data);
-
     try {
-      console.log('[TourCreatePage] Dispatching createTourPlanAsync...');
-      const result = await dispatch(createTourPlanAsync(data)).unwrap();
-      console.log('[TourCreatePage] ✅ Tour created successfully!');
-      console.log('[TourCreatePage] Tour ID:', result.id);
-      console.log('[TourCreatePage] Tour Object:', result);
-      
-      // Navigate back on success
-      console.log('[TourCreatePage] Navigating back to explore...');
+      await dispatch(createTourPlanAsync(data)).unwrap();
       router.back();
     } catch (error) {
-      console.error('[TourCreatePage] ❌ Error creating tour:', error);
-      console.error('[TourCreatePage] Error details:', JSON.stringify(error, null, 2));
+      if (__DEV__) console.error('[TourCreatePage] Error creating tour:', error);
       // Error is stored in Redux state and shown via ErrorAlert
     }
   };

@@ -40,7 +40,7 @@ export interface AuthWithAdminStatus {
 export function useAuthWithAdminCheck(): AuthWithAdminStatus {
   const auth = useSelector((state: RootState) => state.auth);
 
-  console.log('[useAuthWithAdminCheck] Hook called, user role:', auth.user?.role, 'isAdmin:', isMasterAdminUser(auth.user));
+  if (__DEV__) console.log('[useAuthWithAdminCheck] Hook called, user role:', auth.user?.role, 'isAdmin:', isMasterAdminUser(auth.user));
 
   return {
     user: auth.user,
@@ -59,8 +59,8 @@ export function useAuthWithAdminCheck(): AuthWithAdminStatus {
  */
 export function useCanPerformAdminActions(): boolean {
   const { isAdmin } = useAuthWithAdminCheck();
-  console.log('[useAuthWithAdminCheck] canPerformAdminActions:', isAdmin);
+  if (__DEV__) console.log('[useAuthWithAdminCheck] canPerformAdminActions:', isAdmin);
   return isAdmin;
 }
 
-console.log('[useAuthWithAdminCheck] Hook module loaded');
+if (__DEV__) console.log('[useAuthWithAdminCheck] Hook module loaded');

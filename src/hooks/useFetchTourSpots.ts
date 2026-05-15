@@ -13,11 +13,11 @@ export function useFetchTourSpots(filters?: TourSpotFilters) {
 
     const load = async () => {
       try {
-        console.log('[useFetchTourSpots] 🚀 Starting fetch with filters:', filters);
+        if (__DEV__) console.log('[useFetchTourSpots] Starting fetch with filters:', filters);
         setIsLoading(true);
         setError(null);
         const data = await getTourSpots(filters);
-        console.log('[useFetchTourSpots] ✅ Fetch successful, spots count:', data.length);
+        if (__DEV__) console.log('[useFetchTourSpots] Fetch successful, spots count:', data.length);
         if (active) setSpots(data);
       } catch (err: any) {
         console.error('[useFetchTourSpots] ❌ Fetch error:', {

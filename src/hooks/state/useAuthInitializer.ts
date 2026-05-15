@@ -8,21 +8,21 @@ export function useAuthInitializer(baseURL: string) {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    console.log('[useAuthInitializer] Initializing auth with baseURL:', baseURL);
+    if (__DEV__) console.log('[useAuthInitializer] Initializing auth with baseURL:', baseURL);
     
     // configure api client base url
     configureApi(baseURL);
-    console.log('[useAuthInitializer] API client configured');
+    if (__DEV__) console.log('[useAuthInitializer] API client configured');
 
     // register logout callback so axios can notify store
     setLogoutCallback(() => {
-      console.log('[useAuthInitializer] Logout callback triggered');
+      if (__DEV__) console.log('[useAuthInitializer] Logout callback triggered');
       void dispatch(logoutUser());
     });
 
     // initialize auth state from SecureStore
     void dispatch(initializeAuth()).then(() => {
-      console.log('[useAuthInitializer] Auth initialization complete');
+      if (__DEV__) console.log('[useAuthInitializer] Auth initialization complete');
     });
   }, [dispatch, baseURL]);
 }

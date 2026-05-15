@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Switch } from 'react-native';
 import { useLanguageSwitcher } from '../../hooks/useLanguageSwitcher';
-import { getLanguageLabel } from '../../utils/language';
+import { getLanguageLabel, getOppositeLanguage } from '../../utils/language';
 
 interface LanguageToggleProps {
   textColor?: string;
@@ -33,11 +33,31 @@ export default function LanguageToggle({
     large: 'text-base font-semibold',
   };
 
+  const currentLangLabel = getLanguageLabel(currentLanguage);
+  const targetLangLabel = getLanguageLabel(getOppositeLanguage(currentLanguage));
+
   return (
     <View className={containerStyles[size]}>
-      <Text style={{ color: textColor }} className={textStyles[size]}>
-        {getLanguageLabel(currentLanguage)}
-      </Text>
+      <View className="flex-row items-center">
+        <Text 
+          style={{ color: textColor }} 
+          className={`${textStyles[size]} font-bold`}
+        >
+          {currentLangLabel}
+        </Text>
+        <Text 
+          style={{ color: textColor, opacity: 0.6 }} 
+          className={`${textStyles[size]} mx-1`}
+        >
+          →
+        </Text>
+        <Text 
+          style={{ color: textColor, opacity: 0.5 }} 
+          className={textStyles[size]}
+        >
+          {targetLangLabel}
+        </Text>
+      </View>
       <Switch
         value={currentLanguage === 'bn'}
         onValueChange={toggleLanguage}
