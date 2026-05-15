@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -17,17 +17,7 @@ export default function SuggestedToursSection() {
   const { currentLanguage } = useLanguage();
   const { spots, isLoading, error } = useFetchTourSpots({ isPopular: true });
 
-  useEffect(() => {
-    console.log('[SuggestedToursSection] 📊 State update:', {
-      isLoading,
-      error,
-      spotsCount: spots.length,
-      spots: spots.map(s => ({ id: s.id, name: s.name, isPopular: s.isPopular }))
-    });
-  }, [isLoading, error, spots]);
-
   const handleTourPress = (spot: TourSpot) => {
-    console.log('Selected tour spot:', spot.id, spot.name);
     router.push({
       pathname: '/(tabs)/explore/tour-spots-detail',
       params: { id: spot.id },
