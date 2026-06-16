@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, KeyboardAvoidingView, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, KeyboardAvoidingView, Platform, View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
@@ -12,6 +13,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginForm } from '../../validators/auth';
 import AppBrandSection from '../../components/homepage/AppBrandSection';
 import { TRANSLATION_KEYS } from '../../constants/translationKeys';
+import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
+import { useFacebookSignIn } from '../../hooks/useFacebookSignIn';
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +23,10 @@ export default function Login() {
   const { isDark } = useTheme();
   const { t } = useTranslation();
   const placeholderColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
+
+  // OAuth hooks
+  const { signInWithGoogle, isLoading: googleLoading, error: googleError } = useGoogleSignIn();
+  const { signInWithFacebook, isLoading: facebookLoading, error: facebookError } = useFacebookSignIn();
 
   const { register, setValue, handleSubmit, formState: { errors } } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
@@ -89,18 +96,60 @@ export default function Login() {
 
             <View className="flex-row items-center my-4">
               <View className="flex-1 h-px bg-border dark:bg-border-dark" />
-              <Text className="px-3 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.OR_CONTINUE)}</Text>
+              <Text className="px-3 text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.OR_CONTINUE_WITH)}</Text>
               <View className="flex-1 h-px bg-border dark:bg-border-dark" />
             </View>
 
-            <View className="flex-row justify-center space-x-3">
-              <TouchableOpacity className="items-center flex-1 p-3 bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark">
-                <Text className="text-sm text-text dark:text-text-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.GOOGLE)}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="items-center flex-1 p-3 bg-white border rounded-lg border-border dark:border-border-dark dark:bg-surface-dark">
-                <Text className="text-sm text-text dark:text-text-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.FACEBOOK)}</Text>
-              </TouchableOpacity>
-            </View>
+            {/* OAuth Error Display */}
+            {(googleError || facebookError) && (
+              <View className="flex-row items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 mb-4">
+                <Ionicons name="alert-circle" size={20} color={theme.colors.danger} />
+                <Text className="flex-1 text-sm text-danger font-medium">
+                  {googleError || facebookError}
+                </Text>
+              </View>
+            )}
+
+            {/* Google Sign-In Button */}
+            <TouchableOpacity
+              onPress={signInWithGoogle}
+              disabled={googleLoading || facebookLoading || auth.isLoading}
+              className={`flex-row items-center justify-center gap-3 p-4 rounded-xl mb-3
+                           bg-white border border-gray-200
+                           dark:bg-gray-900 dark:border-gray-700
+                           ${googleLoading || facebookLoading || auth.isLoading ? 'opacity-60' : 'active:opacity-80'}`}
+            >
+              {googleLoading ? (
+                <ActivityIndicator color={theme.colors.primary} size="small" />
+              ) : (
+                <>
+                  <Ionicons name="logo-google" size={20} color="#1F2937" />
+                  <Text className="font-semibold text-gray-900 dark:text-white text-base">
+                    {t(TRANSLATION_KEYS.AUTH.LOGIN.SIGN_IN_GOOGLE)}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+
+            {/* Facebook Sign-In Button */}
+            <TouchableOpacity
+              onPress={signInWithFacebook}
+              disabled={googleLoading || facebookLoading || auth.isLoading}
+              className={`flex-row items-center justify-center gap-3 p-4 rounded-xl
+                           bg-[#1877F2]
+                           ${facebookLoading || googleLoading || auth.isLoading ? 'opacity-60' : 'active:opacity-80'}`}
+            >
+              {facebookLoading ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                <>
+                  <Ionicons name="logo-facebook" size={20} color="white" />
+                  <Text className="font-semibold text-white text-base">
+                    {t(TRANSLATION_KEYS.AUTH.LOGIN.SIGN_IN_FACEBOOK)}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
 
             <View className="flex-row justify-center mt-4">
               <Text className="text-sm text-muted dark:text-muted-dark">{t(TRANSLATION_KEYS.AUTH.LOGIN.NO_ACCOUNT)}</Text>

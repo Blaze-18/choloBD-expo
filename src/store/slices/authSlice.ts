@@ -4,6 +4,8 @@ import axios from 'axios';
 import { createApi, getApiInstance, setLogoutCallback } from '../../services/api/axiosClient';
 import { saveTokens, clearTokens, saveUserIdAndRole, clearUserIdAndRole, getUserIdAndRole, saveUser, getUser, clearUser } from '../../lib/secureStore';
 import { API_BASE_URL } from '../../constants/api';
+import { exchangeOAuthToken } from '../../services/api/oauth';
+import { OAuthProvider } from '../../constants/oauth';
 
 // We'll export a function to initialize the API base URL from the app bootstrap
 export const configureApi = (baseURL: string) => {
@@ -96,17 +98,50 @@ export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWith
   }
 });
 
-export const loginWithOAuth = createAsyncThunk('auth/oauth', async (payload: { accessToken: string; refreshToken: string; userId: string; role: string; user?: AuthUser }, { rejectWithValue }) => {
-  try {
-    await saveTokens({ accessToken: payload.accessToken, refreshToken: payload.refreshToken });
-    await saveUserIdAndRole(payload.userId, payload.role);
-    const user = payload.user || { id: payload.userId, email: '', userName: '', role: payload.role } as AuthUser;
-    await saveUser(user);
-    return { tokens: { accessToken: payload.accessToken, refreshToken: payload.refreshToken }, user };
-  } catch (e: any) {
-    return rejectWithValue(e.message);
+export const loginWithOAuth = createAsyncThunk(
+  'auth/loginWithOAuth',
+  async (payload: { provider: OAuthProvider; token: string }, { rejectWithValue }) => {
+    try {
+      if (__DEV__) {
+        console.log('[loginWithOAuth] Starting OAuth login...', { provider: payload.provider });
+      }
+
+      // Exchange OAuth token with backend for JWT tokens
+      const exchangedTokens = await exchangeOAuthToken(payload.provider, payload.token);
+
+      if (__DEV__) {
+        console.log('[loginWithOAuth] Token exchange successful');
+      }
+
+      // Save tokens to secure storage
+      await saveTokens({
+        accessToken: exchangedTokens.accessToken,
+        refreshToken: exchangedTokens.refreshToken,
+      });
+
+      // Save user info
+      await saveUserIdAndRole(exchangedTokens.user.id, exchangedTokens.user.role);
+      await saveUser(exchangedTokens.user);
+
+      if (__DEV__) {
+        console.log('[loginWithOAuth] OAuth login completed successfully');
+      }
+
+      return {
+        tokens: {
+          accessToken: exchangedTokens.accessToken,
+          refreshToken: exchangedTokens.refreshToken,
+        },
+        user: exchangedTokens.user,
+      };
+    } catch (e: any) {
+      if (__DEV__) {
+        console.error('[loginWithOAuth] Error:', e?.response?.data || e.message);
+      }
+      return rejectWithValue(e?.response?.data?.message || e.message || 'OAuth login failed');
+    }
   }
-});
+);
 
 const slice = createSlice({
   name: 'auth',
@@ -168,10 +203,19 @@ const slice = createSlice({
         s.tokens = null;
         s.isAuthenticated = false;
       })
+      .addCase(loginWithOAuth.pending, (s) => {
+        s.isLoading = true;
+        s.error = null;
+      })
       .addCase(loginWithOAuth.fulfilled, (s, a) => {
+        s.isLoading = false;
         s.tokens = a.payload.tokens;
         s.user = a.payload.user;
         s.isAuthenticated = true;
+      })
+      .addCase(loginWithOAuth.rejected, (s, a: any) => {
+        s.isLoading = false;
+        s.error = a.payload || String(a.error?.message || a.error);
       });
   },
 });

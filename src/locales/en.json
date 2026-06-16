@@ -45,8 +45,15 @@
       "signIn": "Sign in",
       "signingIn": "Signing in...",
       "orContinue": "Or continue with",
+      "orContinueWith": "Or continue with",
       "google": "Continue with Google",
       "facebook": "Continue with Facebook",
+      "signInGoogle": "Sign in with Google",
+      "signUpGoogle": "Sign up with Google",
+      "signInFacebook": "Sign in with Facebook",
+      "signUpFacebook": "Sign up with Facebook",
+      "oauthError": "Sign-in failed. Please try again.",
+      "oauthCancelled": "Sign-in was cancelled.",
       "noAccount": "Don't have an account?",
       "createAccount": "Create account"
     },
@@ -66,7 +73,10 @@
       "createBtn": "Create account",
       "creating": "Creating...",
       "alreadyAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "signUpGoogle": "Sign up with Google",
+      "signUpFacebook": "Sign up with Facebook",
+      "orSignUpWith": "Or sign up with"
     }
   },
   "sidescroller": {

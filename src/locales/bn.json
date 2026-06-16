@@ -45,8 +45,15 @@
       "signIn": "সাইন ইন করুন",
       "signingIn": "সাইন ইন হচ্ছে...",
       "orContinue": "অথবা দিয়ে চালিয়ে যান",
+      "orContinueWith": "অথবা দিয়ে চালিয়ে যান",
       "google": "Google দিয়ে চালিয়ে যান",
       "facebook": "Facebook দিয়ে চালিয়ে যান",
+      "signInGoogle": "Google দিয়ে সাইন ইন করুন",
+      "signUpGoogle": "Google দিয়ে সাইন আপ করুন",
+      "signInFacebook": "Facebook দিয়ে সাইন ইন করুন",
+      "signUpFacebook": "Facebook দিয়ে সাইন আপ করুন",
+      "oauthError": "সাইন-ইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+      "oauthCancelled": "সাইন-ইন বাতিল করা হয়েছে।",
       "noAccount": "অ্যাকাউন্ট নেই?",
       "createAccount": "অ্যাকাউন্ট তৈরি করুন"
     },
@@ -66,7 +73,10 @@
       "createBtn": "অ্যাকাউন্ট তৈরি করুন",
       "creating": "তৈরি হচ্ছে...",
       "alreadyAccount": "ইতিমধ্যে অ্যাকাউন্ট আছে?",
-      "signIn": "সাইন ইন করুন"
+      "signIn": "সাইন ইন করুন",
+      "signUpGoogle": "Google দিয়ে সাইন আপ করুন",
+      "signUpFacebook": "Facebook দিয়ে সাইন আপ করুন",
+      "orSignUpWith": "অথবা দিয়ে সাইন আপ করুন"
     }
   },
   "sidescroller": {
