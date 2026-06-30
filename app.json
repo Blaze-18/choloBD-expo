@@ -46,13 +46,7 @@
         }
       ],
       "@react-native-community/datetimepicker",
-      "expo-localization",
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosClientId": ""
-        }
-      ]
+      "expo-localization"
     ]
   }
 }

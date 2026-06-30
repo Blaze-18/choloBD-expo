@@ -16,7 +16,7 @@ import { SplashScreen as CustomSplash } from '../components/splash';
 import { useState, useEffect } from 'react';
 
 function AppContentStack() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <Stack initialRouteName="index" screenOptions={{ headerShown: false }} />;
 }
 
 function AppContentLayout() {

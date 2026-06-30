@@ -7,7 +7,7 @@ import React from 'react';
 import { Alert, View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useExplore } from './_provider';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
@@ -18,6 +18,7 @@ import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 export default function HotelSearchPage() {
   const router = useRouter();
+  const { fromHome } = useLocalSearchParams<{ fromHome?: string }>();
   const { isDark } = useTheme();
   const { t } = useTranslation();
   const { locations, locationsLoading, fetchHotelsByLocation, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate } = useExplore();
@@ -38,8 +39,11 @@ export default function HotelSearchPage() {
   };
 
   const handleBack = () => {
-    console.log('[HotelSearchPage] Going back to explore');
-    router.back();
+    if (fromHome === 'true') {
+      router.replace('/(tabs)');
+    } else {
+      router.back();
+    }
   };
 
   return (

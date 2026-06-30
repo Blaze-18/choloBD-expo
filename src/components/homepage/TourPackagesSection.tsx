@@ -1,27 +1,30 @@
 import React from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useLanguage } from '../../providers/LanguageProvider';
 import { Feather } from '@expo/vector-icons';
-import SuggestedTourCard from './SuggestedTourCard';
+import TourPackageCard from './TourPackageCard';
 import { useTheme } from '../../hooks/useTheme';
 import theme from '../../constants/theme';
 import { TRANSLATION_KEYS } from '../../constants/translationKeys';
-import { useFetchTourSpots, TourSpot } from '../../hooks/useFetchTourSpots';
+import { useFetchTourPackages } from '../../hooks/useFetchTourPackages';
+import { TourPackage } from '../../types/tours';
 
-export default function SuggestedToursSection() {
+export default function TourPackagesSection() {
   const router = useRouter();
   const { isDark } = useTheme();
   const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
-  const { spots, isLoading, error } = useFetchTourSpots({ isPopular: true });
+  const { packages, isLoading, error } = useFetchTourPackages({ isActive: true, isPopular: true });
 
-  const handleTourPress = (spot: TourSpot) => {
+  const handlePackagePress = (pkg: TourPackage) => {
     router.push({
-      pathname: '/tour-spot-detail',
-      params: { id: spot.id },
+      pathname: '/tour-package-detail',
+      params: { id: pkg.id },
     });
+  };
+
+  const handleSeeAll = () => {
+    router.push('/(tabs)/explore/tour-list');
   };
 
   return (
@@ -30,12 +33,19 @@ export default function SuggestedToursSection() {
       <View className="flex-row items-center justify-between mb-6">
         <View className="flex-1">
           <Text className="text-2xl font-bold text-neutral-900 dark:text-white">
-            {t(TRANSLATION_KEYS.HOME.SUGGESTED_TOURS)}
+            {t(TRANSLATION_KEYS.HOME.TOUR_PACKAGES)}
           </Text>
           <Text className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-            {t(TRANSLATION_KEYS.HOME.SUGGESTED_TOURS_DESC)}
+            {t(TRANSLATION_KEYS.HOME.TOUR_PACKAGES_DESC)}
           </Text>
         </View>
+        {!isLoading && !error && packages.length > 0 && (
+          <TouchableOpacity onPress={handleSeeAll} className="ml-4">
+            <Text style={{ color: isDark ? theme.colors['primary-dark'] : theme.colors.primary, fontSize: 14, fontWeight: '600' }}>
+              {t(TRANSLATION_KEYS.HOME.SEE_ALL_PACKAGES)}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Loading State */}
@@ -43,7 +53,7 @@ export default function SuggestedToursSection() {
         <View className="items-center justify-center py-12">
           <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-            {t(TRANSLATION_KEYS.TOUR_SPOTS.LOADING)}
+            {t(TRANSLATION_KEYS.COMMON.LOADING)}
           </Text>
         </View>
       )}
@@ -59,28 +69,28 @@ export default function SuggestedToursSection() {
       )}
 
       {/* Empty State */}
-      {!isLoading && !error && spots.length === 0 && (
+      {!isLoading && !error && packages.length === 0 && (
         <View className="items-center justify-center py-8">
-          <Feather name="map-pin" size={32} color={isDark ? '#9ca3af' : '#6b7280'} />
+          <Feather name="package" size={32} color={isDark ? '#9ca3af' : '#6b7280'} />
           <Text className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-            {t(TRANSLATION_KEYS.TOUR_SPOTS.NO_SPOTS)}
+            No packages available right now
           </Text>
         </View>
       )}
 
-      {/* Tours Carousel */}
-      {!isLoading && !error && spots.length > 0 && (
+      {/* Packages Carousel */}
+      {!isLoading && !error && packages.length > 0 && (
         <View className="py-4">
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
           >
-            {spots.slice(0, 6).map((spot) => (
-              <SuggestedTourCard
-                key={spot.id}
-                spot={spot}
-                onPress={() => handleTourPress(spot)}
+            {packages.slice(0, 6).map((pkg) => (
+              <TourPackageCard
+                key={pkg.id}
+                tourPackage={pkg}
+                onPress={() => handlePackagePress(pkg)}
               />
             ))}
           </ScrollView>

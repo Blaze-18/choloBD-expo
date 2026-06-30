@@ -39,7 +39,7 @@ export function useFetchTourSpots(filters?: TourSpotFilters) {
     return () => {
       active = false;
     };
-  }, [filters?.isPopular, filters?.locationId, filters?.minRating]);
+  }, [JSON.stringify(filters)]);
 
   return { spots, isLoading, error };
 }

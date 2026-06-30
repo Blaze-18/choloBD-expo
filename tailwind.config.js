@@ -21,18 +21,18 @@ module.exports = {
         warning: '#F59E0B',
         error: '#DC2626',
 
-        // Dark (enhanced for better contrast)
+        // Dark (neutral charcoal — removes navy cast so accents pop)
         'primary-dark': '#5DADE2',
         'on-primary-dark': '#FFFFFF',
         'secondary-dark': '#E0AAFF',
         'on-secondary-dark': '#1F1F3D',
         'accent-dark': '#4FD1E8',
-        'background-dark': '#0A0D14',
-        'surface-dark': '#15192E',
-        'surface-2-dark': '#1F2847',
+        'background-dark': '#0C0C0F',
+        'surface-dark': '#18191E',
+        'surface-2-dark': '#23252D',
         'text-dark': '#F0F4F8',
         'muted-dark': '#9CA3AF',
-        'border-dark': '#2D3B5F',
+        'border-dark': '#32353F',
         'success-dark': '#4ADE80',
         'warning-dark': '#FBBF24',
         'error-dark': '#FF6B6B',

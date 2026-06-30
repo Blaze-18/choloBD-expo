@@ -1,35 +1,26 @@
-/**
- * Tour Spot Detail Page
- * Displays complete information for a single tour spot
- */
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useExplore } from './_provider';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../../hooks/useTheme';
-import { theme } from '../../../constants/theme';
-import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
-import { TourSpotDetailView } from '../../../components/tourSpots';
-import { getTourSpotDetail } from '../../../services/api/tourSpots';
+import { useTheme } from '../hooks/useTheme';
+import { theme } from '../constants/theme';
+import { TRANSLATION_KEYS } from '../constants/translationKeys';
+import { TourSpotDetailView } from '../components/tourSpots';
+import { getTourSpotDetail } from '../services/api/tourSpots';
 
 export default function TourSpotDetailPage() {
   const router = useRouter();
-  const { id, fromHome } = useLocalSearchParams<{ id: string; fromHome?: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { isDark } = useTheme();
   const { t } = useTranslation();
-  const { clearExploreState } = useExplore();
 
   const [spot, setSpot] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
-  const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
-  const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
 
   useEffect(() => {
     if (id) {
@@ -44,7 +35,7 @@ export default function TourSpotDetailPage() {
       const data = await getTourSpotDetail(id!);
       setSpot(data);
     } catch (err: any) {
-      console.error('[TourSpotDetailPage] Error loading spot:', err);
+      if (__DEV__) console.error('[TourSpotDetailPage] Error loading spot:', err?.response?.data || err.message);
       setError(err?.message || 'Failed to load tour spot details');
     } finally {
       setIsLoading(false);
@@ -52,13 +43,6 @@ export default function TourSpotDetailPage() {
   };
 
   const handleBack = () => {
-    if (fromHome === 'true') {
-      try {
-        clearExploreState();
-      } catch (e) {
-        // ignore if clearExploreState is not available
-      }
-    }
     router.back();
   };
 
@@ -66,7 +50,6 @@ export default function TourSpotDetailPage() {
     loadSpotDetail();
   };
 
-  // Loading State
   if (isLoading) {
     return (
       <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-background dark:bg-background-dark items-center justify-center">
@@ -78,7 +61,6 @@ export default function TourSpotDetailPage() {
     );
   }
 
-  // Error State
   if (error || !spot) {
     return (
       <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-background dark:bg-background-dark">
@@ -112,10 +94,8 @@ export default function TourSpotDetailPage() {
     );
   }
 
-  // Success State
   return (
     <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-background dark:bg-background-dark">
-      {/* Header */}
       <View className="px-6 py-3 flex-row items-center justify-between border-b border-border dark:border-border-dark">
         <TouchableOpacity onPress={handleBack} style={{ marginRight: 12 }}>
           <Ionicons name="chevron-back" size={24} color={primaryColor} />
@@ -125,13 +105,8 @@ export default function TourSpotDetailPage() {
             {spot.name}
           </Text>
         </View>
-        {/* Future: Share button */}
-        {/* <TouchableOpacity style={{ marginLeft: 12 }}>
-          <Ionicons name="share-outline" size={24} color={primaryColor} />
-        </TouchableOpacity> */}
       </View>
 
-      {/* Content */}
       <TourSpotDetailView spot={spot} />
     </SafeAreaView>
   );

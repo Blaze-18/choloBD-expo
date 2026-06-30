@@ -33,6 +33,7 @@ interface ExploreContextValue {
   setSpecialRequests: (s: string) => void;
   submitBooking: () => Promise<any>;
   clearAllAndGoToSearch: () => void;
+  clearExploreState: () => void;
 }
 
 const ExploreContext = createContext<ExploreContextValue | null>(null);
@@ -121,6 +122,21 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
     router.push('/(tabs)/explore');
   };
 
+  const clearExploreState = () => {
+    try {
+      clearHotels();
+      clearHotel();
+    } catch (e) {}
+    setSelectedRoomsMap({});
+    setCheckInDate('');
+    setCheckOutDate('');
+    setGuestName('');
+    setGuestEmail('');
+    setGuestPhoneNumber('');
+    setPaymentMethod('');
+    setSpecialRequests('');
+  };
+
   return (
     <ExploreContext.Provider
       value={{
@@ -151,6 +167,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
         setSpecialRequests,
         submitBooking,
         clearAllAndGoToSearch,
+        clearExploreState,
       }}
     >
       {children}

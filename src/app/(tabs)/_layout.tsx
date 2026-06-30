@@ -50,6 +50,18 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="explore"
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            const state = navigation.getState();
+            const isFocused = state.routes[state.index]?.name === 'explore';
+            // Only intervene when switching TO explore from another tab.
+            // navigate() to 'index' will pop any screens above it in the stack.
+            if (!isFocused) {
+              e.preventDefault();
+              navigation.navigate('explore', { screen: 'index' });
+            }
+          },
+        })}
         options={{
           title: t(TRANSLATION_KEYS.TABS.EXPLORE),
           tabBarIcon: ({ color, focused }) => (

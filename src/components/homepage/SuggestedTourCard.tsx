@@ -28,12 +28,11 @@ export default function SuggestedTourCard({
 }: SuggestedTourCardProps) {
   const { isDark } = useTheme();
   const iconColorGray = isDark ? '#9ca3af' : '#6b7280';
-  const cardBgColor = isDark ? theme.colors['surface-dark'] : theme.colors.surface;
+  const cardBgColor = isDark ? theme.colors['surface-2-dark'] : theme.colors.surface;
   const textColorPrimary = isDark ? theme.colors['text-dark'] : theme.colors.text;
   const textColorMuted = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const starColor = isDark ? theme.colors['warning-dark'] : theme.colors.warning;
-  const secondaryColor = isDark ? theme.colors['secondary-dark'] : theme.colors.secondary;
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -41,7 +40,15 @@ export default function SuggestedTourCard({
       className="mr-4"
       style={{ width: 280 }}
     >
-      <View style={{ borderRadius: 20, overflow: 'hidden', backgroundColor: cardBgColor, ...theme.elevation.sm }}>
+      <View style={{
+        borderRadius: 20,
+        overflow: 'hidden',
+        backgroundColor: cardBgColor,
+        borderWidth: 1,
+        borderColor: isDark ? theme.colors['border-dark'] : theme.colors.border,
+        height: 240,
+        ...theme.elevation.sm,
+      }}>
         {/* Image */}
         <View style={{ height: 160, backgroundColor: isDark ? theme.colors['surface-dark'] : '#d1d5db', position: 'relative', overflow: 'hidden' }}>
           {spot.imageUrl ? (
@@ -75,33 +82,21 @@ export default function SuggestedTourCard({
         </View>
 
         {/* Content */}
-        <View style={{ paddingHorizontal: 16, paddingVertical: 24 }}>
+        <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 14 }}>
           {/* Title */}
           <Text
-            style={{ fontSize: 18, fontWeight: '700', color: textColorPrimary, marginBottom: 4 }}
+            style={{ fontSize: 17, fontWeight: '700', color: textColorPrimary, marginBottom: 8 }}
             numberOfLines={2}
           >
             {spot.name}
           </Text>
 
           {/* Location */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <Feather name="map-pin" size={14} color={iconColorGray} />
-            <Text style={{ fontSize: 14, color: textColorMuted }} numberOfLines={1}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Feather name="map-pin" size={13} color={iconColorGray} />
+            <Text style={{ fontSize: 13, color: textColorMuted }} numberOfLines={1}>
               {spot.locationName}
             </Text>
-          </View>
-
-          {/* Description or Tour Type Info */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTopColor: isDark ? theme.colors['border-dark'] : theme.colors.border, borderTopWidth: 1 }}>
-            {spot.description && (
-              <Text style={{ fontSize: 12, color: textColorMuted, flex: 1, marginRight: 8 }} numberOfLines={1}>
-                {spot.description}
-              </Text>
-            )}
-            <TouchableOpacity style={{ backgroundColor: secondaryColor, borderRadius: 9999, padding: 8 }}>
-              <Feather name="arrow-right" size={14} color={isDark ? theme.colors['onSecondary-dark'] : theme.colors['onSecondary']} />
-            </TouchableOpacity>
           </View>
         </View>
       </View>

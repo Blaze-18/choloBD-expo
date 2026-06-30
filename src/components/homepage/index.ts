@@ -1,11 +1,9 @@
 export { default as HomeHeader } from './HomeHeader';
-export { default as AppBrandSection } from './AppBrandSection';
-export { default as SearchSection } from './SearchSection';
-export { default as ImageCarousel } from './ImageCarousel';
-export { default as HeroSection } from './HeroSection';
-export { default as FeatureCard } from './FeatureCard';
-export { default as FeaturesGrid } from './FeaturesGrid';
+export { default as HeroBackground } from './HeroBackground';
+export { default as QuickActionGrid } from './QuickActionGrid';
+export { default as ExploreBDBanner } from './ExploreBDBanner';
+export { default as TransportTypeSelector } from './TransportTypeSelector';
+export { default as TourPackageCard } from './TourPackageCard';
+export { default as TourPackagesSection } from './TourPackagesSection';
 export { default as SuggestedTourCard } from './SuggestedTourCard';
 export { default as SuggestedToursSection } from './SuggestedToursSection';
-export { default as LocationCard } from './LocationCard';
-export { default as NearbyLocationsSection } from './NearbyLocationsSection';

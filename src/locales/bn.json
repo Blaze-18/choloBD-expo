@@ -32,7 +32,8 @@
     "bengali": "বাংলা",
     "english": "English",
     "viewDetails": "বিস্তারিত দেখুন",
-    "confirm": "নিশ্চিত করুন"
+    "confirm": "নিশ্চিত করুন",
+    "comingSoon": "শীঘ্রই আসছে"
   },
   "auth": {
     "login": {
@@ -104,14 +105,46 @@
     }
   },
   "home": {
+    "tagline": "প্রিপেইড। কিউআর সহজ। নগদ মুক্ত ভ্রমণ।",
+    "taglineSubtitle": "এক পেমেন্টে আপনার পুরো ভ্রমণ কভার হয়। প্রতিটি স্টপে কিউআর কোড স্ক্যান করুন — হোটেল, ট্যুর, আকর্ষণ।",
     "heroTitle": "আপনার পরবর্তী ভ্রমণের জন্য সবকিছু",
     "heroSubtitle": "ট্যুর সুপারিশ করুন, কাস্টম প্ল্যান তৈরি করুন, থাকার ব্যবস্থা এবং পরিবহন বুক করুন এবং সঙ্গী খুঁজুন",
-    "suggestedTours": "সুপারিশকৃত ট্যুর",
-    "suggestedToursDesc": "আপনার আগ্রহের জন্য নির্বাচিত",
+    "tourPackages": "রেডিমেড ট্যুর",
+    "tourPackagesDesc": "বাজেটে সেরা অভিজ্ঞতা",
+    "seeAllPackages": "সব দেখুন",
+    "suggestedTours": "জনপ্রিয় গন্তব্য",
+    "suggestedToursDesc": "সবার পছন্দের আকর্ষণীয় স্থান",
     "seeAllTours": "সব দেখুন",
+    "quickActions": {
+      "planTrip": "পরিকল্পনা",
+      "bookHotel": "হোটেল",
+      "attractions": "স্পট",
+      "transport": "পরিবহন"
+    },
+    "exploreBanner": {
+      "label": "বাংলাদেশ আবিষ্কার করুন",
+      "title": "ঘুরে আসুন",
+      "subtitle": "পাহাড় \u00b7 সমুদ্র \u00b7 ঐতিহ্য"
+    },
     "nearbyLocations": "কাছাকাছি স্থান",
     "nearbyLocationsDesc": "আপনার চারপাশে কী আছে তা অন্বেষণ করুন",
     "exploreAll": "সব অন্বেষণ করুন",
+    "bookingWidget": {
+      "title": "কার্যকলাপ খুঁজুন",
+      "activityType": "কার্যকলাপের ধরন",
+      "date": "তারিখ",
+      "bookBtn": "কিউআর কার্যকলাপ বুক করুন",
+      "seamless": "নির্বিঘ্ন অভিজ্ঞতা — একবার পেমেন্ট করুন, কিউআর দিয়ে সবকিছু উপভোগ করুন।"
+    },
+    "transport": {
+      "label": "পরিবহন",
+      "hotels": "হোটেল",
+      "tours": "ট্যুর",
+      "attractions": "আকর্ষণ",
+      "tripPlan": "ভ্রমণ পরিকল্পনা",
+      "track": "ট্র্যাক",
+      "dashboard": "আমার ভ্রমণ"
+    },
     "features": {
       "smartTours": "স্মার্ট ট্যুর",
       "smartToursDesc": "স্বয়ংক্রিয় পরিকল্পনা, দ্রুত সম্পাদনা",

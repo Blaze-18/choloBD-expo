@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
@@ -19,6 +19,7 @@ import { TourSpotFilters as Filters } from '../../../services/api/tourSpots';
 
 export default function TourSpotsListPage() {
   const router = useRouter();
+  const { fromHome } = useLocalSearchParams<{ fromHome?: string }>();
   const { isDark } = useTheme();
   const { t } = useTranslation();
   
@@ -33,7 +34,11 @@ export default function TourSpotsListPage() {
   const textColor = isDark ? theme.colors['text-dark'] : theme.colors.text;
 
   const handleBack = () => {
-    router.back();
+    if (fromHome === 'true') {
+      router.replace('/(tabs)');
+    } else {
+      router.back();
+    }
   };
 
   const handleSpotPress = (spot: TourSpot) => {

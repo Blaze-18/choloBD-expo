@@ -1,20 +1,25 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
-import { useLanguage } from '../../providers/LanguageProvider';
 import { AppDispatch, RootState } from '../../store/store';
 import { logoutUser } from '../../store/slices/authSlice';
-import { HomeHeader, ImageCarousel, HeroSection, FeaturesGrid, SuggestedToursSection, NearbyLocationsSection } from '../../components/homepage';
+import {
+  HomeHeader,
+  HeroBackground,
+  QuickActionGrid,
+  ExploreBDBanner,
+  TourPackagesSection,
+  SuggestedToursSection,
+} from '../../components/homepage';
 
 export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const auth = useSelector((s: RootState) => s.auth);
   const { isDark } = useTheme();
-  const { currentLanguage } = useLanguage();
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -26,25 +31,40 @@ export default function HomePage() {
     // Navigation logic based on the item selected
     switch (item) {
       case 'explore':
-        router.push('/explore');
+        router.push('/(tabs)/explore');
         break;
       case 'bookings':
         router.push('/(tabs)/dashboard');
+        break;
+      case 'activity':
+        router.push('/(tabs)/explore/tour-spots-list');
+        break;
+      case 'tours':
+        router.push('/(tabs)/explore/tour-list');
         break;
       case 'scan-qr':
         router.push('/(tabs)/dashboard/service-admin/qr-scanner');
         break;
       case 'wallet':
-        router.push('/(shop)/wallet');
+        Alert.alert('Coming Soon', 'Wallet feature is not yet available in this version.');
         break;
       case 'payment':
-        router.push('/(shop)/payment');
+        Alert.alert('Coming Soon', 'Payment feature is not yet available in this version.');
         break;
       case 'track':
         router.push('/(tabs)/tracking');
         break;
       case 'profile':
-        router.push('/(info)/activity-spots');
+        router.push('/(tabs)/dashboard');
+        break;
+      case 'settings':
+        Alert.alert('Info', 'Settings page is not yet available.');
+        break;
+      case 'help':
+        Alert.alert('Help', 'Help page is not yet available.');
+        break;
+      case 'about':
+        Alert.alert('About', 'About page is not yet available.');
         break;
       default:
         console.log('Navigation not implemented for:', item);
@@ -58,20 +78,20 @@ export default function HomePage() {
 
       {/* Main Content */}
       <ScrollView className="flex-1 bg-background dark:bg-background-dark" showsVerticalScrollIndicator={false}>
-        {/* Image Carousel */}
-        <ImageCarousel />
+        {/* 1. Hero Background with messaging */}
+        <HeroBackground />
 
-        {/* Hero Section */}
-        <HeroSection />
+        {/* 2. Quick Action Grid */}
+        <QuickActionGrid onNavigate={(actionId) => console.log('Quick action pressed:', actionId)} />
 
-        {/* Features Grid */}
-        <FeaturesGrid />
+        {/* 3. Explore BD Banner */}
+        <ExploreBDBanner />
 
-        {/* Suggested Tours */}
+        {/* 4. Tour Packages */}
+        <TourPackagesSection />
+
+        {/* 4. Hot Deals / Suggested Tours */}
         <SuggestedToursSection />
-
-        {/* Nearby Locations */}
-        <NearbyLocationsSection />
 
         {/* Bottom Spacing */}
         <View className="h-10" />

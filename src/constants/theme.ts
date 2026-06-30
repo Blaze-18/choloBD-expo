@@ -20,18 +20,18 @@ export const theme = {
     'success-light': '#22C55E', // light/punchy green for buttons/text/icons
 
 
-    // Dark palette (enhanced contrast & accessibility)
+    // Dark palette (neutral charcoal — removes navy cast so accents pop)
     'primary-dark': '#5DADE2', // more vibrant light blue for dark mode
     'onPrimary-dark': '#FFFFFF',
     'secondary-dark': '#E0AAFF', // brighter purple
     'onSecondary-dark': '#1F1F3D',
     'accent-dark': '#4FD1E8', // brighter cyan
-    'background-dark': '#0A0D14', // slightly lighter for visibility
-    'surface-dark': '#15192E', // improved dark surface
-    'surface-2-dark': '#1F2847', // lighter secondary surface
+    'background-dark': '#0C0C0F', // near-black, neutral
+    'surface-dark': '#18191E', // dark charcoal
+    'surface-2-dark': '#23252D', // medium charcoal
     'text-dark': '#F0F4F8', // brighter text
     'muted-dark': '#9CA3AF', // better contrast muted text
-    'border-dark': '#2D3B5F', // more visible borders
+    'border-dark': '#32353F', // visible neutral border
     'success-dark': '#4ADE80', // brighter green
     'success-light-dark': '#86EFAC', // light green for dark theme
     'warning-dark': '#FBBF24', // brighter amber

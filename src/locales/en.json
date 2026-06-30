@@ -32,7 +32,8 @@
     "bengali": "বাংলা",
     "english": "English",
     "viewDetails": "View Details",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "comingSoon": "Coming Soon"
   },
   "auth": {
     "login": {
@@ -104,14 +105,46 @@
     }
   },
   "home": {
+    "tagline": "Prepaid. QR Easy. Cash-Free Journeys.",
+    "taglineSubtitle": "One payment covers your whole trip. Scan QR codes at every stop — hotels, tours, attractions.",
     "heroTitle": "Everything For Your Next Trip",
     "heroSubtitle": "Suggest tours, build custom plans, book stays & rides, and meet buddies",
-    "suggestedTours": "Suggested Tours",
-    "suggestedToursDesc": "Handpicked for your interests",
+    "tourPackages": "Tour Packages",
+    "tourPackagesDesc": "All-inclusive. Ready to go.",
+    "seeAllPackages": "See All",
+    "suggestedTours": "Trending Spots",
+    "suggestedToursDesc": "Places people can't stop talking about",
     "seeAllTours": "See All",
+    "quickActions": {
+      "planTrip": "Plan Trip",
+      "bookHotel": "Hotels",
+      "attractions": "Attractions",
+      "transport": "Transport"
+    },
+    "exploreBanner": {
+      "label": "Discover Bangladesh",
+      "title": "Explore BD",
+      "subtitle": "Mountains \u00b7 Beaches \u00b7 Heritage"
+    },
     "nearbyLocations": "Nearby Locations",
     "nearbyLocationsDesc": "Explore what's around you",
     "exploreAll": "Explore All",
+    "bookingWidget": {
+      "title": "Find Activities",
+      "activityType": "Activity Type",
+      "date": "Date",
+      "bookBtn": "Book QR Activities",
+      "seamless": "Seamless experiences — pay once, enjoy everything with QR."
+    },
+    "transport": {
+      "label": "Transport",
+      "hotels": "Hotels",
+      "tours": "Tours",
+      "attractions": "Attractions",
+      "tripPlan": "Trip Plan",
+      "track": "Track",
+      "dashboard": "My Trips"
+    },
     "features": {
       "smartTours": "Smart Tours",
       "smartToursDesc": "Auto plan, quick tweaks",
