@@ -121,20 +121,22 @@ export function HotelBookingForm({
         </View>
       )}
 
-      {/* Payment Method */}
-      <View>
-        <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD)} ({t(TRANSLATION_KEYS.BOOKING.OPTIONAL)})</Text>
-        <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
-          <Ionicons name="card" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
-          <TextInput
-            value={paymentMethod}
-            onChangeText={setPaymentMethod}
-            placeholder={t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD_PLACEHOLDER)}
-            placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
-            className="flex-1 p-3 text-text dark:text-text-dark"
-          />
+      {/* Payment Method — only shown in edit mode (payment via SSLCommerz gateway for new bookings) */}
+      {setPaymentMethod !== undefined && isEditing && (
+        <View>
+          <Text className="text-sm font-semibold text-text dark:text-text-dark">{t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD)} ({t(TRANSLATION_KEYS.BOOKING.OPTIONAL)})</Text>
+          <View className="flex-row items-center mt-2 border rounded-lg border-border dark:border-border-dark bg-background-input dark:bg-background-input-dark">
+            <Ionicons name="card" size={18} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} style={{ marginLeft: 10 }} />
+            <TextInput
+              value={paymentMethod}
+              onChangeText={setPaymentMethod}
+              placeholder={t(TRANSLATION_KEYS.BOOKING.PAYMENT_METHOD_PLACEHOLDER)}
+              placeholderTextColor={isDark ? theme.colors['muted-dark'] : '#999'}
+              className="flex-1 p-3 text-text dark:text-text-dark"
+            />
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Special Requests */}
       <View>

@@ -91,7 +91,8 @@ export default function NearbyLocationsSection() {
         </View>
         <TouchableOpacity
           onPress={handleExploreAll}
-          className="bg-blue-50 dark:bg-blue-900/20 rounded-full p-2"
+          className="rounded-full p-2"
+          style={{ backgroundColor: isDark ? theme.colors['primary-dark'] + '10' : theme.colors.primary + '10' }}
         >
           <Feather name="arrow-right" size={20} color={theme.colors.primary} />
         </TouchableOpacity>
@@ -149,14 +150,14 @@ export default function NearbyLocationsSection() {
       </View>
 
       {/* Info Banner */}
-      <View className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+      <View className="mt-6 rounded-xl p-4 border" style={{ backgroundColor: isDark ? theme.colors['primary-dark'] + '10' : theme.colors.primary + '10', borderColor: isDark ? theme.colors['primary-dark'] + '40' : theme.colors.primary + '30' }}>
         <View className="flex-row items-start gap-3">
-          <Feather name="info" size={20} color={theme.colors.primary} />
+          <Feather name="info" size={20} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
           <View className="flex-1">
-            <Text className="text-sm font-semibold text-blue-900 dark:text-blue-400 mb-1">
+            <Text className="text-sm font-semibold text-text dark:text-text-dark mb-1">
               Location Services
             </Text>
-            <Text className="text-xs text-blue-800 dark:text-blue-300">
+            <Text className="text-xs text-muted dark:text-muted-dark">
               Locations are based on your last known position. Enable location services for real-time updates.
             </Text>
           </View>

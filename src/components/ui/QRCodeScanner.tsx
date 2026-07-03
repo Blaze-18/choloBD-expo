@@ -84,11 +84,11 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScan, isLoading 
         )}
 
         {/* Instructions */}
-        <View className="mt-8 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
-          <Text className="text-sm font-semibold text-blue-900 dark:text-blue-50 mb-2">
+        <View className="mt-8 p-4 rounded-lg" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'] }}>
+          <Text className="text-sm font-semibold text-text dark:text-text-dark mb-2">
             How to use:
           </Text>
-          <Text className="text-xs text-blue-800 dark:text-blue-100">
+          <Text className="text-xs text-muted dark:text-muted-dark">
             {scanMethod === 'camera'
               ? '• Point camera at the guest\'s QR code\n• The code will scan automatically\n• The guest\'s booking details will appear below'
               : '• Paste or type the QR token below\n• Press "Validate QR Code"\n• The guest\'s booking details will appear below'}

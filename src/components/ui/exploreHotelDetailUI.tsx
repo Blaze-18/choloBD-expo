@@ -54,7 +54,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
               </View>
             </View>
             <View className="items-center">
-              <View className="flex-row items-center px-3 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-950">
+              <View className="flex-row items-center px-3 py-2 rounded-lg\" style={{ backgroundColor: isDark ? theme.colors['warning-dark'] + '20' : theme.colors.warning + '20' }}>
                 <Ionicons name="star" size={18} color={isDark ? '#fcd34d' : '#fbbf24'} />
                 <Text className="ml-1 font-bold text-text dark:text-text-dark">{hotel.rating}</Text>
               </View>
@@ -76,7 +76,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
           )}
 
           {(hotel.checkInTime || hotel.checkOutTime) && (
-            <View className="p-4 mt-4 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+            <View className="p-4 mt-4 border rounded-lg border-border bg-surface-2 dark:bg-surface-2-dark dark:border-border-dark">
               <View className="flex-row justify-between">
                 {hotel.checkInTime && (
                   <View>
@@ -138,7 +138,7 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
           )}
 
           {(hotel.phoneNumber || hotel.email) && (
-            <View className="p-4 mt-6 rounded-lg bg-gray-50 dark:bg-gray-900">
+            <View className="p-4 mt-6 border rounded-lg bg-surface-2 dark:bg-surface-2-dark border-border dark:border-border-dark">
               {hotel.phoneNumber && (
                 <View className="flex-row items-center mb-2">
                   <Ionicons name="call" size={16} color={primaryColor} />
@@ -163,16 +163,17 @@ export function ExploreHotelDetailUI({ hotel, onBack, onBackToSearch, onBooking,
           onPress={onBooking}
           disabled={loading}
           style={{
-            backgroundColor: loading ? (isDark ? '#4b5563' : '#d1d5db') : primaryColor,
+            backgroundColor: loading ? (isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2']) : primaryColor,
             borderRadius: 12,
             minHeight: 52,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+            opacity: loading ? 0.6 : 1,
           }}
         >
-          <Ionicons name="bed" size={20} color={onPrimaryColor} style={{ marginRight: 8 }} />
-          <Text style={{ fontSize: 16, fontWeight: '600', color: onPrimaryColor }}>{t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)}</Text>
+          <Ionicons name="bed" size={20} color={loading ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : onPrimaryColor} style={{ marginRight: 8 }} />
+          <Text style={{ fontSize: 16, fontWeight: '600', color: loading ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : onPrimaryColor }}>{t(TRANSLATION_KEYS.EXPLORE.CARDS.BOOK_HOTEL)}</Text>
         </TouchableOpacity>
       </View>
     </View>

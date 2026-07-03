@@ -702,5 +702,31 @@
     "profileUpdated": "Profile updated successfully",
     "paymentSuccess": "Payment successful",
     "paymentFailed": "Payment failed. Please try again"
+  },
+  "payment": {
+    "title": "Complete Your Payment",
+    "subtitle": "Your room is reserved. Pay now to confirm your booking instantly.",
+    "payNow": "Pay Now with SSLCommerz",
+    "payLater": "Pay Later",
+    "payLaterDesc": "You can pay from your dashboard anytime",
+    "processing": "Processing payment...",
+    "initializing": "Opening payment gateway...",
+    "checkingStatus": "Verifying payment...",
+    "successTitle": "Payment Successful!",
+    "successDesc": "Your booking is now confirmed. Check your dashboard for details.",
+    "failedTitle": "Payment Failed",
+    "failedDesc": "Your payment could not be processed. Please try again.",
+    "pendingTitle": "Payment Pending",
+    "pendingDesc": "We couldn't confirm your payment status. Please check your dashboard or try again.",
+    "retry": "Try Again",
+    "goToDashboard": "Go to Dashboard",
+    "completePayment": "Complete Payment",
+    "paymentStatus": "Payment Status",
+    "unpaid": "Unpaid",
+    "paid": "Paid",
+    "totalAmount": "Total Amount",
+    "securePayment": "Secure Payment",
+    "poweredBySslcommerz": "Powered by SSLCommerz",
+    "bookingReserved": "Booking Reserved"
   }
 }

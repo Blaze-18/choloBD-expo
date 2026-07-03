@@ -106,8 +106,6 @@ export default function ExploreBooking() {
             setGuestEmail={setGuestEmail}
             guestPhoneNumber={guestPhoneNumber}
             setGuestPhoneNumber={setGuestPhoneNumber}
-            paymentMethod={paymentMethod}
-            setPaymentMethod={setPaymentMethod}
             specialRequests={specialRequests}
             setSpecialRequests={setSpecialRequests}
             submitting={submitting}

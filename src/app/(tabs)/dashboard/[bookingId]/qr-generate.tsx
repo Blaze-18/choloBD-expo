@@ -59,55 +59,31 @@ export default function BookingQRGeneratePage() {
 
       {loading ? (
         <View className="items-center justify-center flex-1">
-          <ActivityIndicator size="large" color={theme.colors['success-light']} />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text className="mt-4 text-muted dark:text-muted-dark">Generating QR code...</Text>
         </View>
       ) : qrToken ? (
         <ScrollView className="flex-1 px-6 py-6" contentContainerStyle={{ paddingBottom: 24, gap: 16 }}>
           <QRCodeDisplay qrToken={qrToken} expiresAt={expiresAt ?? undefined} />
 
-          <View className="p-4 rounded-xl bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
+          <View className="p-4 rounded-xl bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark">
             <View className="flex-row items-center mb-2">
-              <Ionicons name="checkmark-circle" size={20} color={isDark ? theme.colors['success-light-dark'] : theme.colors['success-light']} />
-              <Text className="ml-2 font-semibold text-green-900 dark:text-green-50">QR Code Generated</Text>
+              <Ionicons name="checkmark-circle" size={20} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
+              <Text className="ml-2 font-semibold text-text dark:text-text-dark">QR Code Ready</Text>
             </View>
-            <Text className="text-xs text-green-800 dark:text-green-100 leading-5">
-              {'Your check-in code is ready. Show this to hotel staff at arrival to verify your booking instantly.'}
+            <Text className="text-xs text-muted dark:text-muted-dark leading-5">
+              Show this code to verify your booking instantly.
             </Text>
           </View>
 
-          <View className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
-            <Text className="mb-3 font-semibold text-blue-900 dark:text-blue-50">How to use:</Text>
-            <View className="space-y-2">
-              <View className="flex-row mb-2">
-                <Text className="font-semibold text-blue-900 dark:text-blue-50 mr-2">1.</Text>
-                <Text className="text-xs text-blue-800 dark:text-blue-100 flex-1">Display this QR code on your phone screen</Text>
-              </View>
-              <View className="flex-row mb-2">
-                <Text className="font-semibold text-blue-900 dark:text-blue-50 mr-2">2.</Text>
-                <Text className="text-xs text-blue-800 dark:text-blue-100 flex-1">Show it to the hotel staff at check-in</Text>
-              </View>
-              <View className="flex-row mb-2">
-                <Text className="font-semibold text-blue-900 dark:text-blue-50 mr-2">3.</Text>
-                <Text className="text-xs text-blue-800 dark:text-blue-100 flex-1">They will scan it to verify your booking</Text>
-              </View>
-              <View className="flex-row">
-                <Text className="font-semibold text-blue-900 dark:text-blue-50 mr-2">⏱️</Text>
-                <Text className="text-xs text-blue-800 dark:text-blue-100 flex-1">Code expires in 10 minutes for security</Text>
-              </View>
-            </View>
+          <View className="p-4 rounded-xl bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark">
+            <Text className="mb-2 font-semibold text-text dark:text-text-dark">Instructions:</Text>
+            <Text className="text-xs text-muted dark:text-muted-dark leading-5">
+              Display on your phone screen • Show to staff at check-in • Keep phone charged
+            </Text>
           </View>
 
-          <View className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800">
-            <View className="flex-row items-start">
-              <Ionicons name="information" size={18} color={isDark ? '#fcd34d' : '#f59e0b'} style={{ marginRight: 8, marginTop: 2 }} />
-              <Text className="text-xs text-amber-800 dark:text-amber-100 flex-1">
-                Keep your phone charged and screen on when checking in. Make sure QR code is clearly visible for scanning.
-              </Text>
-            </View>
-          </View>
-
-          <Pressable onPress={() => router.back()} className="flex-row items-center justify-center px-6 py-3 rounded-lg bg-success-light dark:bg-success-light-dark active:opacity-80" style={{ backgroundColor: isDark ? theme.colors['success-light-dark'] : theme.colors['success-light'] }}>
+          <Pressable onPress={() => router.back()} className="flex-row items-center justify-center px-6 py-3 rounded-lg bg-primary dark:bg-primary-dark active:opacity-80">
             <Ionicons name="checkmark" size={20} color="#fff" style={{ marginRight: 8 }} />
             <Text className="font-semibold text-white">Done</Text>
           </Pressable>

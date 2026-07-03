@@ -56,7 +56,7 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
         {/* Details Button (Left) */}
         <Pressable
           onPress={onDetailsPress}
-          className="flex-row items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900"
+          className="flex-row items-center px-3 py-2 rounded-lg bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark"
         >
           <Ionicons name="information-circle-outline" size={16} color={theme.colors.primary} style={{ marginRight: 6 }} />
           <Text className="text-sm font-semibold text-primary">{t(TRANSLATION_KEYS.TRACKING.VIEW_DETAILS)}</Text>
@@ -67,20 +67,20 @@ export const TrackingCard: React.FC<TrackingCardProps> = ({
           {/* QR Button - All users get this */}
           <Pressable
             onPress={onQRPress}
-            className="p-2 rounded-lg bg-green-50 dark:bg-green-900 items-center justify-center"
+            className="p-2 rounded-lg bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <Ionicons name="qr-code" size={18} color={isDark ? '#4ade80' : '#10b981'} />
+            <Ionicons name="qr-code" size={18} color={theme.colors.primary} />
           </Pressable>
 
           {/* Camera Button - Only for service admins */}
           {isServiceAdmin && onCameraPress && (
             <Pressable
               onPress={onCameraPress}
-              className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900 items-center justify-center"
+              className="p-2 rounded-lg bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark items-center justify-center"
               style={{ width: 36, height: 36 }}
             >
-              <Ionicons name="camera-outline" size={18} color={isDark ? '#d8b4fe' : '#a855f7'} />
+              <Ionicons name="camera-outline" size={18} color={theme.colors.secondary} />
             </Pressable>
           )}
         </View>

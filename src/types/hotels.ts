@@ -46,3 +46,34 @@ export interface HotelDetail {
   checkInTime?: string;
   checkOutTime?: string;
 }
+
+export interface HotelBooking {
+  id: string;
+  confirmationCode: string;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+  paymentStatus: 'UNPAID' | 'PAID';
+  paymentMethod?: string;
+  checkInDate: string;
+  checkOutDate: string;
+  totalPrice: number;
+  specialRequests?: string;
+  hotel?: {
+    id: string;
+    name: string;
+    location?: { city?: string; name?: string };
+  };
+  user?: {
+    id: string;
+    userName: string;
+    email: string;
+  };
+  roomDetails?: Array<{
+    hotelRoomId: string;
+    pricePerNight: number;
+    subtotal?: number;
+    hotelRoom?: {
+      roomNumber?: string;
+      hotelRoomType?: { name: string };
+    };
+  }>;
+}

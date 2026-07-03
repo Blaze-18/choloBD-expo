@@ -19,8 +19,10 @@ export const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
 }) => {
   const { isDark } = useTheme();
 
+  const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
+
   return (
-    <View className="items-center p-6 bg-white dark:bg-surface-dark rounded-2xl border-2" style={{ borderColor: isDark ? theme.colors['success-light-dark'] : theme.colors['success-light'] }}>
+    <View className="items-center p-6 bg-white dark:bg-surface-dark rounded-2xl border" style={{ borderColor: primaryColor, borderWidth: 1 }}>
       <Text className="text-lg font-semibold text-text dark:text-text-dark mb-1">{label}</Text>
       <Text className="text-xs text-muted dark:text-muted-dark mb-6">Show this code to hotel staff at check-in</Text>
 
@@ -28,12 +30,12 @@ export const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
         className="bg-white p-4 rounded-2xl"
         style={{
           elevation: 4,
-          shadowColor: isDark ? theme.colors['success-light-dark'] : theme.colors['success-light'],
+          shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.15,
+          shadowOpacity: 0.08,
           shadowRadius: 8,
-          borderWidth: 2,
-          borderColor: isDark ? theme.colors['success-light-dark'] : theme.colors['success-light'],
+          borderWidth: 1,
+          borderColor: primaryColor,
         }}
       >
         <QRCode
@@ -46,8 +48,8 @@ export const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
       </View>
 
       {expiresAt && (
-        <View className="mt-6 px-4 py-2 rounded-lg bg-green-50 dark:bg-green-950">
-          <Text className="text-xs font-medium text-green-700 dark:text-green-200">
+        <View className="mt-6 px-4 py-2 rounded-lg bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark">
+          <Text className="text-xs font-medium text-text dark:text-text-dark">
             Expires: {new Date(expiresAt).toLocaleTimeString()}
           </Text>
         </View>

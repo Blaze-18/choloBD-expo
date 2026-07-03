@@ -65,7 +65,8 @@ export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: Ro
               <TouchableOpacity
                 onPress={() => onChange(roomType.id, -1)}
                 disabled={selected <= 0}
-                className={`p-2 rounded-lg ${selected <= 0 ? 'bg-gray-200' : 'bg-border'} dark:bg-border-dark`}
+                className={`p-2 rounded-lg ${selected <= 0 ? 'bg-surface-2 dark:bg-surface-2-dark' : 'bg-surface-2 dark:bg-surface-2-dark'}`}
+                style={{ opacity: selected <= 0 ? 0.5 : 1 }}
               >
                 <Ionicons name="remove" size={18} color={mutedColor} />
               </TouchableOpacity>
@@ -77,9 +78,10 @@ export function RoomTypeSelectorUI({ roomTypes, selectedRoomsMap, onChange }: Ro
               <TouchableOpacity
                 onPress={() => onChange(roomType.id, 1)}
                 disabled={available !== undefined && selected >= available}
-                className={`p-2 rounded-lg ${available !== undefined && selected >= available ? 'bg-gray-200' : 'bg-primary'} dark:bg-primary-dark`}
+                className={`p-2 rounded-lg ${available !== undefined && selected >= available ? 'bg-surface-2 dark:bg-surface-2-dark' : 'bg-primary dark:bg-primary-dark'}`}
+                style={{ opacity: available !== undefined && selected >= available ? 0.5 : 1 }}
               >
-                <Ionicons name="add" size={18} color={onPrimaryColor} />
+                <Ionicons name="add" size={18} color={available !== undefined && selected >= available ? mutedColor : onPrimaryColor} />
               </TouchableOpacity>
             </View>
           </View>

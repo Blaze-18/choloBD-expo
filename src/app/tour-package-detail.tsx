@@ -210,22 +210,22 @@ export default function TourPackageDetailPage() {
       {/* Book Tour Button */}
       {detail.isActive && (
         <View
-          className="px-6 pb-4 pt-3"
           style={{
-            backgroundColor: isDark ? theme.colors['surface-dark'] : theme.colors.surface,
             borderTopWidth: 1,
             borderTopColor: isDark ? theme.colors['border-dark'] : theme.colors.border,
+            paddingHorizontal: 24,
+            paddingVertical: 16,
             paddingBottom: Math.max(16, insets.bottom),
           }}
         >
           <TouchableOpacity
             onPress={handleBookTour}
-            className="flex-row items-center justify-center p-4 rounded-xl"
+            className="flex-row items-center justify-center p-4 rounded-lg"
             style={{ backgroundColor: successColor }}
             activeOpacity={0.8}
           >
-            <Ionicons name="calendar" size={24} color="#fff" style={{ marginRight: 8 }} />
-            <Text className="text-base font-bold text-white">
+            <Ionicons name="calendar" size={20} color="#fff" style={{ marginRight: 8 }} />
+            <Text className="text-base font-semibold text-white">
               {t(TRANSLATION_KEYS.PACKAGE_BOOKING.BOOK_THIS_TOUR)}
             </Text>
           </TouchableOpacity>

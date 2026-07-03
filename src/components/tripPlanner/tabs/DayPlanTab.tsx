@@ -283,9 +283,9 @@ export function DayPlanTab({ trip }: DayPlanTabProps) {
 
                         {/* Booking Status if available */}
                         {(segment.hotelRoomBookingId || segment.transportBookingId || segment.activityBookingId) && (
-                          <View className="flex-row items-center gap-1 px-2 py-1 rounded-full bg-green-50 dark:bg-green-900">
+                          <View className="flex-row items-center gap-1 px-2 py-1 rounded-full" style={{ backgroundColor: isDark ? theme.colors['success-dark'] + '20' : theme.colors.success + '20' }}>
                             <Feather name="check-circle" size={12} color={successColor} />
-                            <Text className="text-xs font-semibold text-green-600 dark:text-green-300 ml-1">
+                            <Text className="text-xs font-semibold ml-1" style={{ color: successColor }}>
                               {t(TRANSLATION_KEYS.TRIP_PLANNER.DAY_PLAN_BOOKED_BADGE)}
                             </Text>
                           </View>

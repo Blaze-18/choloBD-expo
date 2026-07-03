@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import theme from '../../constants/theme';
+import { useTheme } from '../../hooks/useTheme';
 
 interface FeatureCardProps {
   title: string;
@@ -10,22 +12,25 @@ interface FeatureCardProps {
   variant?: 'primary' | 'secondary' | 'accent';
 }
 
-const variantStyles = {
-  primary: {
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    border: 'border border-blue-200 dark:border-blue-800',
-    icon: '#0066FF',
-  },
-  secondary: {
-    bg: 'bg-purple-50 dark:bg-purple-900/20',
-    border: 'border border-purple-200 dark:border-purple-800',
-    icon: '#7C3AED',
-  },
-  accent: {
-    bg: 'bg-cyan-50 dark:bg-cyan-900/20',
-    border: 'border border-cyan-200 dark:border-cyan-800',
-    icon: '#06B6D4',
-  },
+const getVariantStyles = (variant: 'primary' | 'secondary' | 'accent', isDark: boolean) => {
+  const styles = {
+    primary: {
+      bg: isDark ? theme.colors['primary-dark'] + '10' : theme.colors.primary + '10',
+      border: isDark ? theme.colors['primary-dark'] + '40' : theme.colors.primary + '30',
+      icon: isDark ? theme.colors['primary-dark'] : theme.colors.primary,
+    },
+    secondary: {
+      bg: isDark ? theme.colors['secondary-dark'] + '10' : theme.colors.secondary + '10',
+      border: isDark ? theme.colors['secondary-dark'] + '40' : theme.colors.secondary + '30',
+      icon: isDark ? theme.colors['secondary-dark'] : theme.colors.secondary,
+    },
+    accent: {
+      bg: isDark ? theme.colors['accent-dark'] + '10' : theme.colors.accent + '10',
+      border: isDark ? theme.colors['accent-dark'] + '40' : theme.colors.accent + '30',
+      icon: isDark ? theme.colors['accent-dark'] : theme.colors.accent,
+    },
+  };
+  return styles[variant];
 };
 
 export default function FeatureCard({
@@ -35,23 +40,24 @@ export default function FeatureCard({
   onPress,
   variant = 'primary',
 }: FeatureCardProps) {
-  const style = variantStyles[variant];
+  const { isDark } = useTheme();
+  const style = getVariantStyles(variant, isDark);
 
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
-      <View className={`${style.bg} ${style.border} rounded-xl p-4`}>
+      <View className="rounded-xl p-4" style={{ backgroundColor: style.bg, borderWidth: 1, borderColor: style.border }}>
         {/* Icon */}
         <View className="mb-3">
           <Feather name={icon} size={28} color={style.icon} />
         </View>
 
         {/* Title */}
-        <Text className="text-base font-semibold text-neutral-900 dark:text-white mb-1">
+        <Text className="text-base font-semibold text-text dark:text-text-dark mb-1">
           {title}
         </Text>
 
         {/* Description */}
-        <Text className="text-sm text-neutral-600 dark:text-neutral-400">
+        <Text className="text-sm text-muted dark:text-muted-dark">
           {description}
         </Text>
       </View>

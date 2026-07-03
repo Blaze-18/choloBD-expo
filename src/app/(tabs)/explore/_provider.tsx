@@ -21,6 +21,7 @@ interface ExploreContextValue {
   paymentMethod: string;
   specialRequests: string;
   submitting: boolean;
+  lastBookingResult: any | null;
   fetchHotelsByLocation: (locationId: string) => void;
   selectHotel: (hotelId: string) => Promise<void>;
   changeRoomQty: (roomTypeId: string, delta: number) => void;
@@ -53,6 +54,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
   const [guestPhoneNumber, setGuestPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
+  const [lastBookingResult, setLastBookingResult] = useState<any | null>(null);
 
   const fetchHotelsByLocation = (locationId: string) => {
     fetchHotels({ locationId, isActive: true });
@@ -99,8 +101,8 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
         specialRequests,
       },
       (data) => {
-        // reset and go to search
-        clearAllAndGoToSearch();
+        setLastBookingResult(data);
+        router.push('/(tabs)/explore/payment');
       }
     );
     return result;
@@ -119,6 +121,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
     setGuestPhoneNumber('');
     setPaymentMethod('');
     setSpecialRequests('');
+    setLastBookingResult(null);
     router.push('/(tabs)/explore');
   };
 
@@ -135,6 +138,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
     setGuestPhoneNumber('');
     setPaymentMethod('');
     setSpecialRequests('');
+    setLastBookingResult(null);
   };
 
   return (
@@ -155,6 +159,7 @@ export function ExploreProvider({ children }: { children: React.ReactNode }) {
         paymentMethod,
         specialRequests,
         submitting,
+        lastBookingResult,
         fetchHotelsByLocation,
         selectHotel,
         changeRoomQty,

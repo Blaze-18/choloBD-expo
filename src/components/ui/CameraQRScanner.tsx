@@ -51,12 +51,12 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
   if (permission === false) {
     return (
       <View className="items-center mb-6">
-        <View className="w-64 h-64 rounded-xl bg-red-100 dark:bg-red-900 items-center justify-center border-2 border-red-300 dark:border-red-700 p-4">
+        <View className="w-64 h-64 rounded-xl items-center justify-center border-2 p-4" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'], borderColor: isDark ? theme.colors['error-dark'] : theme.colors.error }}>
           <Ionicons name="close-circle" size={64} color={isDark ? theme.colors['error-dark'] : theme.colors.error} />
-          <Text className="mt-4 text-sm font-semibold text-center text-red-900 dark:text-red-100">
+          <Text className="mt-4 text-sm font-semibold text-center text-text dark:text-text-dark">
             Camera Access Denied
           </Text>
-          <Text className="mt-2 text-xs text-center text-red-800 dark:text-red-200">
+          <Text className="mt-2 text-xs text-center text-muted dark:text-muted-dark">
             Please enable camera permissions in settings to use QR scanning.
           </Text>
         </View>
@@ -103,8 +103,8 @@ export const CameraQRScanner: React.FC<CameraQRScannerProps> = ({
         </CameraView>
       </View>
 
-      <View className="w-64 p-3 mt-4 rounded-lg bg-blue-50 dark:bg-blue-900">
-        <Text className="text-xs text-center text-blue-900 dark:text-blue-50">
+      <View className="w-64 p-3 mt-4 rounded-lg" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'] }}>
+        <Text className="text-xs text-center text-text dark:text-text-dark">
           Position QR code within the frame to scan automatically
         </Text>
       </View>

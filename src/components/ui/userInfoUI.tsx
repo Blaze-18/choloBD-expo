@@ -27,17 +27,17 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
   const getStatusColor = (status?: string) => {
     switch (status?.toUpperCase()) {
       case 'ACTIVE':
-        return 'bg-green-500';
+        return isDark ? theme.colors['success-dark'] : theme.colors.success;
       case 'SUSPENDED':
       case 'BANNED':
-        return 'bg-red-500';
+        return isDark ? theme.colors['error-dark'] : theme.colors.error;
       case 'PENDING':
       case 'UNVERIFIED':
-        return 'bg-yellow-500';
+        return isDark ? theme.colors['warning-dark'] : theme.colors.warning;
       case 'INACTIVE':
-        return 'bg-gray-500';
+        return isDark ? theme.colors['muted-dark'] : theme.colors.muted;
       default:
-        return 'bg-green-500';
+        return isDark ? theme.colors['success-dark'] : theme.colors.success;
     }
   };
 
@@ -57,7 +57,6 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
     return translationKey ? t(translationKey) : statusValue;
   };
 
-  const statusColor = getStatusColor(userStatus);
   const translatedRole = getTranslatedRole(role);
   const translatedStatus = getTranslatedStatus(userStatus);
 
@@ -87,7 +86,7 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
               
               {/* Quick Status */}
               <View className="flex-row items-center mt-2">
-                <View className={`w-2 h-2 rounded-full ${statusColor}`} />
+                <View className="w-2 h-2 rounded-full" style={{ backgroundColor: getStatusColor(userStatus) }} />
                 <Text className="ml-1 text-xs text-text dark:text-text-dark">{translatedStatus}</Text>
               </View>
             </View>
@@ -96,8 +95,8 @@ export function UserInfoUI({ userName, email, imageUrl, role, userStatus, onLogo
           {/* Logout Button */}
           <TouchableOpacity 
             onPress={onLogout} 
-            className="p-3 rounded-lg bg-danger" 
-            style={{ elevation: 2, minWidth: 44, minHeight: 44 }}
+            className="p-3 rounded-lg" 
+            style={{ backgroundColor: isDark ? theme.colors['error-dark'] : theme.colors.error, elevation: 2, minWidth: 44, minHeight: 44 }}
             accessibilityRole="button"
             accessibilityLabel="Logout"
             accessibilityHint="Double tap to log out of your account"

@@ -42,8 +42,12 @@ export function useBookingLogic() {
         Alert.alert('Authentication required', 'Please login to create a booking');
         return null;
       }
-      const result = await createBooking({ ...bookingData, userId });
-      Alert.alert('Success', 'Booking created: ' + (result?.confirmationCode || ''));
+      // Exclude empty paymentMethod for new bookings (payment happens via gateway later)
+      const submitData = { ...bookingData, userId };
+      if (!submitData.paymentMethod) {
+        delete submitData.paymentMethod;
+      }
+      const result = await createBooking(submitData);
       return result;
     } catch (e: any) {
       if (__DEV__) console.error('[useBookingLogic] submitBooking error', e?.response?.data || e.message);

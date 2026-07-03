@@ -119,8 +119,8 @@ export default function QuickActionGrid({ onNavigate }: QuickActionGridProps) {
 
         {/* Coming Soon Badge */}
         {isDisabled && (
-          <View className="mt-1 px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-900">
-            <Text className="text-xs font-bold text-yellow-700 dark:text-yellow-200">
+          <View className="mt-1 px-2 py-0.5 rounded-full" style={{ backgroundColor: isDark ? theme.colors['warning-dark'] + '20' : theme.colors.warning + '20' }}>
+            <Text className="text-xs font-bold" style={{ color: isDark ? theme.colors['warning-dark'] : theme.colors.warning }}>
               Soon
             </Text>
           </View>

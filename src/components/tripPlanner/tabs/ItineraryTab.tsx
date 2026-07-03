@@ -213,8 +213,8 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
 
         {/* Error Message */}
         {error && (
-          <View className="p-3 mb-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900 dark:border-red-800">
-            <Text className="text-sm text-red-600 dark:text-red-200">{error}</Text>
+          <View className="p-3 mb-4 border rounded-lg" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'], borderColor: isDark ? theme.colors['error-dark'] : theme.colors.error }}>
+            <Text style={{ color: isDark ? theme.colors['error-dark'] : theme.colors.error }}>{error}</Text>
           </View>
         )}
 
@@ -235,9 +235,10 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           <TouchableOpacity
             onPress={addNote}
             disabled={isSaving || !newNote.trim()}
-            className={`px-4 py-2 rounded-lg ${isSaving || !newNote.trim() ? 'bg-gray-300 dark:bg-gray-600' : 'bg-primary'}`}
+            className="px-4 py-2 rounded-lg"
+            style={{ backgroundColor: isSaving || !newNote.trim() ? (isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2']) : theme.colors.primary, opacity: isSaving || !newNote.trim() ? 0.6 : 1 }}
           >
-            <Feather name="plus" size={20} color={isSaving || !newNote.trim() ? mutedColor : 'white'} />
+            <Feather name="plus" size={20} color={isSaving || !newNote.trim() ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : 'white'} />
           </TouchableOpacity>
         </View>
 
@@ -252,7 +253,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
               data={notesList}
               keyExtractor={(_, index) => index.toString()}
               renderItem={({ item, index }) => (
-                <View className="flex-row items-center gap-3 mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <View className="flex-row items-center gap-3 mb-3 p-3 rounded-lg" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'] }}>
                   <View className="flex-1">
                     <Text className="text-sm text-text dark:text-text-dark">{item}</Text>
                     <Text className="text-xs text-muted dark:text-muted-dark mt-1">
@@ -263,7 +264,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
                     onPress={() => deleteNote(index)}
                     disabled={isSaving}
                   >
-                    <Feather name="trash-2" size={18} color="#EF4444" />
+                    <Feather name="trash-2" size={18} color={isDark ? theme.colors['error-dark'] : theme.colors.error} />
                   </TouchableOpacity>
                 </View>
               )}
@@ -275,7 +276,7 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
         {/* Character Counter */}
         <View className="mb-4">
           {/* Progress Bar */}
-          <View className="h-2 mb-2 overflow-hidden bg-gray-200 rounded-full dark:bg-gray-700">
+          <View className="h-2 mb-2 overflow-hidden rounded-full" style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'] }}>
             <View
               style={{
                 width: `${Math.min(charPercentage, 100)}%`,
@@ -285,11 +286,11 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
             />
           </View>
           <View className="flex-row items-center justify-between">
-            <Text className={`text-xs font-semibold ${isNearLimit ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+            <Text className="text-xs font-semibold" style={{ color: isNearLimit ? (isDark ? theme.colors['error-dark'] : theme.colors.error) : (isDark ? theme.colors['success-dark'] : theme.colors.success) }}>
               {totalCharCount} / {MAX_CHARS}
             </Text>
             {isNearLimit && (
-              <Text className="text-xs text-red-600 dark:text-red-400">
+              <Text className="text-xs" style={{ color: isDark ? theme.colors['error-dark'] : theme.colors.error }}>
                 {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CHARS_REMAINING, { remaining: MAX_CHARS - totalCharCount })}
               </Text>
             )}
@@ -301,7 +302,8 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           <TouchableOpacity
             onPress={handleCancel}
             disabled={isSaving}
-            className="items-center flex-1 py-3 bg-gray-200 rounded-lg dark:bg-gray-700"
+            className="items-center flex-1 py-3 rounded-lg"
+            style={{ backgroundColor: isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2'], opacity: isSaving ? 0.6 : 1 }}
           >
             <Text className="font-semibold text-text dark:text-text-dark">
               {hasUnsavedChanges ? t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CANCEL_BTN) : t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_DONE_BTN)}
@@ -311,11 +313,10 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
           <TouchableOpacity
             onPress={handleClear}
             disabled={isSaving || notesList.length === 0}
-            className={`flex-1 rounded-lg py-3 items-center ${
-              isSaving || notesList.length === 0 ? 'bg-gray-200 dark:bg-gray-700' : 'bg-red-100 dark:bg-red-900'
-            }`}
+            className="flex-1 rounded-lg py-3 items-center"
+            style={{ backgroundColor: isSaving || notesList.length === 0 ? (isDark ? theme.colors['surface-2-dark'] : theme.colors['surface-2']) : (isDark ? theme.colors['error-dark'] + '20' : theme.colors.error + '20'), opacity: isSaving || notesList.length === 0 ? 0.6 : 1 }}
           >
-            <Text className={`font-semibold ${isSaving || notesList.length === 0 ? 'text-muted dark:text-muted-dark' : 'text-red-600 dark:text-red-400'}`}>
+            <Text className="font-semibold" style={{ color: isSaving || notesList.length === 0 ? (isDark ? theme.colors['muted-dark'] : theme.colors.muted) : (isDark ? theme.colors['error-dark'] : theme.colors.error) }}>
               {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_CLEAR_ALL_BTN)}
             </Text>
           </TouchableOpacity>
@@ -382,10 +383,10 @@ export function ItineraryTab({ trip, onTripUpdate }: ItineraryTabProps) {
       />
 
       {/* Info Footer */}
-      <View className="p-3 mt-4 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900 dark:border-blue-800">
+      <View className="p-3 mt-4 border rounded-lg" style={{ backgroundColor: isDark ? theme.colors['primary-dark'] + '10' : theme.colors.primary + '10', borderColor: isDark ? theme.colors['primary-dark'] + '40' : theme.colors.primary + '30' }}>
         <View className="flex-row items-flex-start">
-          <Feather name="info" size={16} color={isDark ? '#60A5FA' : '#3B82F6'} />
-          <Text className="flex-1 ml-2 text-xs text-blue-700 dark:text-blue-200">
+          <Feather name="info" size={16} color={isDark ? theme.colors['primary-dark'] : theme.colors.primary} />
+          <Text className="flex-1 ml-2 text-xs text-muted dark:text-muted-dark">
             {t(TRANSLATION_KEYS.TRIP_PLANNER.ITINERARY_INFO_FOOTER, { current: totalCharCount, remaining: MAX_CHARS - totalCharCount })}
           </Text>
         </View>

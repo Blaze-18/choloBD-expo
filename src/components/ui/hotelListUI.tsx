@@ -63,7 +63,7 @@ export function HotelListUI({
   return (
     <View className={showImages ? 'mb-6' : 'mt-4'}>
       {showImages && (
-        <Text className="text-lg font-bold font-heading text-text dark:text-text-dark mb-3">
+        <Text className="mb-3 text-lg font-bold font-heading text-text dark:text-text-dark">
           {`${hotels.length} ${t(TRANSLATION_KEYS.EXPLORE.TITLE)}`}
         </Text>
       )}
@@ -76,7 +76,7 @@ export function HotelListUI({
             <TouchableOpacity
               onPress={() => onSelectHotel(item.id)}
               activeOpacity={0.7}
-              className="mb-3 rounded-xl overflow-hidden bg-white dark:bg-surface-dark border border-border dark:border-border-dark shadow"
+              className="mb-3 overflow-hidden bg-white border shadow rounded-xl dark:bg-surface-dark border-border dark:border-border-dark"
             >
               <View className="flex-row">
                 {item.images && item.images.length > 0 && (
@@ -86,7 +86,7 @@ export function HotelListUI({
                     resizeMode="cover"
                   />
                 )}
-                <View className="flex-1 p-3 justify-between">
+                <View className="justify-between flex-1 p-3">
                   <View>
                     <Text className="text-base font-bold font-heading text-text dark:text-text-dark">
                       {item.name}
@@ -99,7 +99,7 @@ export function HotelListUI({
                     </View>
                   </View>
                   <View className="flex-row items-center justify-between mt-2">
-                    <View className="flex-row items-center bg-yellow-50 dark:bg-yellow-950 px-2 py-1 rounded">
+                    <View className="flex-row items-center px-2 py-1 rounded\" style={{ backgroundColor: isDark ? theme.colors['warning-dark'] + '20' : theme.colors.warning + '20' }}>
                       <Ionicons name="star" size={12} color={starColor} />
                       <Text className="ml-1 text-xs font-bold text-text dark:text-text-dark">
                         {item.rating}
@@ -117,7 +117,7 @@ export function HotelListUI({
           ) : (
             <TouchableOpacity
               onPress={() => onSelectHotel(item.id)}
-              className="p-4 mb-3 rounded-xl shadow bg-white dark:bg-surface-dark border border-border dark:border-border-dark active:opacity-75"
+              className="p-4 mb-3 bg-white border shadow rounded-xl dark:bg-surface-dark border-border dark:border-border-dark active:opacity-75"
             >
               <View className="flex-row items-center justify-between">
                 <View className="flex-1">

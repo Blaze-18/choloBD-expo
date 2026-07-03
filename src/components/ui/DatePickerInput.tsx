@@ -132,9 +132,7 @@ export function DatePickerInput({
           key={day}
           onPress={() => !disabled && handleDateSelect(day)}
           disabled={disabled}
-          className={`p-2 items-center justify-center rounded-lg ${
-            selected ? 'bg-blue-500' : ''
-          }`}
+          className="p-2 items-center justify-center rounded-lg"
           style={{
             opacity: disabled ? 0.3 : 1,
             backgroundColor: selected ? primaryColor : 'transparent',

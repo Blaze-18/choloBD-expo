@@ -7,6 +7,7 @@ import { useBookingLogic } from '../../../hooks/useBookingLogic';
 import { useTheme } from '../../../hooks/useTheme';
 import theme from '../../../constants/theme';
 import { HotelBookingForm } from '../../../components/forms/hotelBookingForm';
+import { PaymentStatusBadge } from '../../../components/ui/PaymentStatusBadge';
 import { useTranslation } from 'react-i18next';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
@@ -104,24 +105,14 @@ export default function BookingTrackingPage() {
         >
           <Ionicons name="chevron-back" size={24} color={isDark ? theme.colors['text-dark'] : theme.colors.text} />
         </Pressable>
-        {booking && !isEditing && (
-          <View className="flex-row gap-2">
-            {booking.status !== 'CONFIRMED' && booking.status !== 'CANCELLED' && (
-              <Pressable
-                onPress={startEdit}
-                className="px-3 py-2 rounded-lg"
-                style={{ backgroundColor: isDark ? theme.colors['primary-dark'] : theme.colors.primary }}
-              >
-                <Ionicons name="pencil" size={16} color="white" />
-              </Pressable>
-            )}
-            <Pressable
-              onPress={() => router.push(`/(tabs)/dashboard/${bookingId}/qr-generate`)}
-              className="px-3 py-2 rounded-lg bg-primary"
-            >
-              <Text className="text-sm font-semibold text-white">Generate QR</Text>
-            </Pressable>
-          </View>
+        {booking && !isEditing && booking.status !== 'CONFIRMED' && booking.status !== 'CANCELLED' && (
+          <Pressable
+            onPress={startEdit}
+            className="px-3 py-2 rounded-lg"
+            style={{ backgroundColor: isDark ? theme.colors['primary-dark'] : theme.colors.primary }}
+          >
+            <Ionicons name="pencil" size={16} color="white" />
+          </Pressable>
         )}
       </View>
       <ScrollView className="flex-1 p-6">
@@ -139,11 +130,6 @@ export default function BookingTrackingPage() {
                   guestName={booking.user?.userName || ''}
                   guestEmail={booking.user?.email || ''}
                   guestPhoneNumber={booking.user?.phone || ''}
-                  setCheckInDate={setEditCheckInDate}
-                  setCheckOutDate={setEditCheckOutDate}
-                  setGuestName={() => {}}
-                  setGuestEmail={() => {}}
-                  setGuestPhoneNumber={() => {}}
                   paymentMethod={editPaymentMethod}
                   setPaymentMethod={setEditPaymentMethod}
                   specialRequests={editSpecialRequests}
@@ -157,7 +143,12 @@ export default function BookingTrackingPage() {
             ) : (
               <View>
                 <Text className="text-2xl font-bold text-text dark:text-text-dark">Booking {booking.confirmationCode}</Text>
-                <Text className="mt-2 text-sm text-muted dark:text-muted-dark">Status: {booking.status}</Text>
+                <View className="flex-row items-center gap-2 mt-2">
+                  <Text className="text-sm text-muted dark:text-muted-dark">Status: {booking.status}</Text>
+                  {booking.paymentStatus && (
+                    <PaymentStatusBadge status={booking.paymentStatus} />
+                  )}
+                </View>
 
                 <View className="p-4 mt-6 bg-white border rounded-xl dark:bg-surface-dark border-border dark:border-border-dark">
                   <Text className="font-semibold text-text dark:text-text-dark">Hotel</Text>
@@ -196,6 +187,49 @@ export default function BookingTrackingPage() {
           </View>
         )}
       </ScrollView>
+
+      {/* Action Buttons Footer */}
+      {booking && !isEditing && (
+        <View
+          className="px-6 pt-3 pb-4 border-t border-border dark:border-border-dark"
+          style={{ backgroundColor: isDark ? theme.colors['surface-dark'] : theme.colors.surface }}
+        >
+          <View className="gap-3">
+            {/* Generate QR Button */}
+            <Pressable
+              onPress={() => router.push(`/(tabs)/dashboard/${bookingId}/qr-generate`)}
+              className="flex-row items-center justify-center py-3 rounded-lg"
+              style={{ backgroundColor: isDark ? theme.colors['primary-dark'] : theme.colors.primary }}
+            >
+              <Ionicons name="qr-code" size={18} color="white" style={{ marginRight: 8 }} />
+              <Text className="text-sm font-semibold text-white">Generate QR Code</Text>
+            </Pressable>
+
+            {/* Complete Payment Button - Only show if unpaid */}
+            {booking.paymentStatus === 'UNPAID' && (
+              <Pressable
+                onPress={() =>
+                  router.push({
+                    pathname: '/(tabs)/dashboard/payment',
+                    params: {
+                      bookingId: bookingId!,
+                      serviceType: 'HOTEL_BOOKING',
+                      totalPrice: String(booking.totalPrice ?? ''),
+                    },
+                  })
+                }
+                className="flex-row items-center justify-center py-3 rounded-lg"
+                style={{ backgroundColor: isDark ? theme.colors['warning-dark'] : theme.colors.warning }}
+              >
+                <Ionicons name="card-outline" size={18} color="white" style={{ marginRight: 8 }} />
+                <Text className="text-sm font-semibold text-white">
+                  {t(TRANSLATION_KEYS.PAYMENT.COMPLETE_PAYMENT)}
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

@@ -9,7 +9,7 @@ export interface CreateBookingData {
   guestName: string;
   guestEmail: string;
   guestPhoneNumber: string;
-  paymentMethod?: string;
+  paymentMethod?: string; // Only used in edit mode; not sent for new bookings
   specialRequests?: string;
 }
 

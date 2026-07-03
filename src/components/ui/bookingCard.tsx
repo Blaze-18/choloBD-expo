@@ -131,16 +131,16 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
 
           {/* Check-in and check-out dates */}
           <View className="flex-row justify-between gap-3 mb-3">
-            <View className="flex-1 p-3 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
-              <Text className="mb-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
+            <View className="flex-1 p-3 border border-border rounded-lg bg-surface-2 dark:bg-surface-2-dark dark:border-border-dark">
+              <Text className="mb-1 text-xs font-semibold text-muted dark:text-muted-dark">
                 {t(TRANSLATION_KEYS.BOOKING.CHECK_IN)}
               </Text>
               <Text className="text-base font-bold text-text dark:text-text-dark">
                 {formatDate(booking.checkInDate)}
               </Text>
             </View>
-            <View className="flex-1 p-3 border border-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800">
-              <Text className="mb-1 text-xs font-semibold text-purple-600 dark:text-purple-300">
+            <View className="flex-1 p-3 border border-border rounded-lg bg-surface-2 dark:bg-surface-2-dark dark:border-border-dark">
+              <Text className="mb-1 text-xs font-semibold text-muted dark:text-muted-dark">
                 {t(TRANSLATION_KEYS.BOOKING.CHECK_OUT)}
               </Text>
               <Text className="text-base font-bold text-text dark:text-text-dark">
@@ -185,12 +185,12 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
               </Text>
             </View>
             {booking.roomDetails.map((room: any, idx: number) => (
-              <View key={idx} className="p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <View key={idx} className="p-3 mb-2 rounded-lg bg-surface-2 dark:bg-surface-2-dark border border-border dark:border-border-dark">
                 <View className="flex-row items-center justify-between">
                   <Text className="text-base font-semibold text-text dark:text-text-dark">
                     {t(TRANSLATION_KEYS.BOOKING.ROOM_NUMBER)} {room.hotelRoom?.roomNumber || '?'}
                   </Text>
-                  <Text className="text-base font-bold text-green-600 dark:text-green-400">
+                  <Text className="text-base font-bold text-success dark:text-success-dark">
                     ₹{room.pricePerNight}{t(TRANSLATION_KEYS.BOOKING.PRICE_PER_NIGHT)}
                   </Text>
                 </View>
