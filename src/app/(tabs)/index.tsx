@@ -3,9 +3,11 @@ import { View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
 import { AppDispatch, RootState } from '../../store/store';
 import { logoutUser } from '../../store/slices/authSlice';
+import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 import {
   HomeHeader,
   HeroBackground,
@@ -20,6 +22,7 @@ export default function HomePage() {
   const router = useRouter();
   const auth = useSelector((s: RootState) => s.auth);
   const { isDark } = useTheme();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -86,6 +89,15 @@ export default function HomePage() {
 
         {/* 3. Explore BD Banner */}
         <ExploreBDBanner />
+
+        {/* 3b. Community Banner */}
+        <ExploreBDBanner
+          href="/(tabs)/community"
+          imageUri="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=900&h=400&fit=crop"
+          label={t(TRANSLATION_KEYS.HOME.COMMUNITY_BANNER.LABEL)}
+          title={t(TRANSLATION_KEYS.HOME.COMMUNITY_BANNER.TITLE)}
+          subtitle={t(TRANSLATION_KEYS.HOME.COMMUNITY_BANNER.SUBTITLE)}
+        />
 
         {/* 4. Tour Packages */}
         <TourPackagesSection />

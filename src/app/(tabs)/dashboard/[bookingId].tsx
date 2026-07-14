@@ -128,8 +128,11 @@ export default function BookingTrackingPage() {
                   checkInDate={editCheckInDate}
                   checkOutDate={editCheckOutDate}
                   guestName={booking.user?.userName || ''}
+                  setGuestName={() => {}}
                   guestEmail={booking.user?.email || ''}
+                  setGuestEmail={() => {}}
                   guestPhoneNumber={booking.user?.phone || ''}
+                  setGuestPhoneNumber={() => {}}
                   paymentMethod={editPaymentMethod}
                   setPaymentMethod={setEditPaymentMethod}
                   specialRequests={editSpecialRequests}

@@ -97,6 +97,12 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="community"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

@@ -176,7 +176,7 @@ export default function HotelInfoPage() {
                     <Text className="mb-1 text-xs text-muted dark:text-muted-dark">Type</Text>
                     <Text className="text-lg font-bold text-text dark:text-text-dark">{hotel.type ?? 'N/A'}</Text>
                   </View>
-                  <Ionicons name="building" size={32} color={primaryColor} />
+                  <Ionicons name="business-outline" size={32} color={primaryColor} />
                 </View>
               </View>
             </View>
@@ -197,7 +197,7 @@ export default function HotelInfoPage() {
             {/* Room Statistics */}
             <View className="mb-6">
               <View className="flex-row items-center mb-3">
-                <Ionicons name="door-open" size={20} color={primaryColor} />
+                <Ionicons name="enter-outline" size={20} color={primaryColor} />
                 <Text className="ml-2 text-lg font-semibold text-text dark:text-text-dark">Room Statistics</Text>
               </View>
 
@@ -332,7 +332,7 @@ export default function HotelInfoPage() {
                 </View>
               ) : (
                 <View className="items-center p-6 bg-white border dark:bg-surface-dark rounded-xl border-border dark:border-border-dark">
-                  <Ionicons name="inbox" size={32} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
+                  <Ionicons name="archive-outline" size={32} color={isDark ? theme.colors['muted-dark'] : theme.colors.muted} />
                   <Text className="mt-2 text-sm text-muted dark:text-muted-dark">No room types available</Text>
                 </View>
               )}

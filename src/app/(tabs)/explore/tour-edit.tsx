@@ -57,9 +57,8 @@ export default function TourEditPage() {
     }
 
     try {
-      await updateTour(tourId, data, () => {
-        router.back();
-      });
+      await updateTour(tourId, data);
+      router.back();
     } catch (error) {
       if (__DEV__) console.error('[TourEditPage] Error updating tour:', error);
       // Error is stored in Redux state and shown via ErrorAlert

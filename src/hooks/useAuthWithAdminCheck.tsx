@@ -11,7 +11,11 @@ import { AuthUser, UserRole } from '../types/auth';
  * Check if user has admin role (includes SERVICE_ADMIN)
  */
 function isMasterAdminUser(user: AuthUser | null): boolean {
-  const isAdmin = user?.role === 'masterAdmin' || user?.role === 'admin' || user?.role === 'SERVICE_ADMIN';
+  const isAdmin =
+    user?.role === 'MASTER_ADMIN' ||
+    user?.role === 'masterAdmin' ||
+    user?.role === 'admin' ||
+    user?.role === 'SERVICE_ADMIN';
   return isAdmin;
 }
 
@@ -19,7 +23,7 @@ function isMasterAdminUser(user: AuthUser | null): boolean {
  * Check if user has master admin role specifically
  */
 function isMasterAdmin(user: AuthUser | null): boolean {
-  return user?.role === 'masterAdmin';
+  return user?.role === 'MASTER_ADMIN' || user?.role === 'masterAdmin';
 }
 
 export interface AuthWithAdminStatus {

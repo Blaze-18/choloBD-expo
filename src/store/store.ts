@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import tourBuilderReducer from './slices/tourBuilderSlice';
 import tripPlannerReducer from './slices/tripPlannerSlice';
 import packageBookingReducer from './slices/packageBookingSlice';
+import communityReducer from './slices/communitySlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     tourBuilder: tourBuilderReducer,
     tripPlanner: tripPlannerReducer,
     packageBooking: packageBookingReducer,
+    community: communityReducer,
   },
 });
 

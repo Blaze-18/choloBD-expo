@@ -11,13 +11,27 @@ import { TRANSLATION_KEYS } from '../../constants/translationKeys';
 // Sajek Valley / Bandarban-style green hill landscape
 const BANNER_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=400&fit=crop';
 
-export default function ExploreBDBanner() {
+interface ExploreBDBannerProps {
+  href?: string;
+  imageUri?: string;
+  label?: string;
+  title?: string;
+  subtitle?: string;
+}
+
+export default function ExploreBDBanner({
+  href = '/(tabs)/explore',
+  imageUri = BANNER_IMAGE,
+  label,
+  title,
+  subtitle,
+}: ExploreBDBannerProps) {
   const router = useRouter();
   const { isDark } = useTheme();
   const { t } = useTranslation();
 
   const handlePress = () => {
-    router.push('/(tabs)/explore');
+    router.push(href);
   };
 
   return (
@@ -29,7 +43,7 @@ export default function ExploreBDBanner() {
     >
       {/* Background Image */}
       <Image
-        source={{ uri: BANNER_IMAGE }}
+        source={{ uri: imageUri }}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
         resizeMode="cover"
       />
@@ -56,7 +70,7 @@ export default function ExploreBDBanner() {
               marginBottom: 6,
             }}
           >
-            {t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.LABEL)}
+            {label || t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.LABEL)}
           </Text>
           <Text
             style={{
@@ -67,7 +81,7 @@ export default function ExploreBDBanner() {
               marginBottom: 8,
             }}
           >
-            {t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.TITLE)}
+            {title || t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.TITLE)}
           </Text>
           <Text
             style={{
@@ -77,7 +91,7 @@ export default function ExploreBDBanner() {
               letterSpacing: 0.5,
             }}
           >
-            {t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.SUBTITLE)}
+            {subtitle || t(TRANSLATION_KEYS.HOME.EXPLORE_BANNER.SUBTITLE)}
           </Text>
         </View>
 

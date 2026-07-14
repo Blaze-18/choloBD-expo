@@ -23,7 +23,7 @@ export default function PackageBookingsPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchTourPlansByAdmin());
+    dispatch(fetchTourPlansByAdmin({}));
   }, [dispatch]);
 
   // Fetch stats for each package when packages are loaded
@@ -38,7 +38,7 @@ export default function PackageBookingsPage() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await dispatch(fetchTourPlansByAdmin());
+    await dispatch(fetchTourPlansByAdmin({}));
     setRefreshing(false);
   };
 

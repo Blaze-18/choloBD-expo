@@ -126,6 +126,11 @@
       "title": "Explore BD",
       "subtitle": "Mountains \u00b7 Beaches \u00b7 Heritage"
     },
+    "communityBanner": {
+      "label": "Community",
+      "title": "Travel together",
+      "subtitle": "Stories, reactions, and moments from the road"
+    },
     "nearbyLocations": "Nearby Locations",
     "nearbyLocationsDesc": "Explore what's around you",
     "exploreAll": "Explore All",
@@ -159,6 +164,40 @@
       "localGuides": "Local Guides",
       "localGuidesDesc": "Tips from pros"
     }
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Stories, reactions, and updates from fellow travelers",
+    "newPost": "New post",
+    "joinTitle": "Join the conversation",
+    "joinDesc": "Sign in to share your trip moments, react to posts, and manage tags.",
+    "signIn": "Sign in",
+    "emptyFeed": "No posts available yet",
+    "loginRequired": "Login required",
+    "createTitle": "Create post",
+    "createSubtitle": "Add a caption and attach images from your device or by pasting public image URLs.",
+    "captionLabel": "Caption",
+    "captionPlaceholder": "Write something travellers would actually want to read...",
+    "imageUrlsLabel": "Image URLs",
+    "imageUrlPlaceholder": "Paste a public image URL",
+    "uploadHint": "You can either paste image URLs or pick photos from your device and upload them here.",
+    "uploadDisabledHint": "Device upload is not configured for this build, so paste public image URLs instead.",
+    "pickFromDevice": "Choose from device",
+    "addImage": "Add image",
+    "saving": "Saving...",
+    "draftCreated": "Draft created. You can review it from the admin flow if needed.",
+    "postTitle": "Post",
+    "active": "Active",
+    "draft": "Draft",
+    "deactivate": "Deactivate",
+    "morePhotos": "More photos",
+    "pendingTitle": "Pending posts",
+    "accessDenied": "Access denied",
+    "noPending": "No pending posts",
+    "activate": "Activate",
+    "tagPending": "Awaiting reply",
+    "tagAccepted": "Tagged",
+    "tagDeclined": "Not joined"
   },
   "explore": {
     "title": "Explore Hotels",

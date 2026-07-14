@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform
 import { Ionicons } from '@expo/vector-icons';
 import { CameraQRScanner } from './CameraQRScanner';
 import { useTheme } from '../../hooks/useTheme';
+import theme from '../../constants/theme';
 
 interface QRCodeScannerProps {
   onScan: (qrToken: string) => void;

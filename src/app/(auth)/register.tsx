@@ -166,7 +166,7 @@ export default function Register() {
             {/* OAuth Error Display */}
             {(googleError || facebookError) && (
               <View className="flex-row items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 mb-4">
-                <Ionicons name="alert-circle" size={20} color={theme.colors.danger} />
+                <Ionicons name="alert-circle" size={20} color={theme.colors.error} />
                 <Text className="flex-1 text-sm text-danger font-medium">
                   {googleError || facebookError}
                 </Text>
