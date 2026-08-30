@@ -61,11 +61,16 @@ export type HotelOptionType = 'LUXURY' | 'BUDGET' | 'BOUTIQUE' | 'RESORT' | 'HOS
  */
 export interface TourDaySegmentInput {
   dayNumber: number;
-  tourSpotId: string;
+  segmentOrder?: number;
+  shortDescription?: string;
+  tourSpotId?: string;
   activitySpotId?: string;
-  transportOption: TransportServiceType;
-  transportQuality?: TransportQualityType; // Optional quality level
-  hotelOption: HotelOptionType;
+  transportOption?: TransportServiceType;
+  transportQuality?: TransportQualityType;
+  hotelOption?: HotelOptionType;
+  hotelId?: string;
+  transportId?: string;
+  notes?: string;
 }
 
 /**
@@ -103,11 +108,50 @@ export interface UpdateTourPlanData {
   tourType?: TourType;
   duration?: number;
   maxGroupSize?: number;
+  locationId?: string;
   totalBudget?: number;
   rating?: number;
   isActive?: boolean;
   isPopular?: boolean;
+  imageURLs?: string[];
   daySegments?: TourDaySegmentInput[];
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+  estimatedBudget?: number;
+  actualCost?: number;
+  participantCount?: number;
+  preferredHotelType?: HotelOptionType;
+  preferredTransport?: TransportServiceType;
+  generalNotes?: string[];
+  isPublic?: boolean;
+}
+
+export interface CreatePersonalTourPlanData {
+  packageName?: string;
+  shortDescription?: string;
+  tourType?: TourType;
+  locationId?: string;
+  startDate: string;
+  endDate: string;
+  estimatedBudget?: number;
+  participantCount?: number;
+  preferredHotelType?: HotelOptionType;
+  preferredTransport?: TransportServiceType;
+  basedOnPackageId?: string;
+  generalNotes?: string[];
+  totalBudget?: number;
+  imageURLs?: string[];
+  daySegments?: TourDaySegmentInput[];
+}
+
+export type UpdatePersonalTourPlanData = UpdateTourPlanData;
+
+export interface PersonalTourPlanFilters {
+  status?: string;
+  locationId?: string;
+  page?: number;
+  limit?: number;
 }
 
 /**
@@ -128,24 +172,40 @@ export interface TourPackage {
   rating?: number;
   isActive: boolean;
   isPopular: boolean;
+  kind?: string;
+  ownerUserId?: string;
+  basedOnPackageId?: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  status?: string | null;
+  estimatedBudget?: number | null;
+  actualCost?: number | null;
+  participantCount?: number | null;
+  images?: Array<{ id: string; url: string; altText?: string | null; order?: number | null }>;
   daySegments: TourDaySegment[];
   createdAt?: string;
   updatedAt?: string;
   _count?: {
-    userTripPlans: number;
+    userTripPlans?: number;
+    daySegments?: number;
+    packageBookings?: number;
   };
 }
 
 /**
- * Filters for listing tour plans
+ * Filters for listing catalog tour plans
  */
 export interface TourFilters {
   locationId?: string;
+  divisionId?: string;
+  tourSpotId?: string;
   tourType?: TourType;
   isActive?: boolean;
   isPopular?: boolean;
   minBudget?: number;
   maxBudget?: number;
+  page?: number;
+  limit?: number;
 }
 
 /**

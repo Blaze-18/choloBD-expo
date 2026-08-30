@@ -3,6 +3,7 @@ export type PaymentStatus = 'UNPAID' | 'PAID';
 export type ServiceType =
   | 'HOTEL_BOOKING'
   | 'PACKAGE_BOOKING'
+  | 'GUIDE_SERVICE'
   | 'WALLET_TOP_UP'
   | 'TRIP_PACKAGE';
 

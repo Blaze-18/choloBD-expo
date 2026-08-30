@@ -61,6 +61,21 @@ export function ServiceAdminDashboard({
               onPress={() => router.push('/(tabs)/dashboard/service-admin/current-bookings')}
             />
             <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.HOTEL_STATS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.HOTEL_STATS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/hotel-stats')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.HOTEL_EARNINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.HOTEL_EARNINGS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/hotel-earnings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.ROOM_TYPES)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.ROOM_TYPES_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/room-types')}
+            />
+            <AdminCard
               title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.QR_SCANNER)}
               subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.QR_SCANNER_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/qr-scanner')}
@@ -74,6 +89,21 @@ export function ServiceAdminDashboard({
               title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.YOUR_BOOKINGS_ADMIN)}
               subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.YOUR_BOOKINGS_ADMIN_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/service-admin/your-bookings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.GUIDE_PROFILE)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.GUIDE_PROFILE_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/guide-profile')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.GUIDE_REQUESTS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.GUIDE_REQUESTS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/guide-requests')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.TRANSPORT_MANAGEMENT)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.ADMIN_CARDS.TRANSPORT_MANAGEMENT_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/service-admin/transport-admin')}
             />
           </View>
         </View>

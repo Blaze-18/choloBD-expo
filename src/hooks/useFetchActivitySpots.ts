@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
-import { getActivitySpots, ActivitySpot } from '../services/api/activitySpots';
+import { getActivitySpots, ActivitySpot, ActivitySpotFilters } from '../services/api/activitySpots';
 
-export type { ActivitySpot };
+export type { ActivitySpot, ActivitySpotFilters };
 
-export function useFetchActivitySpots(locationId: string | undefined) {
+export function useFetchActivitySpots(locationIdOrFilters?: string | ActivitySpotFilters) {
   const [spots, setSpots] = useState<ActivitySpot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const filterKey =
+    typeof locationIdOrFilters === 'string'
+      ? locationIdOrFilters
+      : JSON.stringify(locationIdOrFilters ?? {});
 
   useEffect(() => {
-    if (!locationId) {
+    if (!locationIdOrFilters || (typeof locationIdOrFilters === 'string' && !locationIdOrFilters)) {
       setSpots([]);
       return;
     }
@@ -20,7 +24,7 @@ export function useFetchActivitySpots(locationId: string | undefined) {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await getActivitySpots(locationId);
+        const data = await getActivitySpots(locationIdOrFilters);
         if (active) setSpots(data);
       } catch (err: any) {
         if (__DEV__) console.error('[useFetchActivitySpots] error:', err?.message);
@@ -38,7 +42,7 @@ export function useFetchActivitySpots(locationId: string | undefined) {
     return () => {
       active = false;
     };
-  }, [locationId]);
+  }, [filterKey]);
 
   return { spots, isLoading, error };
 }

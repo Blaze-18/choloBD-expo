@@ -3,11 +3,14 @@ import { View, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLanguage } from '../../providers/LanguageProvider';
 import { useTheme } from '../../hooks/useTheme';
 import { UserInfoUI } from '../ui/userInfoUI';
 import { AdminCard } from '../ui/adminCard';
+import { UserStatsOverview } from '../ui/UserStatsOverview';
 import { TRANSLATION_KEYS } from '../../constants/translationKeys';
+import { RootState } from '../../store/store';
 
 interface UserDashboardProps {
   userName?: string;
@@ -15,10 +18,7 @@ interface UserDashboardProps {
   imageUrl?: string;
   role?: string;
   userStatus?: string;
-  bookings: any[];
   onLogout: () => void;
-  onRefresh: () => void;
-  onPressBooking: (bookingId: string) => void;
 }
 
 export function UserDashboard({
@@ -27,11 +27,9 @@ export function UserDashboard({
   imageUrl,
   role,
   userStatus,
-  bookings,
   onLogout,
-  onRefresh,
-  onPressBooking,
 }: UserDashboardProps) {
+  const auth = useSelector((s: RootState) => s.auth);
   const router = useRouter();
   const { isDark } = useTheme();
   const { t } = useTranslation();
@@ -55,7 +53,11 @@ export function UserDashboard({
             onLogout={onLogout}
           />
 
-          <View className="mt-6 space-y-3">
+          <View className="mt-6">
+            <UserStatsOverview userId={auth.user?.id} />
+          </View>
+
+          <View className="mt-4 space-y-3">
             <AdminCard
               title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_BOOKINGS)}
               subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_BOOKINGS_DESC)}
@@ -65,6 +67,21 @@ export function UserDashboard({
               title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_PACKAGE_BOOKINGS)}
               subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_PACKAGE_BOOKINGS_DESC)}
               onPress={() => router.push('/(tabs)/dashboard/package-bookings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_GUIDE_BOOKINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_GUIDE_BOOKINGS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/guide-bookings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_ACTIVITY_BOOKINGS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_ACTIVITY_BOOKINGS_DESC)}
+              onPress={() => router.push('/(tabs)/dashboard/activity-bookings')}
+            />
+            <AdminCard
+              title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_CUSTOM_TOURS)}
+              subtitle={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.MY_CUSTOM_TOURS_DESC)}
+              onPress={() => router.push('/(tabs)/explore/my-tours')}
             />
             <AdminCard
               title={t(TRANSLATION_KEYS.DASHBOARD.USER_CARDS.EXPLORE_HOTELS)}

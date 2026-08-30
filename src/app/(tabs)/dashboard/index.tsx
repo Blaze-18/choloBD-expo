@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useLanguage } from '../../../providers/LanguageProvider';
 import { ServiceAdminDashboard } from '../../../components/interface/ServiceAdminDashboard';
 import { UserDashboard } from '../../../components/interface/UserDashboard';
+import { EmployeeDashboard } from '../../../components/interface/EmployeeDashboard';
 import { useDashboardLogic } from '../../../hooks/useDashboardLogic';
 
 export default function DashboardPage() {
@@ -27,6 +28,20 @@ export default function DashboardPage() {
   if (auth.user?.role === 'SERVICE_ADMIN') {
     return (
       <ServiceAdminDashboard
+        userName={auth.user?.userName}
+        email={auth.user?.email}
+        imageUrl={auth.user?.imageUrl}
+        role={auth.user?.role}
+        userStatus={auth.user?.userStatus}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // Render employee dashboard for employees
+  if (auth.user?.role === 'EMPLOYEE') {
+    return (
+      <EmployeeDashboard
         userName={auth.user?.userName}
         email={auth.user?.email}
         imageUrl={auth.user?.imageUrl}

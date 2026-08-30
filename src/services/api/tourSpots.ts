@@ -4,6 +4,7 @@
  */
 
 import { getApiInstance } from './axiosClient';
+import { unwrapListData } from '../../utils/paginatedList';
 
 export interface TourSpot {
   id: string;
@@ -19,7 +20,12 @@ export interface TourSpot {
 export interface TourSpotFilters {
   isPopular?: boolean;
   locationId?: string;
+  divisionId?: string;
+  name?: string;
+  tourType?: string;
   minRating?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface TourSpotImage {
@@ -79,7 +85,12 @@ export async function getTourSpots(filters?: TourSpotFilters): Promise<TourSpot[
   const params: any = {};
   if (filters?.isPopular !== undefined) params.isPopular = filters.isPopular;
   if (filters?.locationId) params.locationId = filters.locationId;
+  if (filters?.divisionId) params.divisionId = filters.divisionId;
+  if (filters?.name) params.name = filters.name;
+  if (filters?.tourType) params.tourType = filters.tourType;
   if (filters?.minRating !== undefined) params.minRating = filters.minRating;
+  if (filters?.page !== undefined) params.page = filters.page;
+  if (filters?.limit !== undefined) params.limit = filters.limit;
 
   console.log('[getTourSpots] 🔍 Request details:', {
     endpoint: '/api/tour-spots',
@@ -88,7 +99,7 @@ export async function getTourSpots(filters?: TourSpotFilters): Promise<TourSpot[
   });
 
   const response = await api.get('/api/tour-spots', { params });
-  const data = response.data.data || [];
+  const data = unwrapListData<any>(response.data.data, filters?.page, filters?.limit).results;
   
   console.log('[getTourSpots] 📦 Response received:', {
     status: response.status,

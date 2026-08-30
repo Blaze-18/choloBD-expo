@@ -52,11 +52,10 @@ export default function QuickActionGrid({ onNavigate }: QuickActionGridProps) {
         route: '/(tabs)/explore/tour-spots-list?fromHome=true',
       },
       {
-        id: 'transport',
-        translationKey: TRANSLATION_KEYS.HOME.QUICK_ACTIONS.TRANSPORT,
-        icon: 'truck',
-        route: null,
-        disabled: true,
+        id: 'create-tour',
+        translationKey: TRANSLATION_KEYS.HOME.QUICK_ACTIONS.CREATE_TOUR,
+        icon: 'edit',
+        route: '/(tabs)/explore/personal-tour-create',
       },
     ],
     []

@@ -29,6 +29,7 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
     () => ({
       handleBookHotel: () => router.push('/(tabs)/explore/hotel-search'),
       handleBrowseAttractions: () => router.push('/(tabs)/explore/tour-spots-list'),
+      handleBrowseGuides: () => router.push('/(tabs)/explore/guides-list'),
       handleBrowseTours: () => router.push('/(tabs)/explore/tour-list'),
       handleCreateTripPlan: () => router.push('/(tabs)/trip-planner'),
       handleCreateTours: () => router.push('/(tabs)/explore/tour-create'),
@@ -87,6 +88,15 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
             onPress={navigationHandlers.handleBrowseTours}
           />
 
+          {/* Browse Guides Card */}
+          <ExploreMainCard
+            title={t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_GUIDES)}
+            description={t(TRANSLATION_KEYS.EXPLORE.CARDS.BROWSE_GUIDES_DESC)}
+            iconName="people"
+            colorKey="primary"
+            onPress={navigationHandlers.handleBrowseGuides}
+          />
+
           {/* Admin or User Specific Section */}
           {isAdmin ? (
             <>
@@ -106,14 +116,25 @@ export function ExploreInterface({ isAdmin = false }: ExploreInterfaceProps) {
               />
             </>
           ) : (
-            /* Plan Trip Card */
-            <ExploreMainCard
-              title={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP)}
-              description={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP_DESC)}
-              iconName="compass"
-              colorKey="warning"
-              onPress={navigationHandlers.handleCreateTripPlan}
-            />
+            <>
+              {/* Create Custom Tour Card */}
+              <ExploreMainCard
+                title={t(TRANSLATION_KEYS.EXPLORE.CARDS.CREATE_CUSTOM_TOUR)}
+                description={t(TRANSLATION_KEYS.EXPLORE.CARDS.CREATE_CUSTOM_TOUR_DESC)}
+                iconName="create"
+                colorKey="success"
+                onPress={() => router.push('/(tabs)/explore/personal-tour-create')}
+              />
+              
+              {/* Plan Trip Card */}
+              <ExploreMainCard
+                title={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP)}
+                description={t(TRANSLATION_KEYS.EXPLORE.CARDS.PLAN_TRIP_DESC)}
+                iconName="compass"
+                colorKey="warning"
+                onPress={navigationHandlers.handleCreateTripPlan}
+              />
+            </>
           )}
         </View>
       </ScrollView>

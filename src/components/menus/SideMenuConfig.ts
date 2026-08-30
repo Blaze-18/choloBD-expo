@@ -44,6 +44,11 @@ export const SIDE_MENU_CONFIG: MenuSectionConfig[] = [
         labelKey: TRANSLATION_KEYS.SIDESCROLLER.PAGES_ITEMS.TOURS,
         icon: 'compass',
       },
+      {
+        id: 'my-tours',
+        labelKey: TRANSLATION_KEYS.SIDESCROLLER.PAGES_ITEMS.MY_TOURS,
+        icon: 'map',
+      },
     ],
   },
   {

@@ -1,6 +1,6 @@
 /**
  * My Tours Page
- * View all tour packages created by the service admin
+ * View all personal/custom tour packages created by the user
  */
 
 import React, { useState, useEffect } from 'react';
@@ -8,31 +8,28 @@ import { View, ScrollView, Text, ActivityIndicator, TouchableOpacity, Alert } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { AppDispatch, RootState } from '../../../store/store';
-import { fetchTourPlansByAdmin } from '../../../store/slices/tourBuilderSlice';
 import { TourListCard } from '../../../components/tourBuilder/TourListCard';
-import { useTourBuilderLogic } from '../../../hooks/useTourBuilderLogic';
+import { useFetchPersonalTourPlans } from '../../../hooks/useFetchPersonalTourPlans';
+import { usePersonalTourPlanLogic } from '../../../hooks/usePersonalTourPlanLogic';
 import { useTheme } from '../../../hooks/useTheme';
 import { theme } from '../../../constants/theme';
 import { TRANSLATION_KEYS } from '../../../constants/translationKeys';
 
 export default function MyToursPage() {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const { isDark } = useTheme();
   const { t } = useTranslation();
-  const { list, listLoading, listError } = useSelector((state: RootState) => state.tourBuilder);
-  const { deleteTour } = useTourBuilderLogic();
+  const { tourPlans, loading: listLoading, error: listError, refetch } = useFetchPersonalTourPlans();
+  const { deletePersonalTourPlan } = usePersonalTourPlanLogic();
 
   const primaryColor = isDark ? theme.colors['primary-dark'] : theme.colors.primary;
   const mutedColor = isDark ? theme.colors['muted-dark'] : theme.colors.muted;
 
   // Fetch tours when page loads
   useEffect(() => {
-    dispatch(fetchTourPlansByAdmin({}));
-  }, [dispatch]);
+    refetch();
+  }, []);
 
   const handleBack = () => {
     router.back();
@@ -43,13 +40,13 @@ export default function MyToursPage() {
   };
 
   const handleEditTour = (tourId: string) => {
-    router.push(`/(tabs)/explore/tour-edit?tourId=${tourId}`);
+    router.push(`/(tabs)/explore/personal-tour-edit?tourId=${tourId}`);
   };
 
   const handleDeleteTour = (tourId: string) => {
     Alert.alert(
       'Delete Tour',
-      'Are you sure you want to delete this tour package? This cannot be undone.',
+      'Are you sure you want to delete this custom tour package? This cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -57,8 +54,9 @@ export default function MyToursPage() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteTour(tourId);
+              await deletePersonalTourPlan(tourId);
               Alert.alert('Deleted', 'Tour package deleted successfully.');
+              refetch(); // Refresh the list
             } catch {
               Alert.alert('Error', 'Failed to delete tour. Please try again.');
             }
@@ -69,7 +67,7 @@ export default function MyToursPage() {
   };
 
   const handleCreateNew = () => {
-    router.push('/(tabs)/explore/tour-create');
+    router.push('/(tabs)/explore/personal-tour-create');
   };
 
   return (
@@ -90,10 +88,10 @@ export default function MyToursPage() {
 
         <View className="px-6 pb-4">
           <Text className="text-3xl font-bold font-heading text-text dark:text-text-dark">
-            {t(TRANSLATION_KEYS.TOUR_BUILDER.MY_TOURS_TITLE)}
+            My Custom Tours
           </Text>
           <Text className="mt-1 text-sm text-muted dark:text-muted-dark">
-            {t(TRANSLATION_KEYS.TOUR_BUILDER.MY_TOURS_SUBTITLE, { count: list?.length || 0 })}
+            {tourPlans?.length || 0} custom tour package{(tourPlans?.length || 0) !== 1 ? 's' : ''}
           </Text>
         </View>
 
@@ -120,7 +118,7 @@ export default function MyToursPage() {
         )}
 
         {/* Empty State */}
-        {!listLoading && (!list || list.length === 0) && (
+        {!listLoading && (!tourPlans || tourPlans.length === 0) && (
           <View className="px-6 py-12 items-center">
             <View
               className="w-16 h-16 rounded-full items-center justify-center mb-4"
@@ -129,10 +127,10 @@ export default function MyToursPage() {
               <Ionicons name="map" size={32} color={primaryColor} />
             </View>
             <Text className="text-lg font-bold text-text dark:text-text-dark text-center mb-2">
-              {t(TRANSLATION_KEYS.TOUR_BUILDER.NO_TOURS_TITLE)}
+              No Custom Tours Yet
             </Text>
             <Text className="text-sm text-muted dark:text-muted-dark text-center mb-6">
-              {t(TRANSLATION_KEYS.TOUR_BUILDER.NO_TOURS_DESC)}
+              Create your first personalized tour package
             </Text>
             <TouchableOpacity
               className="py-3 px-6 rounded-lg active:opacity-80"
@@ -141,16 +139,16 @@ export default function MyToursPage() {
             >
               <View className="flex-row items-center gap-2">
                 <Ionicons name="add" size={18} color="#fff" />
-                <Text className="text-white font-bold text-base">{t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_TOUR_BTN)}</Text>
+                <Text className="text-white font-bold text-base">Create Custom Tour</Text>
               </View>
             </TouchableOpacity>
           </View>
         )}
 
         {/* Tours List */}
-        {!listLoading && list && list.length > 0 && (
+        {!listLoading && tourPlans && tourPlans.length > 0 && (
           <View className="px-2 pb-6">
-            {list.map((tour) => (
+            {tourPlans.map((tour) => (
               <TourListCard
                 key={tour.id}
                 tour={tour}
@@ -164,7 +162,7 @@ export default function MyToursPage() {
         )}
 
         {/* Create Tour Button (Footer) */}
-        {!listLoading && list && list.length > 0 && (
+        {!listLoading && tourPlans && tourPlans.length > 0 && (
           <View className="px-6 pb-8">
             <TouchableOpacity
               className="py-3.5 rounded-lg flex-row items-center justify-center gap-2 active:opacity-80"
@@ -172,7 +170,7 @@ export default function MyToursPage() {
               onPress={handleCreateNew}
             >
               <Ionicons name="add-circle" size={20} color="#fff" />
-              <Text className="text-white font-bold text-base">{t(TRANSLATION_KEYS.TOUR_BUILDER.CREATE_NEW_TOUR_BTN)}</Text>
+              <Text className="text-white font-bold text-base">Create Another Tour</Text>
             </TouchableOpacity>
           </View>
         )}

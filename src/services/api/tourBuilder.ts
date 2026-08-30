@@ -9,10 +9,29 @@ import {
   TourFilters,
   CreateTourPlanData,
   UpdateTourPlanData,
+  CreatePersonalTourPlanData,
+  UpdatePersonalTourPlanData,
+  PersonalTourPlanFilters,
   TourApiResponse,
   TourApiError,
 } from '../../types/tours';
-import { AxiosError } from 'axios';
+import { unwrapListData } from '../../utils/paginatedList';
+
+function buildTourListParams(filters?: TourFilters): Record<string, string | number | boolean> {
+  const params: Record<string, string | number | boolean> = {};
+  if (!filters) return params;
+  if (filters.locationId) params.locationId = filters.locationId;
+  if (filters.divisionId) params.divisionId = filters.divisionId;
+  if (filters.tourSpotId) params.tourSpotId = filters.tourSpotId;
+  if (filters.tourType) params.tourType = filters.tourType;
+  if (filters.isActive !== undefined) params.isActive = filters.isActive;
+  if (filters.isPopular !== undefined) params.isPopular = filters.isPopular;
+  if (filters.minBudget !== undefined) params.minBudget = filters.minBudget;
+  if (filters.maxBudget !== undefined) params.maxBudget = filters.maxBudget;
+  if (filters.page !== undefined) params.page = filters.page;
+  if (filters.limit !== undefined) params.limit = filters.limit;
+  return params;
+}
 
 /**
  * Helper to map HTTP errors to typed TourApiError
@@ -68,17 +87,15 @@ export async function getTourPlansByAdmin(adminId: string = 'me', filters?: Tour
     console.log('[tourBuilder.ts] Fetching tour plans by admin:', adminId, 'filters:', filters);
     const api = getApiInstance();
 
-    const params: any = {};
-    if (filters?.locationId) params.locationId = filters.locationId;
-    if (filters?.tourType) params.tourType = filters.tourType;
-    if (filters?.isActive !== undefined) params.isActive = filters.isActive;
-    if (filters?.isPopular !== undefined) params.isPopular = filters.isPopular;
-    if (filters?.minBudget !== undefined) params.minBudget = filters.minBudget;
-    if (filters?.maxBudget !== undefined) params.maxBudget = filters.maxBudget;
+    const params = buildTourListParams(filters);
 
-    const res = await api.get<TourApiResponse<TourPackage[]>>(`/api/tour-builder/by-admin/${adminId}`, { params });
-    console.log('[tourBuilder.ts] getTourPlansByAdmin success, count:', res.data.data?.length);
-    return res.data.data || [];
+    const res = await api.get<TourApiResponse<TourPackage[] | { results?: TourPackage[] }>>(
+      `/api/tour-builder/by-admin/${adminId}`,
+      { params }
+    );
+    const list = unwrapListData<TourPackage>(res.data.data).results;
+    console.log('[tourBuilder.ts] getTourPlansByAdmin success, count:', list.length);
+    return list;
   } catch (error: any) {
     console.error('[tourBuilder.ts] getTourPlansByAdmin error:', error?.response?.status, error?.message);
     throw mapApiError(error);
@@ -94,17 +111,18 @@ export async function getTourPlans(filters?: TourFilters): Promise<TourPackage[]
     console.log('[tourBuilder.ts] Fetching tour plans with filters:', filters);
     const api = getApiInstance();
 
-    const params: any = {};
-    if (filters?.locationId) params.locationId = filters.locationId;
-    if (filters?.tourType) params.tourType = filters.tourType;
-    if (filters?.isActive !== undefined) params.isActive = filters.isActive;
-    if (filters?.isPopular !== undefined) params.isPopular = filters.isPopular;
-    if (filters?.minBudget !== undefined) params.minBudget = filters.minBudget;
-    if (filters?.maxBudget !== undefined) params.maxBudget = filters.maxBudget;
+    const params = buildTourListParams({
+      limit: 100,
+      ...filters,
+    });
 
-    const res = await api.get<TourApiResponse<TourPackage[]>>('/api/tour-builder', { params });
-    console.log('[tourBuilder.ts] getTourPlans success, count:', res.data.data?.length);
-    return res.data.data || [];
+    const res = await api.get<TourApiResponse<TourPackage[] | { results?: TourPackage[] }>>(
+      '/api/tour-builder',
+      { params }
+    );
+    const list = unwrapListData<TourPackage>(res.data.data, filters?.page, filters?.limit).results;
+    console.log('[tourBuilder.ts] getTourPlans success, count:', list.length);
+    return list;
   } catch (error: any) {
     console.error('[tourBuilder.ts] getTourPlans error:', error?.response?.status, error?.message);
     throw mapApiError(error);
@@ -191,69 +209,172 @@ export async function deleteTourPlan(tourPackageId: string): Promise<{ success: 
 }
 
 /**
- * GET /api/tour-spots (all) or /api/tour-spots/location/:locationId (by location)
+ * GET /api/tour-spots
  * Fetch list of available tour spots, optionally filtered by location
  */
 export async function getTourSpots(locationId?: string): Promise<Array<{ id: string; name: string; location: string }>> {
   try {
-    const endpoint = locationId 
-      ? `/api/tour-spots/location/${locationId}` 
-      : `/api/tour-spots`;
-    
-    console.log('[tourBuilder.ts] Fetching tour spots from:', endpoint);
+    const params: Record<string, string | number> = { limit: 100 };
+    if (locationId) params.locationId = locationId;
+
+    console.log('[tourBuilder.ts] Fetching tour spots from: /api/tour-spots', params);
     const api = getApiInstance();
-    
-    const res = await api.get<TourApiResponse<Array<any>>>(endpoint);
-    console.log('[tourBuilder.ts] getTourSpots success, count:', res.data.data?.length);
-    
-    // Transform response to expected format
-    const spots = (res.data.data || []).map((spot: any) => ({
+
+    const res = await api.get<TourApiResponse<any>>('/api/tour-spots', { params });
+    const list = unwrapListData<any>(res.data.data).results;
+    console.log('[tourBuilder.ts] getTourSpots success, count:', list.length);
+
+    const spots = list.map((spot: any) => ({
       id: spot.id,
       name: spot.name,
       location: [spot.city, spot.state, spot.country]
         .filter(Boolean)
         .join(', ') || 'Unknown Location',
     }));
-    
+
     return spots;
   } catch (error: any) {
     console.error('[tourBuilder.ts] getTourSpots error:', error?.response?.status, error?.message);
-    // Return empty array on error so UI doesn't break
     return [];
   }
 }
 
 /**
- * GET /api/activity-spots (all) or /api/activity-spots/location/:locationId (by location)
+ * GET /api/activity-spots
  * Fetch list of available activity spots, optionally filtered by location
  */
 export async function getActivitySpots(locationId?: string): Promise<Array<{ id: string; name: string; location: string }>> {
   try {
-    const endpoint = locationId 
-      ? `/api/activity-spots/location/${locationId}` 
-      : `/api/activity-spots`;
-    
-    console.log('[tourBuilder.ts] Fetching activity spots from:', endpoint);
+    const params: Record<string, string | number> = { limit: 100 };
+    if (locationId) params.locationId = locationId;
+
+    console.log('[tourBuilder.ts] Fetching activity spots from: /api/activity-spots', params);
     const api = getApiInstance();
-    
-    const res = await api.get<TourApiResponse<Array<any>>>(endpoint);
-    console.log('[tourBuilder.ts] getActivitySpots success, count:', res.data.data?.length);
-    
-    // Transform response to expected format
-    const spots = (res.data.data || []).map((spot: any) => ({
+
+    const res = await api.get<TourApiResponse<any>>('/api/activity-spots', { params });
+    const list = unwrapListData<any>(res.data.data).results;
+    console.log('[tourBuilder.ts] getActivitySpots success, count:', list.length);
+
+    const spots = list.map((spot: any) => ({
       id: spot.id,
       name: spot.name,
       location: [spot.city, spot.state, spot.country]
         .filter(Boolean)
         .join(', ') || 'Unknown Location',
     }));
-    
+
     return spots;
   } catch (error: any) {
     console.error('[tourBuilder.ts] getActivitySpots error:', error?.response?.status, error?.message);
-    // Return empty array on error so UI doesn't break
     return [];
   }
 }
 
-console.log('[tourBuilder.ts] Tour API client module loaded');
+/**
+ * GET /api/tour-builder/my
+ * Authenticated user's personal (custom) tour packages
+ */
+export async function getPersonalTourPlans(filters?: PersonalTourPlanFilters): Promise<TourPackage[]> {
+  try {
+    const api = getApiInstance();
+    const params: Record<string, string | number> = {};
+    if (filters?.status) params.status = filters.status;
+    if (filters?.locationId) params.locationId = filters.locationId;
+    if (filters?.page !== undefined) params.page = filters.page;
+    if (filters?.limit !== undefined) params.limit = filters.limit;
+
+    const res = await api.get<TourApiResponse<TourPackage[] | { results?: TourPackage[] }>>(
+      '/api/tour-builder/my',
+      { params }
+    );
+    return unwrapListData<TourPackage>(res.data.data, filters?.page, filters?.limit).results;
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] getPersonalTourPlans error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * GET /api/tour-builder/my/:tourPackageId
+ */
+export async function getPersonalTourPlan(tourPackageId: string): Promise<TourPackage> {
+  try {
+    const api = getApiInstance();
+    const res = await api.get<TourApiResponse<TourPackage>>(`/api/tour-builder/my/${tourPackageId}`);
+    return res.data.data;
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] getPersonalTourPlan error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * POST /api/tour-builder/my
+ */
+export async function createPersonalTourPlan(payload: CreatePersonalTourPlanData): Promise<TourPackage> {
+  try {
+    const api = getApiInstance();
+    const res = await api.post<TourApiResponse<TourPackage>>('/api/tour-builder/my', payload);
+    return res.data.data;
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] createPersonalTourPlan error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * PUT /api/tour-builder/my/:tourPackageId
+ */
+export async function updatePersonalTourPlan(
+  tourPackageId: string,
+  payload: UpdatePersonalTourPlanData
+): Promise<TourPackage> {
+  try {
+    const api = getApiInstance();
+    const res = await api.put<TourApiResponse<TourPackage>>(`/api/tour-builder/my/${tourPackageId}`, payload);
+    return res.data.data;
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] updatePersonalTourPlan error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * DELETE /api/tour-builder/my/:tourPackageId
+ */
+export async function deletePersonalTourPlan(tourPackageId: string): Promise<{ success: boolean }> {
+  try {
+    const api = getApiInstance();
+    await api.delete(`/api/tour-builder/my/${tourPackageId}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] deletePersonalTourPlan error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * PUT /api/tour-builder/:tourPackageId/images
+ */
+export async function deleteTourPlanImages(tourPackageId: string, imageIds: string[]): Promise<void> {
+  try {
+    const api = getApiInstance();
+    await api.put(`/api/tour-builder/${tourPackageId}/images`, { imageIds });
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] deleteTourPlanImages error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}
+
+/**
+ * PUT /api/tour-builder/my/:tourPackageId/images
+ */
+export async function deletePersonalTourPlanImages(tourPackageId: string, imageIds: string[]): Promise<void> {
+  try {
+    const api = getApiInstance();
+    await api.put(`/api/tour-builder/my/${tourPackageId}/images`, { imageIds });
+  } catch (error: any) {
+    console.error('[tourBuilder.ts] deletePersonalTourPlanImages error:', error?.response?.status, error?.message);
+    throw mapApiError(error);
+  }
+}

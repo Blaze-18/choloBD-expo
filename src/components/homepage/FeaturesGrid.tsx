@@ -69,7 +69,7 @@ export default function FeaturesGrid() {
         description: t(TRANSLATION_KEYS.HOME.FEATURES.LOCAL_GUIDES_DESC),
         icon: 'compass',
         variant: 'accent' as const,
-        route: '/explore',
+        route: '/(tabs)/explore/guides-list',
       },
     ],
     [t, currentLanguage]

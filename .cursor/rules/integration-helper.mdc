@@ -1,0 +1,325 @@
+---
+alwaysApply: true
+---
+
+# CholoBD Expo — Frontend → Mobile Integration Helper
+
+> Use this when porting or integrating a module/section from the Next.js frontend
+> (`NextJS-choloBD-frontend`) into this Expo app. Mobile is a **mobile import + restyle**
+> of the web app: same backend APIs and feature intent, different UI stack and data layer.
+>
+> Always cross-check remaining gaps in `app-integration-progress.mdc`.
+> Follow mobile conventions in `.github/copilot-instructions.md` and
+> `.github/instructions/*` — those take precedence over web patterns.
+
+---
+
+## 1. Premise
+
+| Concern | Frontend (Next.js) | Mobile (Expo) |
+|---|---|---|
+| Framework | Next.js App Router + React DOM | Expo Router + React Native |
+| HTTP | `apiFetch` + session cookies (`credentials: 'include'`) | Axios + JWT Bearer via `axiosClient` |
+| Data hooks | TanStack Query `use*RQ` inside `*Api` files | `useFetch*` / `use*Logic` in `src/hooks/` |
+| UI source of truth | `src/components/modular-components/**` | `src/components/{domain}/` + `ui/` + `interface/` |
+| Pages | Thin `src/app/**/page.tsx` shells | Thin `src/app/**/*.tsx` screens (default export) |
+| Styling | Tailwind + `theme-*` / CSS vars in `globals.css` | NativeWind `className` + `theme.ts` tokens |
+| Auth gate | Session / parallel dashboard slots | `authSlice` + `useAuthWithAdminCheck` |
+| i18n | Web i18n (if present) | **Required:** `TRANSLATION_KEYS` + `en.json` / `bn.json` |
+| Dark mode | `data-theme` CSS themes | `dark:` classes + `useTheme()` |
+
+**Rule:** Copy **behavior and API contracts** from frontend; rebuild **UI and data wiring** in mobile patterns. Do not paste web DOM/Tailwind/`use*RQ` code into RN files.
+
+---
+
+## 2. Layer mapping (where things go)
+
+### 2.1 API connectors
+
+| Frontend | Mobile |
+|---|---|
+| `src/services/api/{domain}Api.ts` | `src/services/api/{domain}.ts` |
+| Barrel `src/services/api/index.ts` (`HotelApi`, …) | **No barrel** — import the file directly |
+| Private fetcher + `useGetXRQ` / `useCreateXRQ` | Named `export async function` only; hooks live separately |
+| `apiFetch('/path')` → full `ApiResponse` | `getApiInstance().get/post(...)` → return **`res.data.data`** (unwrapped) |
+| Cookie session auth | Bearer token (interceptor already handles it) |
+
+**Conversion steps for an API file:**
+1. Open frontend `{domain}Api.ts` and list every endpoint (method + path + body/query).
+2. Create/extend `src/services/api/{domain}.ts` with matching named functions.
+3. Move request/response shapes into `src/types/{domain}.ts` (do not keep interfaces only inside the API file unless the domain already does that).
+4. Unwrap `{ status, message, data }` — callers get `data`, not the envelope.
+5. Do **not** port React Query hooks into the service file.
+6. For complex domains (tour builder, trip planner, package bookings), add a local `mapApiError` only if sibling files already use that pattern.
+
+```ts
+// Frontend pattern (do not copy as-is)
+export function useGetBookingsRQ(queryString?: string) {
+  return useQuery({ queryFn: () => getBookings(queryString), ... });
+}
+
+// Mobile pattern
+export async function getUserBookings(params?: {...}): Promise<Booking[]> {
+  const res = await getApiInstance().get('/api/bookings/hotel-rooms', { params });
+  return res.data.data;
+}
+```
+
+**Path note:** Mobile calls usually include the `/api` prefix on the path (or rely on `API_BASE_URL` that already ends before `/api` — match existing files like `locations.ts` / `tourBuilder.ts`).
+
+### 2.2 Types & validators
+
+| Frontend | Mobile |
+|---|---|
+| Types often inline in `*Api.ts` or component files | Prefer `src/types/{domain}.ts` |
+| Zod / form validation (varies) | `src/validators/{domain}.ts` when forms need client validation |
+| — | Infer form types: `type X = z.infer<typeof xSchema>` |
+
+### 2.3 Data / business logic hooks
+
+| Frontend | Mobile |
+|---|---|
+| `use*RQ` in API files | `useFetch*` for simple list/detail reads (local `useState`) |
+| Logic inside modular components or pages | `use*Logic` for multi-step flows, mutations, navigation side effects |
+| Sparse `src/hooks/state-hooks/*` | Redux slices + `use*Logic` for cross-screen CRUD |
+| React Query cache | Local state **or** Redux — never introduce React Query unless the project already adopts it |
+
+**When to use which (mobile):**
+
+| Situation | Pattern | Examples already in app |
+|---|---|---|
+| One-shot / screen-local list or detail | `useFetch*` → service | hotels, locations, tour spots |
+| Multi-screen shared CRUD / form draft | Redux slice + `use*Logic` | tourBuilder, tripPlanner, packageBooking, community |
+| Single submit action with little shared state | `use*Logic` + local state | `useBookingLogic`, `usePaymentLogic` |
+
+### 2.4 UI components
+
+| Frontend | Mobile |
+|---|---|
+| `src/components/modular-components/{Feature}Module.tsx` | Feature folder: `src/components/{feature}/` |
+| `modular-components/dashboard/user/*Section.tsx` | Dashboard screens + `interface/UserDashboard` cards/sections |
+| `modular-components/dashboard/service-admin/...` | `src/app/(tabs)/dashboard/service-admin/*` + components |
+| Shared atoms (buttons, inputs) | `src/components/ui/` |
+| Role shell composition | `src/components/interface/UserDashboard.tsx` / `ServiceAdminDashboard.tsx` |
+
+**What to port from UI:**
+- User flows, fields, empty/error states, filters, status rules
+- Which API fields are displayed / edited
+
+**What not to port literally:**
+- `div` / `span` / CSS modules / `theme-*` web classes
+- Parallel-route dashboard slot files (`@user`, `@service_admin`)
+- Hash-tab web dashboard chrome — mobile uses Stack screens + cards/navigation
+
+### 2.5 Pages / routes
+
+| Frontend route area | Mobile route area |
+|---|---|
+| `src/app/(info)/hotels`, tour-spots, … | `(tabs)/explore/` (+ root detail screens) |
+| `src/app/booking/*` | Explore booking screens + tracking/dashboard booking detail |
+| `src/app/(tour_builder)/*` | Explore tour-* screens (+ optional `(tour-builder)` group) |
+| `src/app/community/*` | `(tabs)/community/` |
+| `src/app/(shop)/wallet`, payment | Payments via hooks/screens; wallet often stub — check progress file |
+| `src/app/dashboard/` + `@user` / `@service_admin` / `@master_admin` / `@employee` | `(tabs)/dashboard/` with role switch in `index.tsx` |
+| `src/app/(auth)/*` | `(auth)/login`, `register` |
+
+**Page conversion rule:**
+- Frontend `page.tsx` is a thin shell → find the **modular component** it mounts; that is the real source.
+- Mobile route file stays thin: call hook(s), render feature components, `router.push` only.
+
+```tsx
+// Mobile screen shape (default export only in src/app/**)
+export default function SomeScreen() {
+  const { items, loading, handlers } = useSomeLogic();
+  return <SomeFeatureList items={items} loading={loading} {...handlers} />;
+}
+```
+
+### 2.6 State (Redux)
+
+| Frontend | Mobile |
+|---|---|
+| Auth + some global Redux | `authSlice` always |
+| React Query for server cache | Slice only when domain is multi-screen CRUD |
+| — | Register new slices in `src/store/store.ts` |
+
+Do **not** create a slice for every ported module. Prefer `useFetch*` first.
+
+### 2.7 Styling conversion
+
+| Frontend | Mobile |
+|---|---|
+| `theme-section`, `theme-btn-teal`, CSS vars | NativeWind tokens (`bg-primary`, `text-text`, …) + `dark:` |
+| Multi brand themes (`forest` / `dusk` / …) | Light/dark via `useTheme()` — do not port all web themes |
+| Responsive `md:` / `lg:` grids | Flex column, `FlatList`, mobile spacing from `theme.spacing` |
+| Hover states | `Pressable` / `active:opacity-75` |
+
+Never hardcode hex — use `tailwind.config.js` / `src/constants/theme.ts`.
+Every color class needs a `dark:` counterpart (or `isDark` + token).
+
+### 2.8 i18n (mobile-only requirement)
+
+Web may hardcode English. Mobile must not.
+1. Add keys to `src/constants/translationKeys.ts`
+2. Add strings to `src/locales/en.json` and `src/locales/bn.json`
+3. Use `useTranslation()` + `TRANSLATION_KEYS` in UI
+
+---
+
+## 3. Domain → file checklist (new module)
+
+When integrating a frontend domain, create/update in this order:
+
+1. **Types** — `src/types/{domain}.ts`
+2. **API** — `src/services/api/{domain}.ts` (mirror frontend endpoints)
+3. **Validators** (if forms) — `src/validators/{domain}.ts`
+4. **State** (only if needed) — `src/store/slices/{domain}Slice.ts` + register in `store.ts`
+5. **Hooks** — `useFetch*` and/or `use*Logic` in `src/hooks/`
+6. **Components** — `src/components/{domain}/` (+ `index.ts` barrel) and/or `ui/` primitives
+7. **Screens** — `src/app/(tabs)/...` or root Stack screens + `_layout.tsx` if new stack
+8. **i18n** — keys + `en` / `bn`
+9. **Navigation wiring** — tab/stack links, dashboard cards, explore entries
+10. **Progress doc** — update `app-integration-progress.mdc` status for that domain
+
+**Golden-path reference (already integrated):** Tour Builder + package bookings  
+`types/tours.ts` + `packageBookings.ts` → `services/api/tourBuilder.ts` + `packageBookings.ts` → slices → `useTourBuilderLogic` / `usePackageBookingLogic` → `components/tourBuilder/*` → explore + dashboard + tracking screens.
+
+**Simpler-path reference:** Hotels / locations — API + `useFetch*` + explore UI, no domain slice.
+
+---
+
+## 4. Workflow: port one module/section
+
+### Step A — Scope from frontend (read-only)
+
+1. Identify the user-facing entry: which `src/app/**/page.tsx`?
+2. Open the **modular component(s)** that page renders (not only the page shell).
+3. List every `*Api.use*RQ` / mutation used (endpoints + payloads).
+4. Note role gates (`SERVICE_ADMIN`, master-admin, service type switches).
+5. Note status rules (e.g. cannot edit `CONFIRMED` bookings).
+6. Check `app-integration-progress.mdc` — skip work that is already Done; prefer listed priorities.
+
+### Step B — API parity on mobile
+
+1. Confirm backend route exists and matches frontend paths.
+2. Implement/extend mobile service functions; keep names aligned with existing mobile style (`fetchX`, `getX`, `createX`).
+3. Manually verify unwrap shape against a real response if unsure (`data` vs nested `results`).
+
+### Step C — Hook layer
+
+1. Read-only list/detail → `useFetch*` with `loading` / error (`Alert` or `error` string — match sibling hooks).
+2. Mutations + shared lists → slice thunks + `use*Logic`.
+3. Never call `getApiInstance()` from a screen; always service → hook → screen.
+
+### Step D — UI rebuild (not copy-paste)
+
+1. Rebuild layout with RN primitives (`View`, `Text`, `Pressable`, `FlatList`, `Modal`).
+2. Reuse `src/components/ui/*` before inventing new primitives.
+3. Match mobile visual language (existing cards, spacing, elevation), not web card chrome.
+4. Support light/dark + EN/BN from the first PR of that screen.
+
+### Step E — Route & navigation
+
+1. Add kebab-case screen files under the correct group.
+2. Register in that group’s `_layout.tsx` if using explicit Stack screens.
+3. Wire entry points (dashboard `AdminCard`, explore list item, tracking tab, etc.).
+4. Use `router.push` / `href` patterns already used in that group.
+
+### Step F — Role & safety
+
+1. Admin-only UI → `useAuthWithAdminCheck()` (or existing dashboard role switch).
+2. Do not trust client-only role checks for security; still call protected APIs.
+3. No secrets/URLs hardcoded — `API_BASE_URL` from `@/constants/api`.
+
+### Step G — Done criteria
+
+- [ ] Endpoints covered for the scoped UX (not necessarily entire frontend module)
+- [ ] Thin screens; logic in hooks
+- [ ] Types in `src/types/`
+- [ ] Empty + error states handled
+- [ ] i18n EN + BN
+- [ ] Dark mode
+- [ ] No React Query / DOM leftovers
+- [ ] `app-integration-progress.mdc` updated
+
+---
+
+## 5. Dashboard-specific mapping
+
+Frontend dashboard uses **parallel routes** and large role modules. Mobile uses **one tab** and Stack screens.
+
+| Frontend | Mobile |
+|---|---|
+| `app/dashboard/@user/page.tsx` + `UserActivityHistoryModule` | `dashboard/index.tsx` → `UserDashboard` + screens (`user-bookings`, `package-bookings`, …) |
+| `BookedHotelsSection` / history sections | Dedicated stack screens + cards (`BookingCard`, etc.) |
+| `@service_admin` + `HotelServiceAdminModule` tabs | `dashboard/service-admin/*` screens |
+| `@master_admin/*ManagerModule` | Not started — new screens under dashboard (or gated section) when prioritized |
+| `@employee/*` | Not started |
+| Hash/tab sections inside one module | Prefer **separate routes** over giant tabbed web replicas |
+
+**Porting a dashboard section:**
+1. Port API + types first.
+2. Add a stack screen under `dashboard/` (or `service-admin/`).
+3. Add a navigation card/row on `UserDashboard` / `ServiceAdminDashboard`.
+4. Extract list/detail components into `components/` — keep screens thin.
+5. Reuse `useDashboardLogic` / `useServiceAdminLogic` when the section is booking/hotel admin adjacent; otherwise add a focused hook.
+
+---
+
+## 6. Frontend API → mobile file quick map
+
+| Frontend `*Api` | Mobile service file | Status hint (see progress doc) |
+|---|---|---|
+| `authApi` | `oauth.ts` + `authSlice` | Done |
+| `userApi` | `users.ts` | Partial |
+| `locationApi` | `locations.ts` | Done |
+| `hotelApi` / `hotelRoomApi` | `hotels.ts`, `hotelDetail.ts`, `users.getHotelRooms` | Done / partial |
+| `hotelBookingApi` | `bookings.ts`, `hotelBookings.ts` | Done |
+| `tourSpotApi` | `tourSpots.ts` | Done (read) |
+| `activitySpotApi` | `activitySpots.ts` | Partial |
+| `tourBuilderApi` | `tourBuilder.ts` + `packageBookings.ts` | Done |
+| `communityApi` | `community.ts`, `communityMedia.ts` | Done |
+| `paymentApi` | `payments.ts` | Done |
+| `guideApi` / `guideBookingApi` | — | Missing |
+| `activitySpotBookingApi` | — | Missing |
+| `reviewApi` | — | Missing (display-only today) |
+| `bookmarkApi` | — | Missing |
+| `notificationApi` | — | Missing |
+| `complaintApi` | — | Missing |
+| `searchApi` | — | Missing |
+| `walletApi` / `addressApi` / `configApi` / `categoryApi` | — | Missing |
+
+Trip planner + package booking exist on mobile even when not in the web API barrel — treat mobile as source of truth for those.
+
+---
+
+## 7. Do / Don't
+
+**Do**
+- Start from frontend modular-components + `*Api` endpoint list
+- Follow the closest existing mobile feature’s folder/hook/slice shape
+- Keep screens thin; put orchestration in hooks
+- Unwrap API `data` in services
+- Update integration progress when a section lands
+
+**Don't**
+- Paste JSX with `div`, web-only libraries, or `use*RQ` into the app
+- Call Axios/`fetch` from components or screens
+- Put business logic in `src/app/**` route files
+- Add a Redux slice for simple read-only lists
+- Hardcode strings, hex colors, or API base URLs
+- Port master-admin/employee chrome unless that role is in scope
+- Invent a second API client or React Query layer
+
+---
+
+## 8. Agent shortcut
+
+When the user says “port X from frontend” or “integrate X on mobile”:
+
+1. Read frontend `*Api` + modular component(s) for X  
+2. Read mobile sibling feature (tour-builder / hotels / community)  
+3. Follow §3 checklist top-to-bottom  
+4. Restyle to NativeWind + theme tokens  
+5. Wire navigation + i18n  
+6. Mark progress in `app-integration-progress.mdc`
